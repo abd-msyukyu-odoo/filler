@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/01 18:13:22 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/01 18:58:22 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,16 @@ int				main(void)
 //	mlx_key_hook(win_ptr, yon_release, NULL);
 //	mlx_loop(mlx_ptr);
 	char		*in;
+	MAP			*map;
+
 	in = yread_input();
-	printf("\n%s\n", in);
+	map = malloc(sizeof(map));
+	if (!map || !decode_input(in, map))
+		free(map);
+	else
+	{
+		
+	}
 	free(in);
 	return (0);
 }

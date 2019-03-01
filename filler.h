@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/01 18:42:19 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/01 18:59:09 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@
 #include <stdio.h>
 
 /*
- * s : start
- * e : end
- */
+** s : start
+** e : end
+*/
 typedef struct			s_range
 {
 	int					s;
@@ -37,10 +37,10 @@ typedef struct			s_range
 }						t_range;
 
 /*
- * v : vertical
- * h : horizontal
- * o : owner
- */
+** v : vertical
+** h : horizontal
+** o : owner
+*/
 typedef struct			s_are
 {
 	RNG					v;
@@ -49,19 +49,25 @@ typedef struct			s_are
 }						t_are;
 
 /*
- * w : width
- * h : height
- */
+** w : width
+** h : height
+** m : map
+*/
 typedef struct			s_map
 {
 	int					w;
 	int					h;
-	
+	ARE					**m;
 }						t_map;
 
 /*
 ** read.c
 */
 char					*yread_input();
+
+/*
+ * decode_input.c
+ */
+unsigned char			decode_input(char *in, MAP *map);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   decode_input.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/01 18:33:37 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/01 19:03:39 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,16 @@ static unsigned int		ft_atoui_limited(const char *str, size_t s, size_t e)
 	return (result);
 }
 
-MAP						*decode_input(char *in)
+static size_t			decode_size(char *in, int *w, int *h, size_t i)
 {
+	static char			*pl = "Plateau ";
+	static char			*pi = "Piece ";
+
 	
+}
+
+unsigned char			decode_input(char *in, MAP *map)
+{
+	if (!decode_size(in, &(map->w), &(map->h), 0))
+		return (0);
 }
