@@ -6,40 +6,56 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/01 19:03:39 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/01 19:56:29 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "filler.h"
 
-static unsigned int		ft_atoui_limited(const char *str, size_t s, size_t e)
+static unsigned int		ft_atoui_limited(STR *in)
 {
 	unsigned int		result;
-	size_t				i;
 	unsigned int		tmp;
 
 	result = 0;
-	i = s;
-	while (i < e && str[i] >= '0' && str[i] <= '9')
+	while (in->s[in->p] >= '0' && in->s[in->p] <= '9')
 	{
 		tmp = result;
-		result = result * 10 + str[i++] - '0';
+		result = result * 10 + in->s[in->p++] - '0';
 		if (result < tmp)
 			return (~((unsigned int)0));
 	}
 	return (result);
 }
 
-static size_t			decode_size(char *in, int *w, int *h, size_t i)
+static unsigned char	decode_size(STR *in, int *w, int *h, char *ref)
+{
+	size_t				p;
+
+	p = 0;
+	while (in->s[p + in->p] == ref[p])
+		p++;
+	if (ref[p] != '\0')
+		return (0);
+	in->p += p;
+	*h = ft_atoui_limited(in);
+	if (in->s[in->p++] != ' ')
+		return (0);
+	*w = ft_atoui_limited(in);
+	if (in->s[in->p++] != ':')
+		return (0);
+	if (in->s[in->p++] != '\n')
+		return (0);
+	return (1);
+}
+
+unsigned char			decode_input(STR in, MAP *map)
 {
 	static char			*pl = "Plateau ";
 	static char			*pi = "Piece ";
 
-	
-}
-
-unsigned char			decode_input(char *in, MAP *map)
-{
-	if (!decode_size(in, &(map->w), &(map->h), 0))
+	if (!decode_size(&in, &(map->w), &(map->h), pl))
 		return (0);
+	printf("%d\n%d\n", map->w, map->h);
+	return (1);
 }

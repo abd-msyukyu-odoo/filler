@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/01 18:59:09 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/01 19:43:54 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # define MAP struct s_map
 # define RNG struct s_range
 # define ARE struct s_are
+# define STR struct s_str
 
 #include <stdio.h>
 
@@ -43,8 +44,8 @@ typedef struct			s_range
 */
 typedef struct			s_are
 {
-	RNG					v;
-	RNG					h;
+	RNG					*v;
+	RNG					*h;
 	char				o;
 }						t_are;
 
@@ -60,6 +61,13 @@ typedef struct			s_map
 	ARE					**m;
 }						t_map;
 
+
+typedef struct			s_str
+{
+	char				*s;
+	size_t				p;
+}						t_str;
+
 /*
 ** read.c
 */
@@ -68,6 +76,6 @@ char					*yread_input();
 /*
  * decode_input.c
  */
-unsigned char			decode_input(char *in, MAP *map);
+unsigned char			decode_input(STR in, MAP *map);
 
 #endif
