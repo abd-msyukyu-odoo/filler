@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/01 19:43:54 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/01 20:32:10 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ typedef struct			s_range
 */
 typedef struct			s_are
 {
-	RNG					*v;
-	RNG					*h;
+	RNG					**v;
+	RNG					**h;
 	char				o;
 }						t_are;
 
@@ -61,7 +61,10 @@ typedef struct			s_map
 	ARE					**m;
 }						t_map;
 
-
+/*
+ * s : string
+ * p : position
+ */
 typedef struct			s_str
 {
 	char				*s;

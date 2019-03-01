@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/01 19:56:43 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/01 20:05:46 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,22 +34,18 @@ int				main(void)
 	char		err;
 
 	err = 0;
-	while (1)
+	in.s = yread_input();
+	map = malloc(sizeof(map));
+	in.p = 0;
+	if (!map || !decode_input(in, map))
 	{
-		in.s = yread_input();
-		map = malloc(sizeof(map));
-		in.p = 0;
-		if (!map || !decode_input(in, map))
-		{
-			free(map);
-			err = 1;
-		}
-		else
-		{
-			err = 1;
-		}
-		free(in.s);
-		if (err)
-			return (0);
+		free(map);
+		err = 1;
 	}
+	else
+	{
+		err = 1;
+	}
+	free(in.s);
+	return (0);
 }
