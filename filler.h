@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   filler.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/01 15:47:40 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/01 18:42:19 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,48 @@
 # include <unistd.h>
 # define BUFF_SIZE 50
 # define STD_OUT 1
+# define MAP struct s_map
+# define RNG struct s_range
+# define ARE struct s_are
 
 #include <stdio.h>
 
-/* 
- * read.c
+/*
+ * s : start
+ * e : end
  */
+typedef struct			s_range
+{
+	int					s;
+	int					e;
+}						t_range;
 
+/*
+ * v : vertical
+ * h : horizontal
+ * o : owner
+ */
+typedef struct			s_are
+{
+	RNG					v;
+	RNG					h;
+	char				o;
+}						t_are;
+
+/*
+ * w : width
+ * h : height
+ */
+typedef struct			s_map
+{
+	int					w;
+	int					h;
+	
+}						t_map;
+
+/*
+** read.c
+*/
+char					*yread_input();
 
 #endif
