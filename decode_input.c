@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/02 19:47:38 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/02 20:10:31 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,12 +248,13 @@ static unsigned char	decode_map(t_str *in, t_map *map)
 static unsigned char	malloc_map(t_map *map)
 {
 	size_t		y;
+	t_are		**m;
 
 	printf("%lu\n%lu\n%lu\n%lu\n", sizeof(t_are*) * map->h, sizeof(map),
 			sizeof(*map), sizeof(t_are***));
 	printf("%p\n", map);
-	*map->m = (t_are**)malloc(sizeof(t_are*) * map->h);
-
+	m = (t_are**)malloc(sizeof(t_are*) * map->h);
+	map->m = &m;
 	printf("coucou-1\n");
 	if (!(*map->m))
 		return (0);
@@ -295,6 +296,7 @@ unsigned char			decode_input(t_str in, t_map *map)
 
 	if (!decode_size(&in, &(map->w), &(map->h), pl))
 		return (0);
+	printf("\n%d\n%d\n", map->w, map->h);
 	if (map->w == 0 || map->h == 0 || !malloc_map(map))
 		return (0);
 	//a partir d'ici : free la map
@@ -304,7 +306,6 @@ unsigned char			decode_input(t_str in, t_map *map)
 		return (0);
 	}
 
-	printf("\n%d\n%d\n", map->w, map->h);
 	size_t		x, y;
 	y = 0;
 	while (y < map->h)
