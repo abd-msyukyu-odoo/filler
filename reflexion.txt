@@ -1,0 +1,2 @@
+recup le numero de player avant la premiere carte
+

@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/01 20:05:46 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/02 15:48:23 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ int				main(void)
 //	win_ptr = mlx_new_window(mlx_ptr, 500, 500, "mlx 42");
 //	mlx_key_hook(win_ptr, yon_release, NULL);
 //	mlx_loop(mlx_ptr);
-	STR			in;
-	MAP			*map;
+	t_str		in;
+	t_map		*map;
 	char		err;
 
 	err = 0;

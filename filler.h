@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/01 20:32:10 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/02 15:44:22 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,6 @@
 # include <unistd.h>
 # define BUFF_SIZE 50
 # define STD_OUT 1
-# define MAP struct s_map
-# define RNG struct s_range
-# define ARE struct s_are
-# define STR struct s_str
 
 #include <stdio.h>
 
@@ -35,17 +31,21 @@ typedef struct			s_range
 {
 	int					s;
 	int					e;
-}						t_range;
+}						t_rng;
 
 /*
 ** v : vertical
 ** h : horizontal
+** b : backslash
+** s : slash
 ** o : owner
 */
 typedef struct			s_are
 {
-	RNG					**v;
-	RNG					**h;
+	t_rng				*v;
+	t_rng				*h;
+	t_rng				*b;
+	t_rng				*s;
 	char				o;
 }						t_are;
 
@@ -58,7 +58,7 @@ typedef struct			s_map
 {
 	int					w;
 	int					h;
-	ARE					**m;
+	t_are				**m;
 }						t_map;
 
 /*
@@ -79,6 +79,6 @@ char					*yread_input();
 /*
  * decode_input.c
  */
-unsigned char			decode_input(STR in, MAP *map);
+unsigned char			decode_input(t_str in, t_map *map);
 
 #endif
