@@ -154,24 +154,28 @@ static unsigned char	add_are_bs(size_t x, size_t y, t_map *map)
 {
 	unsigned char		fail;
 
+	fail = 0;
 	if (x == 0 || y == 0)
 	{
 		fail = !malloc_range(&((*map->m)[y][x].b));
 		if (!fail && (fail = !malloc_range(&((*map->m)[y][x].s))))
-			free((*map->m)[y][x].b);
-		if (fail)
-		{
-			if (x == 0)
-				free((*map->m)[y][x].h);
-			if (y == 0)
-				free((*map->m)[y][x].v);
-			return (0);
-		}
+			free((*map->m)[y][x].b);	
 	}
 	else
 	{
 		append_range(&((*map->m)[y][x].b), (*map->m)[y - 1][x - 1].b);
-		append_range(&((*map->m)[y][x].s), (*map->m)[y - 1][x + 1].s);
+		if (x < map->w - 1)
+			append_range(&((*map->m)[y][x].s), (*map->m)[y - 1][x + 1].s);
+		else
+			fail = !malloc_range(&((*map->m)[y][x].s)); 
+	}
+	if (fail)
+	{
+		if (x == 0)
+			free((*map->m)[y][x].h);
+		if (y == 0)
+			free((*map->m)[y][x].v);
+		return (0);
 	}
 	return (1);
 }
