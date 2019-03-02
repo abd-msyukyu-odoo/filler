@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/02 18:40:13 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/02 19:47:38 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,14 +83,14 @@ static void				dereference_rng(t_map *map, size_t x, size_t y,
 	{
 		while (x-- > 0)
 		{
-			if (map->m[y][x].h == rng)
-				map->m[y][x].h = NULL;
-			if (map->m[y][x].v == rng)
-				map->m[y][x].v = NULL;
-			if (map->m[y][x].b == rng)
-				map->m[y][x].b = NULL;
-			if (map->m[y][x].s == rng)
-				map->m[y][x].s = NULL;
+			if ((*map->m)[y][x].h == rng)
+				(*map->m)[y][x].h = NULL;
+			if ((*map->m)[y][x].v == rng)
+				(*map->m)[y][x].v = NULL;
+			if ((*map->m)[y][x].b == rng)
+				(*map->m)[y][x].b = NULL;
+			if ((*map->m)[y][x].s == rng)
+				(*map->m)[y][x].s = NULL;
 		}
 		x = map->w;
 	}
@@ -103,10 +103,10 @@ static void				free_ares(t_map *map, size_t x, size_t y)
 	{
 		while (x-- > 0)
 		{
-			dereference_rng(map, x, y, map->m[y][x].v);
-			dereference_rng(map, x, y, map->m[y][x].h);
-			dereference_rng(map, x, y, map->m[y][x].b);
-			dereference_rng(map, x, y, map->m[y][x].s);
+			dereference_rng(map, x, y, (*map->m)[y][x].v);
+			dereference_rng(map, x, y, (*map->m)[y][x].h);
+			dereference_rng(map, x, y, (*map->m)[y][x].b);
+			dereference_rng(map, x, y, (*map->m)[y][x].s);
 		}
 		x = map->w;
 	}
@@ -131,22 +131,22 @@ static unsigned char	add_are_vh(size_t x, size_t y, t_map *map)
 {
 	if (x == 0)
 	{
-		if (!malloc_range(&(map->m[y][x].h)))
+		if (!malloc_range(&((*map->m)[y][x].h)))
 			return (0);
 	}
 	else
-		append_range(&(map->m[y][x].h), map->m[y][x - 1].h);
+		append_range(&((*map->m)[y][x].h), (*map->m)[y][x - 1].h);
 	if (y == 0)
 	{
-		if (!malloc_range(&(map->m[y][x].v)))
+		if (!malloc_range(&((*map->m)[y][x].v)))
 		{
 			if (x == 0)
-				free(map->m[y][x].h);
+				free((*map->m)[y][x].h);
 			return (0);
 		}
 	}
 	else
-		append_range(&(map->m[y][x].v), map->m[y - 1][x].v);
+		append_range(&((*map->m)[y][x].v), (*map->m)[y - 1][x].v);
 	return (1);
 }
 
@@ -156,29 +156,29 @@ static unsigned char	add_are_bs(size_t x, size_t y, t_map *map)
 
 	if (x == 0 || y == 0)
 	{
-		fail = !malloc_range(&(map->m[y][x].b));
-		if (!fail && (fail = !malloc_range(&(map->m[y][x].s))))
-			free(map->m[y][x].b);
+		fail = !malloc_range(&((*map->m)[y][x].b));
+		if (!fail && (fail = !malloc_range(&((*map->m)[y][x].s))))
+			free((*map->m)[y][x].b);
 		if (fail)
 		{
 			if (x == 0)
-				free(map->m[y][x].h);
+				free((*map->m)[y][x].h);
 			if (y == 0)
-				free(map->m[y][x].v);
+				free((*map->m)[y][x].v);
 			return (0);
 		}
 	}
 	else
 	{
-		append_range(&(map->m[y][x].b), map->m[y - 1][x - 1].b);
-		append_range(&(map->m[y][x].s), map->m[y - 1][x + 1].s);
+		append_range(&((*map->m)[y][x].b), (*map->m)[y - 1][x - 1].b);
+		append_range(&((*map->m)[y][x].s), (*map->m)[y - 1][x + 1].s);
 	}
 	return (1);
 }
 
 static unsigned char	add_are(char o, size_t x, size_t y, t_map *map)
 {
-	map->m[y][x].o = o;
+	(*map->m)[y][x].o = o;
 	if (!add_are_vh(x, y, map))
 		return (0);
 	if (!add_are_bs(x, y, map))
@@ -249,18 +249,28 @@ static unsigned char	malloc_map(t_map *map)
 {
 	size_t		y;
 
-	map->m = (t_are**)malloc(sizeof(t_are*) * map->h);
-	if (!map->m)
+	printf("%lu\n%lu\n%lu\n%lu\n", sizeof(t_are*) * map->h, sizeof(map),
+			sizeof(*map), sizeof(t_are***));
+	printf("%p\n", map);
+	*map->m = (t_are**)malloc(sizeof(t_are*) * map->h);
+
+	printf("coucou-1\n");
+	if (!(*map->m))
 		return (0);
 	y = 0;
+	printf("coucou0\n");
 	while (y < map->h)
 	{
-		map->m[y] = (t_are*)malloc(sizeof(t_are) * map->w);
-		if (!map->m[y])
+
+	printf("coucou\n");
+		(*map->m)[y] = (t_are*)malloc(sizeof(t_are) * map->w);
+
+	printf("coucou2\n");
+		if (!(*map->m)[y])
 		{
 			while (y > 0)
-				free(map->m[--y]);
-			free(map->m);
+				free((*map->m)[--y]);
+			free((*map->m));
 			return (0);
 		}
 		++y;
@@ -274,8 +284,8 @@ static void				free_map(t_map *map)
 
 	y = 0;
 	while (y < map->h)
-		free(map->m[y++]);
-	free(map->m);
+		free((*map->m)[y++]);
+	free((*map->m));
 }
 
 unsigned char			decode_input(t_str in, t_map *map)
@@ -294,7 +304,7 @@ unsigned char			decode_input(t_str in, t_map *map)
 		return (0);
 	}
 
-	printf("%d\n%d\n", map->w, map->h);
+	printf("\n%d\n%d\n", map->w, map->h);
 	size_t		x, y;
 	y = 0;
 	while (y < map->h)
@@ -302,7 +312,7 @@ unsigned char			decode_input(t_str in, t_map *map)
 		x = 0;
 		while (x < map->w)
 		{
-			write(1, &(map->m[y][x].o), 1);
+			write(1, &((*map->m)[y][x].o), 1);
 			x++;
 		}
 		write(1, "\n", 1);

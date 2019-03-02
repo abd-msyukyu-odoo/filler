@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/02 15:44:22 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/02 19:34:41 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ typedef struct			s_map
 {
 	int					w;
 	int					h;
-	t_are				**m;
+	t_are				***m;
 }						t_map;
 
 /*
