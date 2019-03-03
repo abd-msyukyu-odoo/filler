@@ -150,33 +150,33 @@ static unsigned char	add_are_vh(size_t x, size_t y, t_map *map)
 	return (1);
 }
 
+static unsigned char	abort_are_bs(size_t x, size_t y, t_map *map)
+{
+	if (x == 0)
+		free((*map->m)[y][x].h);
+	if (y == 0)
+		free((*map->m)[y][x].v);
+	if (x == map->w - 1 && y == 0)
+		free((*map->m)[y][x].b);
+	return (0);
+}
+
 static unsigned char	add_are_bs(size_t x, size_t y, t_map *map)
 {
-	unsigned char		fail;
-
-	fail = 0;
 	if (x == 0 || y == 0)
 	{
-		fail = !malloc_range(&((*map->m)[y][x].b));
-		if (!fail && (fail = !malloc_range(&((*map->m)[y][x].s))))
-			free((*map->m)[y][x].b);	
+		if (!malloc_range(&((*map->m)[y][x].b)))
+			abort_are_bs(x, y, map);
 	}
 	else
-	{
 		append_range(&((*map->m)[y][x].b), (*map->m)[y - 1][x - 1].b);
-		if (x < map->w - 1)
-			append_range(&((*map->m)[y][x].s), (*map->m)[y - 1][x + 1].s);
-		else
-			fail = !malloc_range(&((*map->m)[y][x].s)); 
-	}
-	if (fail)
+	if (x == map->w - 1 || y == 0)
 	{
-		if (x == 0)
-			free((*map->m)[y][x].h);
-		if (y == 0)
-			free((*map->m)[y][x].v);
-		return (0);
+		if(!malloc_range(&((*map->m)[y][x].s)))
+			abort_are_bs(x, y, map);
 	}
+	else
+		append_range(&((*map->m)[y][x].s), (*map->m)[y - 1][x + 1].s);
 	return (1);
 }
 
