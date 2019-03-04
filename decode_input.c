@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/02 20:10:31 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/04 14:43:16 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ static void				free_ares(t_map *map, size_t x, size_t y)
 	{
 		while (x-- > 0)
 		{
+			printf("%lu%lu\n", y, x);
 			dereference_rng(map, x, y, (*map->m)[y][x].v);
 			dereference_rng(map, x, y, (*map->m)[y][x].h);
 			dereference_rng(map, x, y, (*map->m)[y][x].b);
@@ -166,14 +167,14 @@ static unsigned char	add_are_bs(size_t x, size_t y, t_map *map)
 	if (x == 0 || y == 0)
 	{
 		if (!malloc_range(&((*map->m)[y][x].b)))
-			abort_are_bs(x, y, map);
+			return (abort_are_bs(x, y, map));
 	}
 	else
 		append_range(&((*map->m)[y][x].b), (*map->m)[y - 1][x - 1].b);
 	if (x == map->w - 1 || y == 0)
 	{
-		if(!malloc_range(&((*map->m)[y][x].s)))
-			abort_are_bs(x, y, map);
+		if (!malloc_range(&((*map->m)[y][x].s)))
+			return (abort_are_bs(x, y, map));
 	}
 	else
 		append_range(&((*map->m)[y][x].s), (*map->m)[y - 1][x + 1].s);
@@ -183,6 +184,7 @@ static unsigned char	add_are_bs(size_t x, size_t y, t_map *map)
 static unsigned char	add_are(char o, size_t x, size_t y, t_map *map)
 {
 	(*map->m)[y][x].o = o;
+	printf("%lu-%lu\n", x, y);
 	if (!add_are_vh(x, y, map))
 		return (0);
 	if (!add_are_bs(x, y, map))
@@ -254,29 +256,29 @@ static unsigned char	malloc_map(t_map *map)
 	size_t		y;
 	t_are		**m;
 
-	printf("%lu\n%lu\n%lu\n%lu\n", sizeof(t_are*) * map->h, sizeof(map),
+	printf("%lu\n%lu\n%lu\n%lu\n", sizeof(t_are), sizeof(map),
 			sizeof(*map), sizeof(t_are***));
 	printf("%p\n", map);
 	m = (t_are**)malloc(sizeof(t_are*) * map->h);
 	map->m = &m;
-	printf("coucou-1\n");
 	if (!(*map->m))
 		return (0);
 	y = 0;
-	printf("coucou0\n");
 	while (y < map->h)
 	{
-
-	printf("coucou\n");
 		(*map->m)[y] = (t_are*)malloc(sizeof(t_are) * map->w);
-
-	printf("coucou2\n");
 		if (!(*map->m)[y])
 		{
 			while (y > 0)
 				free((*map->m)[--y]);
 			free((*map->m));
 			return (0);
+		}
+		size_t x = 0;
+		while (x < map->w)
+		{
+			(*map->m)[y][x] = (t_are){NULL, NULL, NULL, NULL, '\0'};
+			x++;
 		}
 		++y;
 	}
@@ -317,13 +319,17 @@ unsigned char			decode_input(t_str in, t_map *map)
 		x = 0;
 		while (x < map->w)
 		{
-			write(1, &((*map->m)[y][x].o), 1);
+			printf("%lu\n", x);
+			printf("%p\n", &(*map->m)[y][x]);
+			//write(1, &((*map->m)[y][x].o), 1);
 			x++;
 		}
 		write(1, "\n", 1);
+		y++;
 	}
+	printf("coucou\n");
 	//tbc
-	free_ares(map, map->w, map->h);
+	//free_ares(map, map->w, map->h);
 	//a partir d'ici : free les t_ares avant de free la map
 	return (1);
 }
