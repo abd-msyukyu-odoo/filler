@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/02 20:04:14 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/04 19:10:37 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,17 +30,21 @@ int				main(void)
 //	mlx_key_hook(win_ptr, yon_release, NULL);
 //	mlx_loop(mlx_ptr);
 	t_str				in;
-	static t_map		map = {0, 0, NULL};
+	t_map				map = {0, 0, NULL};
 	char				err;
+	t_ply				me;
+	t_ply				en;
 
 	err = 0;
 	in.s = yread_input();
-	//map = (t_map*)malloc(sizeof(t_map));
 	in.p = 0;
-	if (!decode_input(in, &map))
-		err = 1;
-	else
-		err = 1;
+	if (!ydecode_player(in, &me, &en))
+		return (0);
+	free(in.s);
+	in.s = yread_input();
+	in.p = 0;
+	if (!ydecode_input(in, &map))
+		return (0);
 	free(in.s);
 	return (0);
 }

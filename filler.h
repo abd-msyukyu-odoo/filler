@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/02 19:34:41 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/04 19:05:02 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ typedef struct			s_map
 {
 	int					w;
 	int					h;
-	t_are				***m;
+	t_are				**m;
 }						t_map;
 
 /*
@@ -71,6 +71,11 @@ typedef struct			s_str
 	size_t				p;
 }						t_str;
 
+typedef struct			s_ply
+{
+	char				o;
+}						t_ply;
+
 /*
 ** read.c
 */
@@ -79,6 +84,11 @@ char					*yread_input();
 /*
  * decode_input.c
  */
-unsigned char			decode_input(t_str in, t_map *map);
+unsigned char			ydecode_input(t_str in, t_map *map);
+
+/*
+ * decode_player.c
+ */
+unsigned char			ydecode_player(t_str in, t_ply *me, t_ply *en);
 
 #endif
