@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/04 19:07:29 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/04 20:40:56 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,7 +247,6 @@ static unsigned char	ydecode_map(t_str *in, t_map *map)
 static unsigned char	ymalloc_map(t_map *map)
 {
 	size_t		y;
-	t_are		**m;
 
 	map->m = (t_are**)malloc(sizeof(t_are*) * map->h);
 	if (!map->m)
@@ -278,7 +277,25 @@ static void				yfree_map(t_map *map)
 	free(map->m);
 }
 
-unsigned char			ydecode_input(t_str in, t_map *map)
+static unsigned char	ymalloc_pc(t_pc *pc)
+{
+	size_t		y;
+
+	pc->shp = (t_rng*)malloc(sizeof(t_rng) * pc->w * pc->h);
+	if (!pc->shp)
+		return (0);
+	return (1);
+}
+
+static unsigned char	ydecode_pc(t_str *in, t_pc *pc)
+{
+	size_t x;
+
+	x = 0;
+	while (x < pc->w && yvalid_for_piece(
+}
+
+unsigned char			ydecode_input(t_str in, t_map *map, t_pc *pc)
 {
 	static char			*pl = "Plateau ";
 	static char			*pi = "Piece ";
@@ -287,14 +304,32 @@ unsigned char			ydecode_input(t_str in, t_map *map)
 		return (0);
 	if (map->w == 0 || map->h == 0 || !ymalloc_map(map))
 		return (0);
-	//a partir d'ici : free la map
+	//+ free map
 	if (!yignore_line(&in) || !ydecode_map(&in, map))
 	{
 		yfree_map(map);
 		return (0);
 	}
-	//tbc
-	yfree_ares(map, map->w, map->h);
-	//a partir d'ici : free les t_ares avant de free la map
+	//+ free ares
+	if (!ydecode_size(&in, &(pc->w), &(pc->h), pi))
+	{
+		yfree_ares(map, map->w, map->h);
+		yfree_map(map);
+		return (0);
+	}
+	if (pc->w == 0 || pc->h == 0 || !ymalloc_pc(pc))
+	{
+		yfree_ares(map, map->w, map->h);
+		yfree_map(map);
+		return (0);
+	}
+	//+ free pc
+	if (!ydecode_pc(&in, pc))
+	{
+		yfree_ares(map, map->w, map->h);
+		yfree_map(map);
+		free(pc->shp);
+	}
+	
 	return (1);
 }

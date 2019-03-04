@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/04 19:10:37 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/04 20:14:48 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int				main(void)
 //	mlx_loop(mlx_ptr);
 	t_str				in;
 	t_map				map = {0, 0, NULL};
+	t_pc				pc = {(t_rng){0, 0}, NULL, 0, 0};
 	char				err;
 	t_ply				me;
 	t_ply				en;
@@ -43,7 +44,7 @@ int				main(void)
 	free(in.s);
 	in.s = yread_input();
 	in.p = 0;
-	if (!ydecode_input(in, &map))
+	if (!ydecode_input(in, &map, &pc))
 		return (0);
 	free(in.s);
 	return (0);

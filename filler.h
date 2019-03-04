@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/04 19:05:02 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/04 20:11:32 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,25 @@ typedef struct			s_str
 	size_t				p;
 }						t_str;
 
+/*
+ * o : owner
+ */
 typedef struct			s_ply
 {
 	char				o;
 }						t_ply;
+
+/*
+ * ofs : offset
+ * p : position
+ */
+typedef struct			s_pc
+{
+	t_rng				ofs;
+	t_rng				*shp;
+	int					w;
+	int					h;
+}						t_pc;
 
 /*
 ** read.c
@@ -84,7 +99,7 @@ char					*yread_input();
 /*
  * decode_input.c
  */
-unsigned char			ydecode_input(t_str in, t_map *map);
+unsigned char			ydecode_input(t_str in, t_map *map, t_pc *pc);
 
 /*
  * decode_player.c
