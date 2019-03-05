@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 15:51:38 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 16:02:57 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,11 +64,9 @@ int				main(void)
 	t_str				in;
 	t_map				map;
 	t_pc				pc;
-	char				err;
 	t_ply				me;
 	t_ply				en;
 
-	err = 0;
 	if (!(in.s = yread_input()))
 		return (0);
 	in.p = 0;
@@ -84,5 +82,6 @@ int				main(void)
 		return (0);
 	free(in.s);
 	print_map_piece(map, pc);
+	yfree_turn(&map, &pc);
 	return (0);
 }

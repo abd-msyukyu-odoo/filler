@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 15:51:03 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 16:01:24 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -351,30 +351,27 @@ static unsigned char	ydecode_crop(t_str *in, t_pc *pc)
 	return (1);
 }
 
+void					yfree_turn(t_map *map, t_pc *pc)
+{
+	yfree_ares(&(pc->map), pc->map.w, pc->map.h);
+	yfree_map(&(pc->map));
+	yfree_ares(map, map->w, map->h);
+	yfree_map(map);
+}
+
 unsigned char			ydecode_input(t_str in, t_map *map, t_pc *pc, char o)
 {
-	static char			*pl = "Plateau ";
-	static char			*pi = "Piece ";
-
-	if (!ydecode_size(&in, &(map->w), &(map->h), pl))
+	if (!ydecode_size(&in, &(map->w), &(map->h), PLATEAU))
 		return (0);
 	if (map->w == 0 || map->h == 0 || !ymalloc_map(map))
 		return (0);
-	//+ free map
 	if (!yignore_line(&in) || !ydecode_map(&in, map))
 	{
 		yfree_map(map);
 		return (0);
 	}
-	//+ free ares
-	
-	if (!ydecode_size(&in, &(pc->map.w), &(pc->map.h), pi))
-	{
-		yfree_ares(map, map->w, map->h);
-		yfree_map(map);
-		return (0);
-	}
-	if (pc->map.w == 0 || pc->map.h == 0 || !ydecode_crop(&in, pc))
+	if (!ydecode_size(&in, &(pc->map.w), &(pc->map.h), PIECE) ||
+		pc->map.w == 0 || pc->map.h == 0 || !ydecode_crop(&in, pc))
 	{
 		yfree_ares(map, map->w, map->h);
 		yfree_map(map);
@@ -387,6 +384,5 @@ unsigned char			ydecode_input(t_str in, t_map *map, t_pc *pc, char o)
 		yfree_map(map);
 		return (0);
 	}
-
 	return (1);
 }
