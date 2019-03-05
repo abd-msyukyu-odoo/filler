@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 13:55:30 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 14:53:08 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,6 +283,7 @@ static unsigned char	ydecode_pc(t_str *in, t_pc *pc)
 	size_t		y;
 
 	in->p += (pc->map.w + 1) * pc->mic.y;
+	printf("%lu\n", in->p);
 	pc->map = (t_map){pc->mac.x + 1 - pc->mic.x, pc->mac.y + 1 - pc->mic.y,
 		NULL};
 	if (!ymalloc_map(&(pc->map)))
@@ -348,6 +349,7 @@ unsigned char			ydecode_input(t_str in, t_map *map, t_pc *pc)
 		return (0);
 	}
 	//+ free ares
+	
 	if (!ydecode_size(&in, &(pc->map.w), &(pc->map.h), pi))
 	{
 		yfree_ares(map, map->w, map->h);
@@ -362,11 +364,11 @@ unsigned char			ydecode_input(t_str in, t_map *map, t_pc *pc)
 	}
 	if (!ydecode_pc(&in, pc))
 	{
-		yfree_ares(&(pc->map), pc->map.w, pc->map.h);
 		yfree_map(&(pc->map));
 		yfree_ares(map, map->w, map->h);
 		yfree_map(map);
 		return (0);
 	}
+
 	return (1);
 }

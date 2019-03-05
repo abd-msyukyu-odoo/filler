@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 13:12:15 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 14:56:49 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <sys/types.h>
 # include <unistd.h>
 # define BUFF_SIZE 50
-# define STD_OUT 1
+# define STD_OUT 0
 
 #include <stdio.h>
 
