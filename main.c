@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 16:06:07 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 16:27:41 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,27 +62,27 @@ int				main(void)
 //	mlx_key_hook(win_ptr, yon_release, NULL);
 //	mlx_loop(mlx_ptr);
 	t_str				in;
-	t_map				map;
-	t_pc				pc;
-	t_ply				me;
-	t_ply				en;
+	t_gm				gm;
 
 	if (!(in.s = yread_input()))
 		return (0);
 	in.p = 0;
-	if (!ydecode_player(in, &me, &en))
+	if (!ydecode_player(in, &gm.me, &gm.en))
+	{
+		free(in.s);
 		return (0);
+	}
 	free(in.s);
 	while ((in.s = yread_input()))
 	{
-		pc.mic = (t_crd){-1, -1};
-		pc.mac = (t_crd){-1, -1};
 		in.p = 0;
-		if (!ydecode_input(in, &map, &pc, me.o))
+		if (!ydecode_input(in, &gm.map, &gm.pc, gm.me.o))
+		{
+			free(in.s);
 			return (0);
-		free(in.s);
-		print_map_piece(map, pc);
-		yfree_turn(&map, &pc);
+		}
+		print_map_piece(gm.map, gm.pc);
+		yfree_turn(in, &gm.map, &gm.pc);
 	}
 	return (0);
 }

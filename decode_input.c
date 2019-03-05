@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 16:01:24 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 16:31:36 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,6 +323,12 @@ static unsigned char	ydecode_pc(t_str *in, t_pc *pc, char o)
 	return (1);
 }
 
+static void				yinit_mic_mac(t_pc *pc)
+{
+	pc->mic = (t_crd){-1, -1};
+	pc->mac = (t_crd){-1, -1};
+}
+
 static unsigned char	ydecode_crop(t_str *in, t_pc *pc)
 {
 	size_t		y;
@@ -330,6 +336,7 @@ static unsigned char	ydecode_crop(t_str *in, t_pc *pc)
 	size_t		l;
 
 	l = in->p;
+	yinit_mic_mac(pc);
 	y = -1;
 	while (++y < pc->map.h)
 	{
@@ -351,12 +358,13 @@ static unsigned char	ydecode_crop(t_str *in, t_pc *pc)
 	return (1);
 }
 
-void					yfree_turn(t_map *map, t_pc *pc)
+void					yfree_turn(t_str in, t_map *map, t_pc *pc)
 {
 	yfree_ares(&(pc->map), pc->map.w, pc->map.h);
 	yfree_map(&(pc->map));
 	yfree_ares(map, map->w, map->h);
 	yfree_map(map);
+	free(in.s);
 }
 
 unsigned char			ydecode_input(t_str in, t_map *map, t_pc *pc, char o)
