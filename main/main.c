@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 16:27:41 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 17:51:52 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 int				yon_release(int key, void *param)
 {
+	param = NULL;
 	if (key == ESC_KEY)
 		exit(0);
 	return (1);
@@ -21,7 +22,7 @@ int				yon_release(int key, void *param)
 
 void			print_map_piece(t_map map, t_pc pc)
 {
-	size_t				y, x;
+	int				y, x;
 
 	y = 0;
 	while (y < map.h)

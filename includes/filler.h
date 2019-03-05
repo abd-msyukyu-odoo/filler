@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 16:22:20 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 17:50:21 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define FILLER_H
 
 # include "keycode.h"
-# include "minilibx_macos/mlx.h"
+# include "mlx.h"
 # include <stdlib.h>
 # include <sys/types.h>
 # include <unistd.h>

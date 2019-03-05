@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 16:31:36 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 17:58:19 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,7 @@ static char				yc_to_upper(char c)
 	return (((c >= 'a' && c <= 'z') ? 'A' - 'a' : 0) + c);
 }
 
-static void				ydereference_rng(t_map *map, size_t x, size_t y,
-		t_rng *rng)
+static void				ydereference_rng(t_map *map, int x, int y, t_rng *rng)
 {
 	if (!rng)
 		return ;
@@ -97,7 +96,7 @@ static void				ydereference_rng(t_map *map, size_t x, size_t y,
 	free(rng);
 }
 
-static void				yfree_ares(t_map *map, size_t x, size_t y)
+static void				yfree_ares(t_map *map, int x, int y)
 {
 	while (y-- > 0)
 	{
@@ -127,7 +126,7 @@ static unsigned char	ymalloc_range(t_rng **rng)
 	return (1);
 }
 
-static unsigned char	yadd_are_vh(size_t x, size_t y, t_map *map)
+static unsigned char	yadd_are_vh(int x, int y, t_map *map)
 {
 	if (x == 0)
 	{
@@ -150,7 +149,7 @@ static unsigned char	yadd_are_vh(size_t x, size_t y, t_map *map)
 	return (1);
 }
 
-static unsigned char	yabort_are_bs(size_t x, size_t y, t_map *map)
+static unsigned char	yabort_are_bs(int x, int y, t_map *map)
 {
 	if (x == 0)
 		free(map->m[y][x].h);
@@ -161,7 +160,7 @@ static unsigned char	yabort_are_bs(size_t x, size_t y, t_map *map)
 	return (0);
 }
 
-static unsigned char	yadd_are_bs(size_t x, size_t y, t_map *map)
+static unsigned char	yadd_are_bs(int x, int y, t_map *map)
 {
 	if (x == 0 || y == 0)
 	{
@@ -180,7 +179,7 @@ static unsigned char	yadd_are_bs(size_t x, size_t y, t_map *map)
 	return (1);
 }
 
-static unsigned char	yadd_are(char o, size_t x, size_t y, t_map *map)
+static unsigned char	yadd_are(char o, int x, int y, t_map *map)
 {
 	map->m[y][x].o = o;
 	if (!yadd_are_vh(x, y, map))
@@ -190,9 +189,9 @@ static unsigned char	yadd_are(char o, size_t x, size_t y, t_map *map)
 	return (1);
 }
 
-static unsigned char	ydecode_line_map(t_str *in, t_map *map, size_t y)
+static unsigned char	ydecode_line_map(t_str *in, t_map *map, int y)
 {
-	size_t			x;
+	int				x;
 
 	x = 0;
 	while (x < map->w && yvalid_for_map(in->s[in->p]))
@@ -215,9 +214,9 @@ static unsigned char	ydecode_line_map(t_str *in, t_map *map, size_t y)
 	return (1);
 }
 
-static unsigned char	ydecode_line_pc(t_str *in, t_map *map, size_t y, char o)
+static unsigned char	ydecode_line_pc(t_str *in, t_map *map, int y, char o)
 {
-	size_t			x;
+	int				x;
 
 	x = 0;
 	while (x < map->w && yvalid_for_piece(in->s[in->p]))
@@ -246,7 +245,7 @@ static unsigned char	yignore_prefix(t_str *in)
 
 static unsigned char	ydecode_map(t_str *in, t_map *map)
 {
-	size_t		y;
+	int			y;
 
 	y = 0;
 	while (y < map->h)
@@ -266,7 +265,7 @@ static unsigned char	ydecode_map(t_str *in, t_map *map)
 
 static unsigned char	ymalloc_map(t_map *map)
 {
-	size_t		y;
+	int			y;
 
 	map->m = (t_are**)malloc(sizeof(t_are*) * map->h);
 	if (!map->m)
@@ -289,7 +288,7 @@ static unsigned char	ymalloc_map(t_map *map)
 
 static void				yfree_map(t_map *map)
 {
-	size_t		y;
+	int			y;
 
 	y = 0;
 	while (y < map->h)
@@ -299,7 +298,7 @@ static void				yfree_map(t_map *map)
 
 static unsigned char	ydecode_pc(t_str *in, t_pc *pc, char o)
 {
-	size_t		y;
+	int			y;
 
 	in->p += (pc->map.w + 1) * pc->mic.y;
 	pc->map = (t_map){pc->mac.x + 1 - pc->mic.x, pc->mac.y + 1 - pc->mic.y,
@@ -331,8 +330,8 @@ static void				yinit_mic_mac(t_pc *pc)
 
 static unsigned char	ydecode_crop(t_str *in, t_pc *pc)
 {
-	size_t		y;
-	size_t		x;
+	int			y;
+	int			x;
 	size_t		l;
 
 	l = in->p;
