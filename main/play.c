@@ -6,7 +6,7 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/05 18:39:13 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 19:54:33 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 20:00:12 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,22 @@ static unsigned char	yfind_owned(t_gm *gm)
 	return (1);
 }
 
+void					yreset_pc_pos(t_pc *pc)
+{
+	int			x;
+
+	x = 0;
+	while (x < pc->map.w)
+	{
+		if (pc->map.m[0][x] != '.')
+		{
+			pc->s = {x, 0};
+			return ;
+		}
+		x++;
+	}
+}
+
 void					play(t_gm *gm)
 {
 	//chercher une case de contour du joueur sur la map
@@ -57,11 +73,11 @@ void					play(t_gm *gm)
 		return ;
 	while (ynext_pos(&(gm->me)))
 	{
+		yreset_pc_pos(&(gm->pc));
 		while (ynext_pc_pos(&(gm->pc))
 		{
 			if (ycan_put_piece(&(gm->me), &(gm->pc)))
 				yput_piece(&(gm->pc.s));
 		}
-		yreset_pc_pos(&(gm->pc));
 	}
 }
