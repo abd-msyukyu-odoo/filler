@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 18:07:30 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 18:52:58 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ typedef struct			s_input
 typedef struct			s_ply
 {
 	char				o;
+	t_crd				s;
 }						t_ply;
 
 /*
@@ -123,5 +124,10 @@ void					yfree_turn(t_in in, t_map *map, t_pc *pc);
  * decode_player.c
  */
 unsigned char			ydecode_player(t_in in, t_ply *me, t_ply *en);
+
+/*
+ * play.c
+ */
+void					yplay(t_gm *gm);
 
 #endif

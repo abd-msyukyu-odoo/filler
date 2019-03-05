@@ -6,7 +6,7 @@
 #    By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/10/04 12:40:14 by dabeloos          #+#    #+#              #
-#    Updated: 2019/03/05 17:08:37 by dabeloos         ###   ########.fr        #
+#    Updated: 2019/03/05 18:44:00 by dabeloos         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -150,7 +150,6 @@ UNDERLINE_E	= \033[4m
 
 $(NAME):	$(O_FILES) $(PRINTF_F)
 			@ar -rcs $@ $^
-			@echo "$(GREEN_E)end compilation$(END_E)"
 
 all:		$(NAME)
 
@@ -160,11 +159,9 @@ all:		$(NAME)
 clean:
 			@rm -f $(O_FILES)
 			@rm -f $(PRINTF_F)
-			@echo "$(PURPLE_E)end clean$(END_E)"
 
 fclean:		clean
 			@rm -f $(NAME)
-			@echo "$(RED_E)end fclean$(END_E)"
 
 re:			fclean all
 

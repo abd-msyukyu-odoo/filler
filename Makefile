@@ -6,7 +6,7 @@
 #    By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/03/05 17:21:38 by dabeloos          #+#    #+#              #
-#    Updated: 2019/03/05 17:48:30 by dabeloos         ###   ########.fr        #
+#    Updated: 2019/03/05 18:44:58 by dabeloos         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -62,6 +62,7 @@ clean:
 fclean:		clean
 			@rm -f $(NAME)
 			@make -C libft/ fclean
+			@echo "$(RED_E)end fclean$(END_E)"
 
 re:			fclean all
 
