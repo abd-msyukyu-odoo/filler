@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/04 20:40:56 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 13:55:30 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,12 +190,13 @@ static unsigned char	yadd_are(char o, size_t x, size_t y, t_map *map)
 	return (1);
 }
 
-static unsigned char	ydecode_line(t_str *in, t_map *map, size_t y)
+static unsigned char	ydecode_line(t_str *in, t_map *map, size_t y,
+		unsigned char (*f)(char))
 {
 	size_t			x;
 
 	x = 0;
-	while (x < map->w && yvalid_for_map(in->s[in->p]))
+	while (x < map->w && f(in->s[in->p]))
 	{
 		if (!yadd_are(yc_to_upper(in->s[in->p]), x, y, map))
 		{
@@ -233,7 +234,7 @@ static unsigned char	ydecode_map(t_str *in, t_map *map)
 	{
 		if (!yignore_prefix(in))
 			return (0);
-		if (!ydecode_line(in, map, y))
+		if (!ydecode_line(in, map, y, yvalid_for_map))
 		{
 			if (y > 0)
 				yfree_ares(map, map->w, y);
@@ -277,22 +278,58 @@ static void				yfree_map(t_map *map)
 	free(map->m);
 }
 
-static unsigned char	ymalloc_pc(t_pc *pc)
+static unsigned char	ydecode_pc(t_str *in, t_pc *pc)
 {
 	size_t		y;
 
-	pc->shp = (t_rng*)malloc(sizeof(t_rng) * pc->w * pc->h);
-	if (!pc->shp)
+	in->p += (pc->map.w + 1) * pc->mic.y;
+	pc->map = (t_map){pc->mac.x + 1 - pc->mic.x, pc->mac.y + 1 - pc->mic.y,
+		NULL};
+	if (!ymalloc_map(&(pc->map)))
 		return (0);
-	return (1);
+	y = 0;
+	while (y < pc->map.h)
+	{
+		in->p += pc->mic.x;
+		if (!ydecode_line(in, &(pc->map), y, yvalid_for_piece))
+		{
+			if (y > 0)
+				yfree_ares(&(pc->map), pc->map.w, y);
+			return (0);
+		}
+		while (in->s[in->p++] != '\n')
+			;
+		++y;
+	}
+	return (0);
 }
 
-static unsigned char	ydecode_pc(t_str *in, t_pc *pc)
+static unsigned char	ydecode_crop(t_str *in, t_pc *pc)
 {
-	size_t x;
+	size_t		y;
+	size_t		x;
+	size_t		l;
 
-	x = 0;
-	while (x < pc->w && yvalid_for_piece(
+	l = in->p;
+	y = -1;
+	while (++y < pc->map.h)
+	{
+		x = -1;
+		while (++x < pc->map.w && yvalid_for_piece(in->s[l]))
+		{
+			if (in->s[l] == '*')
+			{
+				pc->mic.x = (x < pc->mic.x) ? x : pc->mic.x;
+				pc->mic.y = (y < pc->mic.y) ? y : pc->mic.y;
+				pc->mac.x = (x > pc->mac.x) ? x : pc->mac.x;
+				pc->mac.y = (y > pc->mac.y) ? y : pc->mac.y;
+			}
+			l++;
+		}
+		if (in->s[l++] != '\n')
+			return (0);
+	}
+	return (1);
 }
 
 unsigned char			ydecode_input(t_str in, t_map *map, t_pc *pc)
@@ -311,25 +348,25 @@ unsigned char			ydecode_input(t_str in, t_map *map, t_pc *pc)
 		return (0);
 	}
 	//+ free ares
-	if (!ydecode_size(&in, &(pc->w), &(pc->h), pi))
+	if (!ydecode_size(&in, &(pc->map.w), &(pc->map.h), pi))
 	{
 		yfree_ares(map, map->w, map->h);
 		yfree_map(map);
 		return (0);
 	}
-	if (pc->w == 0 || pc->h == 0 || !ymalloc_pc(pc))
+	if (pc->map.w == 0 || pc->map.h == 0 || !ydecode_crop(&in, pc))
 	{
 		yfree_ares(map, map->w, map->h);
 		yfree_map(map);
 		return (0);
 	}
-	//+ free pc
 	if (!ydecode_pc(&in, pc))
 	{
+		yfree_ares(&(pc->map), pc->map.w, pc->map.h);
+		yfree_map(&(pc->map));
 		yfree_ares(map, map->w, map->h);
 		yfree_map(map);
-		free(pc->shp);
+		return (0);
 	}
-	
 	return (1);
 }

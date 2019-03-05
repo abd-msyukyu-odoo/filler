@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/04 20:11:32 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 13:12:15 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,12 @@ typedef struct			s_range
 	int					s;
 	int					e;
 }						t_rng;
+
+typedef struct			s_coord
+{
+	int					x;
+	int					y;
+}						t_crd;
 
 /*
 ** v : vertical
@@ -80,15 +86,15 @@ typedef struct			s_ply
 }						t_ply;
 
 /*
- * ofs : offset
- * p : position
+ * map : piece's map
+ * mic : minimum coordinate
+ * mac : maximum coordinate
  */
 typedef struct			s_pc
 {
-	t_rng				ofs;
-	t_rng				*shp;
-	int					w;
-	int					h;
+	t_map				map;
+	t_crd				mic;
+	t_crd				mac;
 }						t_pc;
 
 /*
