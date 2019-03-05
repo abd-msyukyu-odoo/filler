@@ -6,7 +6,7 @@
 #    By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/03/05 17:21:38 by dabeloos          #+#    #+#              #
-#    Updated: 2019/03/05 17:45:49 by dabeloos         ###   ########.fr        #
+#    Updated: 2019/03/05 17:48:30 by dabeloos         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,9 @@ PRINTFHEAD	= ./libft/ft_printf/includes
 
 CHEAD		= ./libft
 
-CTHISHEAD	= ./includes
+THISHEAD	= ./includes
+
+MINILIBXH	= ./minilibx_macos
 
 MAIN_F		= main.o
 
@@ -50,7 +52,7 @@ all:		$(NAME)
 
 %.o:		%.c
 			@$(CC) $(CFLAGS) -c -o $@ $< -I$(CHEAD) -I$(PRINTFHEAD) \
-			-I$(THISHEAD)
+			-I$(THISHEAD) -I$(MINILIBXH)
 
 clean:
 			@rm -f $(O_FILES)
