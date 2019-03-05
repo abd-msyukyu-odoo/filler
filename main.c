@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 14:48:41 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 15:51:38 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,20 +69,18 @@ int				main(void)
 	t_ply				en;
 
 	err = 0;
-	/*
 	if (!(in.s = yread_input()))
 		return (0);
 	in.p = 0;
 	if (!ydecode_player(in, &me, &en))
 		return (0);
 	free(in.s);
-	*/
-	pc.mic = (t_crd){0, 0};
-	pc.mac = (t_crd){0, 0};
+	pc.mic = (t_crd){-1, -1};
+	pc.mac = (t_crd){-1, -1};
 	if (!(in.s = yread_input()))
 		return (0);
 	in.p = 0;
-	if (!ydecode_input(in, &map, &pc))
+	if (!ydecode_input(in, &map, &pc, me.o))
 		return (0);
 	free(in.s);
 	print_map_piece(map, pc);

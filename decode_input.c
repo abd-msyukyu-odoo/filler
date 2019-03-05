@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 14:53:08 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 15:51:03 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,13 +190,12 @@ static unsigned char	yadd_are(char o, size_t x, size_t y, t_map *map)
 	return (1);
 }
 
-static unsigned char	ydecode_line(t_str *in, t_map *map, size_t y,
-		unsigned char (*f)(char))
+static unsigned char	ydecode_line_map(t_str *in, t_map *map, size_t y)
 {
 	size_t			x;
 
 	x = 0;
-	while (x < map->w && f(in->s[in->p]))
+	while (x < map->w && yvalid_for_map(in->s[in->p]))
 	{
 		if (!yadd_are(yc_to_upper(in->s[in->p]), x, y, map))
 		{
@@ -212,6 +211,26 @@ static unsigned char	ydecode_line(t_str *in, t_map *map, size_t y,
 		if (x > 0)
 			yfree_ares(map, x, y + 1);
 		return (0);
+	}
+	return (1);
+}
+
+static unsigned char	ydecode_line_pc(t_str *in, t_map *map, size_t y, char o)
+{
+	size_t			x;
+
+	x = 0;
+	while (x < map->w && yvalid_for_piece(in->s[in->p]))
+	{
+		in->s[in->p] = (in->s[in->p] == '*') ? o : in->s[in->p];
+		if (!yadd_are(in->s[in->p], x, y, map))
+		{
+			if (x > 0)
+				yfree_ares(map, x, x + 1);
+			return (0);
+		}
+		x++;
+		in->p++;
 	}
 	return (1);
 }
@@ -234,7 +253,7 @@ static unsigned char	ydecode_map(t_str *in, t_map *map)
 	{
 		if (!yignore_prefix(in))
 			return (0);
-		if (!ydecode_line(in, map, y, yvalid_for_map))
+		if (!ydecode_line_map(in, map, y))
 		{
 			if (y > 0)
 				yfree_ares(map, map->w, y);
@@ -278,12 +297,11 @@ static void				yfree_map(t_map *map)
 	free(map->m);
 }
 
-static unsigned char	ydecode_pc(t_str *in, t_pc *pc)
+static unsigned char	ydecode_pc(t_str *in, t_pc *pc, char o)
 {
 	size_t		y;
 
 	in->p += (pc->map.w + 1) * pc->mic.y;
-	printf("%lu\n", in->p);
 	pc->map = (t_map){pc->mac.x + 1 - pc->mic.x, pc->mac.y + 1 - pc->mic.y,
 		NULL};
 	if (!ymalloc_map(&(pc->map)))
@@ -292,7 +310,7 @@ static unsigned char	ydecode_pc(t_str *in, t_pc *pc)
 	while (y < pc->map.h)
 	{
 		in->p += pc->mic.x;
-		if (!ydecode_line(in, &(pc->map), y, yvalid_for_piece))
+		if (!ydecode_line_pc(in, &(pc->map), y, o))
 		{
 			if (y > 0)
 				yfree_ares(&(pc->map), pc->map.w, y);
@@ -302,7 +320,7 @@ static unsigned char	ydecode_pc(t_str *in, t_pc *pc)
 			;
 		++y;
 	}
-	return (0);
+	return (1);
 }
 
 static unsigned char	ydecode_crop(t_str *in, t_pc *pc)
@@ -320,10 +338,10 @@ static unsigned char	ydecode_crop(t_str *in, t_pc *pc)
 		{
 			if (in->s[l] == '*')
 			{
-				pc->mic.x = (x < pc->mic.x) ? x : pc->mic.x;
-				pc->mic.y = (y < pc->mic.y) ? y : pc->mic.y;
-				pc->mac.x = (x > pc->mac.x) ? x : pc->mac.x;
-				pc->mac.y = (y > pc->mac.y) ? y : pc->mac.y;
+				pc->mic.x = (pc->mic.x == -1 || x < pc->mic.x) ? x : pc->mic.x;
+				pc->mic.y = (pc->mic.y == -1 || y < pc->mic.y) ? y : pc->mic.y;
+				pc->mac.x = (pc->mac.x == -1 || x > pc->mac.x) ? x : pc->mac.x;
+				pc->mac.y = (pc->mac.y == -1 || y > pc->mac.y) ? y : pc->mac.y;
 			}
 			l++;
 		}
@@ -333,7 +351,7 @@ static unsigned char	ydecode_crop(t_str *in, t_pc *pc)
 	return (1);
 }
 
-unsigned char			ydecode_input(t_str in, t_map *map, t_pc *pc)
+unsigned char			ydecode_input(t_str in, t_map *map, t_pc *pc, char o)
 {
 	static char			*pl = "Plateau ";
 	static char			*pi = "Piece ";
@@ -362,7 +380,7 @@ unsigned char			ydecode_input(t_str in, t_map *map, t_pc *pc)
 		yfree_map(map);
 		return (0);
 	}
-	if (!ydecode_pc(&in, pc))
+	if (!ydecode_pc(&in, pc, o))
 	{
 		yfree_map(&(pc->map));
 		yfree_ares(map, map->w, map->h);

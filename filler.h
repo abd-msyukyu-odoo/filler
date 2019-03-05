@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 14:56:49 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 15:51:57 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <sys/types.h>
 # include <unistd.h>
 # define BUFF_SIZE 50
-# define STD_OUT 0
+# define STD_OUT 1
 
 #include <stdio.h>
 
@@ -105,7 +105,7 @@ char					*yread_input();
 /*
  * decode_input.c
  */
-unsigned char			ydecode_input(t_str in, t_map *map, t_pc *pc);
+unsigned char			ydecode_input(t_str in, t_map *map, t_pc *pc, char o);
 
 /*
  * decode_player.c

@@ -6,6 +6,6 @@ gcc -g -fsanitize=address *.c;
 cd minilibx_macos;
 make clean;
 cd ..;
-cat in | ./a.out
+./a.out
 # rm a.out;
 rm -rf a.out.dSYM
