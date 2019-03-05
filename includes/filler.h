@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 18:52:58 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 19:52:22 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,12 +91,14 @@ typedef struct			s_ply
  * map : piece's map
  * mic : minimum coordinate
  * mac : maximum coordinate
+ * s : first position
  */
 typedef struct			s_pc
 {
 	t_map				map;
 	t_crd				mic;
 	t_crd				mac;
+	t_crd				s;
 }						t_pc;
 
 /*
