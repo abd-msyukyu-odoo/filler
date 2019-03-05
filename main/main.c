@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 17:51:52 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 18:13:42 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,11 @@ void			print_map_piece(t_map map, t_pc pc)
 		x = 0;
 		while (x < map.w)
 		{
-			write(1, &(map.m[y][x].o), 1);
+			ft_printf("%c", map.m[y][x].o);
 			x++;
 		}
 		y++;
-		write(1, "\n", 1);
+		ft_printf("\n");
 	}
 	if (pc.mac.y == 0)
 		return ;
@@ -44,11 +44,11 @@ void			print_map_piece(t_map map, t_pc pc)
 		x = 0;
 		while (x < pc.map.w)
 		{
-			write(1, &(pc.map.m[y][x].o), 1);
+			ft_printf("%c", pc.map.m[y][x].o);
 			x++;
 		}
 		y++;
-		write(1, "\n", 1);
+		ft_printf("\n");
 	}
 }
 
@@ -62,7 +62,7 @@ int				main(void)
 //	win_ptr = mlx_new_window(mlx_ptr, 500, 500, "mlx 42");
 //	mlx_key_hook(win_ptr, yon_release, NULL);
 //	mlx_loop(mlx_ptr);
-	t_str				in;
+	t_in				in;
 	t_gm				gm;
 
 	if (!(in.s = yread_input()))

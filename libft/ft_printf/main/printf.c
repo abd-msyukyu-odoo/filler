@@ -6,7 +6,7 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/21 14:56:39 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/02/25 12:31:36 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 18:10:42 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char			*str_lst_join(t_str *slst, size_t len)
 	head = slst;
 	while (head)
 	{
-		ft_strncpy(cur, (const char*)head->txt, head->len);
+		pf_strncpy(cur, (const char*)head->txt, head->len);
 		cur += head->len;
 		prev = head;
 		head = head->next;

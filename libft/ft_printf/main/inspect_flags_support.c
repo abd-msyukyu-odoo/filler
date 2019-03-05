@@ -6,7 +6,7 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/09 20:21:48 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/02/25 12:31:16 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 18:10:09 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ unsigned char	is_number(char in)
 	return (in >= '0' && in <= '9');
 }
 
-char			*ft_strncpy(char *dst, const char *src, size_t len)
+char			*pf_strncpy(char *dst, const char *src, size_t len)
 {
 	size_t		i;
 

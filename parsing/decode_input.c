@@ -6,13 +6,13 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/05 17:58:19 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 18:06:24 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "filler.h"
 
-static unsigned int		yatoui_limited(t_str *in)
+static unsigned int		yatoui_limited(t_in *in)
 {
 	unsigned int		result;
 	unsigned int		tmp;
@@ -28,7 +28,7 @@ static unsigned int		yatoui_limited(t_str *in)
 	return (result);
 }
 
-static unsigned char	ydecode_size(t_str *in, int *w, int *h, char *ref)
+static unsigned char	ydecode_size(t_in *in, int *w, int *h, char *ref)
 {
 	size_t				p;
 
@@ -59,7 +59,7 @@ static unsigned char	yvalid_for_piece(char c)
 	return (c == '.' || c == '*');
 }
 
-static unsigned char	yignore_line(t_str *in)
+static unsigned char	yignore_line(t_in *in)
 {
 	while (in->s[in->p] != '\0' && in->s[in->p] != '\n')
 		in->p++;
@@ -189,7 +189,7 @@ static unsigned char	yadd_are(char o, int x, int y, t_map *map)
 	return (1);
 }
 
-static unsigned char	ydecode_line_map(t_str *in, t_map *map, int y)
+static unsigned char	ydecode_line_map(t_in *in, t_map *map, int y)
 {
 	int				x;
 
@@ -214,7 +214,7 @@ static unsigned char	ydecode_line_map(t_str *in, t_map *map, int y)
 	return (1);
 }
 
-static unsigned char	ydecode_line_pc(t_str *in, t_map *map, int y, char o)
+static unsigned char	ydecode_line_pc(t_in *in, t_map *map, int y, char o)
 {
 	int				x;
 
@@ -234,7 +234,7 @@ static unsigned char	ydecode_line_pc(t_str *in, t_map *map, int y, char o)
 	return (1);
 }
 
-static unsigned char	yignore_prefix(t_str *in)
+static unsigned char	yignore_prefix(t_in *in)
 {
 	while (in->s[in->p] >= '0' && in->s[in->p] <= '9')
 		in->p++;
@@ -243,7 +243,7 @@ static unsigned char	yignore_prefix(t_str *in)
 	return (1);
 }
 
-static unsigned char	ydecode_map(t_str *in, t_map *map)
+static unsigned char	ydecode_map(t_in *in, t_map *map)
 {
 	int			y;
 
@@ -296,7 +296,7 @@ static void				yfree_map(t_map *map)
 	free(map->m);
 }
 
-static unsigned char	ydecode_pc(t_str *in, t_pc *pc, char o)
+static unsigned char	ydecode_pc(t_in *in, t_pc *pc, char o)
 {
 	int			y;
 
@@ -328,7 +328,7 @@ static void				yinit_mic_mac(t_pc *pc)
 	pc->mac = (t_crd){-1, -1};
 }
 
-static unsigned char	ydecode_crop(t_str *in, t_pc *pc)
+static unsigned char	ydecode_crop(t_in *in, t_pc *pc)
 {
 	int			y;
 	int			x;
@@ -357,7 +357,7 @@ static unsigned char	ydecode_crop(t_str *in, t_pc *pc)
 	return (1);
 }
 
-void					yfree_turn(t_str in, t_map *map, t_pc *pc)
+void					yfree_turn(t_in in, t_map *map, t_pc *pc)
 {
 	yfree_ares(&(pc->map), pc->map.w, pc->map.h);
 	yfree_map(&(pc->map));
@@ -366,7 +366,7 @@ void					yfree_turn(t_str in, t_map *map, t_pc *pc)
 	free(in.s);
 }
 
-unsigned char			ydecode_input(t_str in, t_map *map, t_pc *pc, char o)
+unsigned char			ydecode_input(t_in in, t_map *map, t_pc *pc, char o)
 {
 	if (!ydecode_size(&in, &(map->w), &(map->h), PLATEAU))
 		return (0);

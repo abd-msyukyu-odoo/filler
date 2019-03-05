@@ -6,7 +6,7 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/15 14:17:23 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/02/25 12:36:00 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 18:10:21 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void					init_mrk(t_mrk *m);
 size_t					size_length_modifier(char *in);
 unsigned char			is_flag(char in);
 unsigned char			is_number(char in);
-char					*ft_strncpy(char *dst, const char *src, size_t len);
+char					*pf_strncpy(char *dst, const char *src, size_t len);
 unsigned int			ft_atoui_limited(const char *str);
 
 char					*inspect_flags(char *cur, t_mrk *mrk);

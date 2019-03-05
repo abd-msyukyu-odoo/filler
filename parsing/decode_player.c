@@ -6,13 +6,13 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/04 18:28:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/04 19:03:04 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/05 18:06:32 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "filler.h"
 
-unsigned char			ydecode_player(t_str in, t_ply *me, t_ply *en)
+unsigned char			ydecode_player(t_in in, t_ply *me, t_ply *en)
 {
 	while (in.s[in.p] != '\0' && in.s[in.p] != 'p')
 		in.p++;
