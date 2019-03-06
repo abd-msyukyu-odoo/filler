@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/06 11:48:37 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/06 12:20:06 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,21 +24,21 @@
 # define PLATEAU "Plateau "
 # define PIECE "Piece "
 
+typedef struct			s_coord
+{
+	int					x;
+	int					y;
+}						t_crd;
+
 /*
 ** s : start
 ** e : end
 */
 typedef struct			s_range
 {
-	int					s;
-	int					e;
+	t_crd				s;
+	t_crd				e;
 }						t_rng;
-
-typedef struct			s_coord
-{
-	int					x;
-	int					y;
-}						t_crd;
 
 /*
 ** v : vertical

@@ -1,3 +1,5 @@
 recup le numero de player avant la premiere carte
 
 ajouter la couleur de contact pour les ranges ?
+
+-> les ranges doivent contenir les coordonnees (sans blague)
