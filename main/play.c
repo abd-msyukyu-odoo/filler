@@ -6,7 +6,7 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/05 18:39:13 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/06 13:57:37 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/06 15:56:57 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,12 @@
 
 static unsigned char	yis_coord(t_crd *crd)
 {
-	return (crd->x ! -1 && crd->y != -1);
+	return (crd->x > -1 && crd->y > -1);
+}
+
+static unsigned char	ycoord_equals(t_crd c1, t_crd c2)
+{
+	return (c1->x == c2->x && c1->y == c2->y);
 }
 
 static unsigned char	yrng_v_ho(t_map *map, t_crd in, t_crd *out)
@@ -194,40 +199,44 @@ static unsigned char	yfind_start_positions(t_gm *gm)
 
 static void				yreset_pc_pos(t_pc *pc)
 {
-	
+	pc->hp = (t_crd){0, 0};
+	if (pc->map.m[0][0] == '.')
+		yrng_h_ho(&(pc->map), pc->hp, &(pc->hp));
+	pc->vp = (t_crd){0, 0};
+	if (pc->map.m[0][0] == '.')
+		yrng_v_ho(&(pc->map), pc->vp, &(pc->vp));
 }
 
-static void				yreset_pc_pos(t_pc *pc)
+static void				ynext_hp(char o, t_map *map, t_crd *hp)
 {
-	int			p;
+	t_crd		verif;
 
-	p = 0;
-	while (p < pc->map.w)
+	yrng_h_hi(map, *hp, &verif);
+	if (!ycoord_equals(*hp, verif))
 	{
-		if (pc->map.m[0][p] != '.')
-		{
-			pc->hp = {p, 0};
-			return ;
-		}
-		p++;
+		*hp = verif;
+		return ;
 	}
-	p = 0;
-	while (p < pc->map.h)
-	{
-		if (pc->map.m[p][0] != '.')
-		{
-			pc->vp = {0, p};
+	while (yrng_h_ho(map, *hp, hp))
+		if (map->m[hp->y][hp->x].o == o)
 			return ;
-		}
-		p++;
-	}
+	*hp = (t_crd){-1, -1};
 }
 
-static void				ynext_map_hp(t_ply *ply, t_map *map)
+static void				ynext_vp(char o, t_map *map, t_crd *vp)
 {
-	t_crd		head;
+	t_crd		verif;
 
-	head = 
+	yrng_v_hi(map, *vp, &verif);
+	if (!ycoord_equals(*vp, verif))
+	{
+		*vp = verif;
+		return ;
+	}
+	while (yrng_v_ho(map, *vp, vp))
+		if (map->m[vp->y][vp->x].o == o)
+			return ;
+	*vp = (t_crd){-1, -1};
 }
 
 static unsigned char	ynext_map_pos(t_ply *ply, t_map *map, t_crd *am)
@@ -235,26 +244,58 @@ static unsigned char	ynext_map_pos(t_ply *ply, t_map *map, t_crd *am)
 	if (yis_coord(ply->hp))
 	{
 		*am = ply->hp;
-		ynext_map_hp(t_ply *ply, t_map *map);
+		ynext_hp(ply->o, map, &(ply->hp));
 		return (1);
 	}
 	else if (yis_coord(ply->vp))
 	{
 		*am = ply->vp;
-		ynext_map_vp(t_ply *ply, t_map *map);
+		ynext_vp(ply->o, map, &(ply->vp));
 		return (1);
 	}
 	else
 		return (0);
 }
 
+static unsigned char	ynext_pc_pos(t_ply *ply, t_pc *pc, t_crd &ap)
+{
+	if (yis_coord(pc->hp))
+	{
+		*ap = pc->hp;
+		ynext_hp(ply->o, &(pc->map), &(pc->hp));
+		return (1);
+	}
+	else if (yis_coord(pc->vp))
+	{
+		*ap = pc->vp;
+		ynext_vp(ply->o, &(pc->map), &(pc->hp));
+		return (1);
+	}
+	else
+		return (0);
+}
+
+static unsigned char	yenclosed_piece(t_crd origin, t_pc *pc, t_map *map)
+{
+	return (yis_coord(origin) && origin.x + pc->map.w <= map->w &&
+			origin.y + pc->map.h <= map->h);
+}
+
+static unsigned char	ycan_put_piece(t_crd am, t_crd ap, t_pc *pc, t_map *map)
+{
+	//parcourir chaque range de la piece, la decaler sur la map, verifier que
+	//cette range est incluse dans une range vide, avec une exception pour
+	//la position d'ancrage
+	t_crd		origin;
+
+	origin = (t_crd){am.x - ap.x, am.y - ap.y};
+	if (!yenclosed_piece(origin, pc, map))
+		return (0);
+	
+}
+
 void					yplay(t_gm *gm)
 {
-	//chercher une case de contour du joueur sur la map
-	//chercher une case de contour de la piece (attention debordement)
-	//tester si la piece peut se mettre
-	//a partir d'une piece d'un joueur, on peut facilement trouver toutes les
-	//autres
 	t_crd			am;
 	t_crd			ap;
 
@@ -263,9 +304,9 @@ void					yplay(t_gm *gm)
 	while (ynext_map_pos(&(gm->me), &(gm->map), &am))
 	{
 		yreset_pc_pos(&(gm->pc));
-		while (ynext_pc_pos(&(gm->pc))
+		while (ynext_pc_pos(&(gm->me), &(gm->pc), &ap)
 		{
-			if (ycan_put_piece(&(gm->me), &(gm->pc)))
+			if (ycan_put_piece(am, ap, &(gm->pc), &(gm->map)))
 				yput_piece(&(gm->pc.s));
 		}
 	}
