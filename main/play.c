@@ -6,7 +6,7 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/05 18:39:13 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/06 15:56:57 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/06 16:35:10 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,15 +283,37 @@ static unsigned char	yenclosed_piece(t_crd origin, t_pc *pc, t_map *map)
 
 static unsigned char	ycan_put_piece(t_crd am, t_crd ap, t_pc *pc, t_map *map)
 {
-	//parcourir chaque range de la piece, la decaler sur la map, verifier que
-	//cette range est incluse dans une range vide, avec une exception pour
-	//la position d'ancrage
 	t_crd		origin;
+	t_crd		n;
 
 	origin = (t_crd){am.x - ap.x, am.y - ap.y};
 	if (!yenclosed_piece(origin, pc, map))
 		return (0);
-	
+	n = (t_crd){0, 0};
+	while (n.y < pc->map.h)
+	{
+		while (pc->map[n.y][n.x].o != '.' || yrng_h_ho(&(pc->map), n, &n))
+		{
+			if ()//range at n contains ap
+				//divide range in two and test both
+				//if error -> quit
+			else
+				//test range
+				//if error -> quit
+			if (!yrng_h_ho(&(pc->map), n, &n))
+				break ;
+		}
+		n = (t_crd){n.x, n.y + 1};
+	}
+	return (1);
+}
+
+static void				yput_piece(t_crd am, t_crd ap, t_pc *pc)
+{
+	t_crd		origin;
+
+	origin = (t_crd){am.x - ap.x - pc->mic.x, am.y - ap.y - pc->mic.y};
+	ft_printf("%d %d\n", origin.y, origin.x);
 }
 
 void					yplay(t_gm *gm)
@@ -304,10 +326,13 @@ void					yplay(t_gm *gm)
 	while (ynext_map_pos(&(gm->me), &(gm->map), &am))
 	{
 		yreset_pc_pos(&(gm->pc));
-		while (ynext_pc_pos(&(gm->me), &(gm->pc), &ap)
+		while (ynext_pc_pos(&(gm->me), &(gm->pc), &ap))
 		{
 			if (ycan_put_piece(am, ap, &(gm->pc), &(gm->map)))
-				yput_piece(&(gm->pc.s));
+			{
+				yput_piece(am, ap, &(gm->pc));
+				return ;
+			}
 		}
 	}
 }
