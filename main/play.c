@@ -6,7 +6,7 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/05 18:39:13 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/06 12:17:43 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/06 13:20:44 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,9 +106,115 @@ static void				yreset_pc_pos(t_pc *pc)
 	}
 }
 
+static unsigned char	yrng_v_ho(t_map *map, t_crd in, t_crd *out)
+{
+	*out = (t_crd){map->m[in.y][in.x].v.s.x,
+		map->m[in.y][in.x].v.s.y + map->m[in.y][in.x].v.d};
+	return (out->y < map->h);
+}
+
+static unsigned char	yrng_v_lo(t_map *map, t_crd in, t_crd *out)
+{
+	*out = (t_crd){map->m[in.y][in.x].v.s.x,
+		map->m[in.y][in.x].v.s.y - 1};
+	return (out->y > 0);
+}
+
+static void				yrng_v_hi(t_map *map, t_crd in, t_crd *out)
+{
+	*out = (t_crd){map->m[in.y][in.x].v.s.x,
+		map->m[in.y][in.x].v.s.y + map->m[in.y][in.x].v.d - 1};
+}
+
+static void				yrng_v_li(t_map *map, t_crd in, t_crd *out)
+{
+	*out = (t_crd){map->m[in.y][in.x].v.s.x,
+		map->m[in.y][in.x].v.s.y};
+}
+
+static unsigned char	yrng_h_ho(t_map *map, t_crd in, t_crd *out)
+{
+	*out = (t_crd){map->m[in.y][in.x].h.s.x + map->m[in.y][in.x].h.d,
+		map->m[in.y][in.x].h.s.y};
+	return (out->x < map->w);
+}
+
+static unsigned char	yrng_h_lo(t_map *map, t_crd in, t_crd *out)
+{
+	*out = (t_crd){map->m[in.y][in.x].h.s.x - 1,
+		map->m[in.y][in.x].h.s.y};
+	return (out->x > 0);
+}
+
+static void				yrng_h_hi(t_map *map, t_crd in, t_crd *out)
+{
+	*out = (t_crd){map->m[in.y][in.x].h.s.x + map->m[in.y][in.x].h.d - 1,
+		map->m[in.y][in.x].h.s.y};
+}
+
+static void				yrng_h_li(t_map *map, t_crd in, t_crd *out)
+{
+	*out = (t_crd){map->m[in.y][in.x].h.s.x,
+		map->m[in.y][in.x].h.s.y};
+}
+
+static unsigned char	yrng_b_ho(t_map *map, t_crd in, t_crd *out)
+{
+	*out = (t_crd){map->m[in.y][in.x].b.s.x + map->m[in.y][in.x].b.d,
+		map->m[in.y][in.x].b.s.y + map->m[in.y][in.x].b.d};
+	return (out->x < map->w && out->y < map->h);
+}
+
+static unsigned char	yrng_b_lo(t_map *map, t_crd in, t_crd *out)
+{
+	*out = (t_crd){map->m[in.y][in.x].b.s.x - 1,
+		map->m[in.y][in.x].b.s.y - 1};
+	return (out->x > 0 && out->y > 0);
+}
+
+static void				yrng_b_hi(t_map *map, t_crd in, t_crd *out)
+{
+	*out = (t_crd){map->m[in.y][in.x].b.s.x + map->m[in.y][in.x].b.d - 1,
+		map->m[in.y][in.x].b.s.y + map->m[in.y][in.x].b.d - 1};
+}
+
+static void				yrng_b_li(t_map *map, t_crd in, t_crd *out)
+{
+	*out = (t_crd){map->m[in.y][in.x].b.s.x,
+		map->m[in.y][in.x].b.s.y};
+}
+
+static unsigned char	yrng_s_ho(t_map *map, t_crd in, t_crd *out)
+{
+	*out = (t_crd){map->m[in.y][in.x].s.s.x + map->m[in.y][in.x].s.d,
+		map->m[in.y][in.x].s.s.y - map->m[in.y][in.x].s.d};
+	return (out->x < map->w && out->y > 0);
+}
+
+static unsigned char	yrng_s_lo(t_map *map, t_crd in, t_crd *out)
+{
+	*out = (t_crd){map->m[in.y][in.x].s.s.x - 1,
+		map->m[in.y][in.x].s.s.y + 1};
+	return (out->x > 0 && out->y < map->h);
+}
+
+static void				yrng_s_hi(t_map *map, t_crd in, t_crd *out)
+{
+	*out = (t_crd){map->m[in.y][in.x].s.s.x + map->m[in.y][in.x].s.d - 1,
+		map->m[in.y][in.x].s.s.y - map->m[in.y][in.x].s.d + 1};
+}
+
+static void				yrng_s_li(t_map *map, t_crd in, t_crd *out)
+{
+	*out = (t_crd){map->m[in.y][in.x].s.s.x,
+		map->m[in.y][in.x].s.s.y};
+}
+
 static void				ynext_map_hp(t_ply *ply, t_map *map)
 {
-	
+	t_crd		head;
+
+	head = (t_crd){map->m[ply->hp.y][ply->hp.x].h->
 }
 
 static unsigned char	ynext_map_pos(t_ply *ply, t_map *map, t_crd *am)

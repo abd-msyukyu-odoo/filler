@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/06 12:25:39 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/06 12:34:40 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,10 +111,10 @@ static void				yfree_ares(t_map *map, int x, int y)
 	}
 }
 
-static void				yappend_range(t_rng **dst, t_rng *src, int x, int y)
+static void				yappend_range(t_rng **dst, t_rng *src)
 {
 	*dst = src;
-	(*dst)->e = (t_crd){x, y};
+	(*dst)->d += 1;
 }
 
 static unsigned char	ymalloc_range(t_rng **rng, int x, int y)
@@ -122,7 +122,7 @@ static unsigned char	ymalloc_range(t_rng **rng, int x, int y)
 	if (!(*rng = (t_rng*)malloc(sizeof(t_rng))))
 		return (0);
 	(*rng)->s = (t_crd){x, y};
-	(*rng)->e = (t_crd){x, y};
+	(*rng)->d = 1;
 	return (1);
 }
 
@@ -134,7 +134,7 @@ static unsigned char	yadd_are_vh(int x, int y, t_map *map)
 			return (0);
 	}
 	else
-		yappend_range(&(map->m[y][x].h), map->m[y][x - 1].h, x, y);
+		yappend_range(&(map->m[y][x].h), map->m[y][x - 1].h);
 	if (y == 0)
 	{
 		if (!ymalloc_range(&(map->m[y][x].v), x, y))
@@ -145,7 +145,7 @@ static unsigned char	yadd_are_vh(int x, int y, t_map *map)
 		}
 	}
 	else
-		yappend_range(&(map->m[y][x].v), map->m[y - 1][x].v, x, y);
+		yappend_range(&(map->m[y][x].v), map->m[y - 1][x].v);
 	return (1);
 }
 
@@ -168,14 +168,14 @@ static unsigned char	yadd_are_bs(int x, int y, t_map *map)
 			return (yabort_are_bs(x, y, map));
 	}
 	else
-		yappend_range(&(map->m[y][x].b), map->m[y - 1][x - 1].b, x, y);
+		yappend_range(&(map->m[y][x].b), map->m[y - 1][x - 1].b);
 	if (x == map->w - 1 || y == 0)
 	{
 		if (!ymalloc_range(&(map->m[y][x].s), x, y))
 			return (yabort_are_bs(x, y, map));
 	}
 	else
-		yappend_range(&(map->m[y][x].s), map->m[y - 1][x + 1].s, x, y);
+		yappend_range(&(map->m[y][x].s), map->m[y - 1][x + 1].s);
 	return (1);
 }
 

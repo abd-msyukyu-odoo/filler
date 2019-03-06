@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/06 12:20:06 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/06 12:34:33 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,12 @@ typedef struct			s_coord
 
 /*
 ** s : start
-** e : end
+** d : distance
 */
 typedef struct			s_range
 {
 	t_crd				s;
-	t_crd				e;
+	int					d;
 }						t_rng;
 
 /*
@@ -83,7 +83,7 @@ typedef struct			s_input
  * hp : horizontal position
  * vp : vertical position
  */
-typedef struct			s_ply
+typedef struct			s_player
 {
 	char				o;
 	t_crd				hp;
@@ -97,7 +97,7 @@ typedef struct			s_ply
  * hp : horizeontal position
  * vp : vertical position
  */
-typedef struct			s_pc
+typedef struct			s_piece
 {
 	t_map				map;
 	t_crd				mic;
@@ -108,7 +108,7 @@ typedef struct			s_pc
 
 /*
  */
-typedef struct			s_gm
+typedef struct			s_game_master
 {
 	t_map				map;
 	t_pc				pc;
