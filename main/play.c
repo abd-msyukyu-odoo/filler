@@ -6,7 +6,7 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/05 18:39:13 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/06 16:35:10 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/06 16:57:32 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,106 +24,106 @@ static unsigned char	ycoord_equals(t_crd c1, t_crd c2)
 
 static unsigned char	yrng_v_ho(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].v.s.x,
-		map->m[in.y][in.x].v.s.y + map->m[in.y][in.x].v.d};
+	*out = (t_crd){map->m[in.y][in.x].v->s.x,
+		map->m[in.y][in.x].v->s.y + map->m[in.y][in.x].v.d};
 	return (out->y < map->h);
 }
 
 static unsigned char	yrng_v_lo(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].v.s.x,
-		map->m[in.y][in.x].v.s.y - 1};
+	*out = (t_crd){map->m[in.y][in.x].v->s.x,
+		map->m[in.y][in.x].v->s.y - 1};
 	return (out->y > 0);
 }
 
 static void				yrng_v_hi(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].v.s.x,
-		map->m[in.y][in.x].v.s.y + map->m[in.y][in.x].v.d - 1};
+	*out = (t_crd){map->m[in.y][in.x].v->s.x,
+		map->m[in.y][in.x].v->s.y + map->m[in.y][in.x].v.d - 1};
 }
 
 static void				yrng_v_li(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].v.s.x,
-		map->m[in.y][in.x].v.s.y};
+	*out = (t_crd){map->m[in.y][in.x].v->s.x,
+		map->m[in.y][in.x].v->s.y};
 }
 
 static unsigned char	yrng_h_ho(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].h.s.x + map->m[in.y][in.x].h.d,
-		map->m[in.y][in.x].h.s.y};
+	*out = (t_crd){map->m[in.y][in.x].h->s.x + map->m[in.y][in.x].h.d,
+		map->m[in.y][in.x].h->s.y};
 	return (out->x < map->w);
 }
 
 static unsigned char	yrng_h_lo(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].h.s.x - 1,
-		map->m[in.y][in.x].h.s.y};
+	*out = (t_crd){map->m[in.y][in.x].h->s.x - 1,
+		map->m[in.y][in.x].h->s.y};
 	return (out->x > 0);
 }
 
 static void				yrng_h_hi(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].h.s.x + map->m[in.y][in.x].h.d - 1,
-		map->m[in.y][in.x].h.s.y};
+	*out = (t_crd){map->m[in.y][in.x].h->s.x + map->m[in.y][in.x].h.d - 1,
+		map->m[in.y][in.x].h->s.y};
 }
 
 static void				yrng_h_li(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].h.s.x,
-		map->m[in.y][in.x].h.s.y};
+	*out = (t_crd){map->m[in.y][in.x].h->s.x,
+		map->m[in.y][in.x].h->s.y};
 }
 
 static unsigned char	yrng_b_ho(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].b.s.x + map->m[in.y][in.x].b.d,
-		map->m[in.y][in.x].b.s.y + map->m[in.y][in.x].b.d};
+	*out = (t_crd){map->m[in.y][in.x].b->s.x + map->m[in.y][in.x].b.d,
+		map->m[in.y][in.x].b->s.y + map->m[in.y][in.x].b.d};
 	return (out->x < map->w && out->y < map->h);
 }
 
 static unsigned char	yrng_b_lo(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].b.s.x - 1,
-		map->m[in.y][in.x].b.s.y - 1};
+	*out = (t_crd){map->m[in.y][in.x].b->s.x - 1,
+		map->m[in.y][in.x].b->s.y - 1};
 	return (out->x > 0 && out->y > 0);
 }
 
 static void				yrng_b_hi(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].b.s.x + map->m[in.y][in.x].b.d - 1,
-		map->m[in.y][in.x].b.s.y + map->m[in.y][in.x].b.d - 1};
+	*out = (t_crd){map->m[in.y][in.x].b->s.x + map->m[in.y][in.x].b.d - 1,
+		map->m[in.y][in.x].b->s.y + map->m[in.y][in.x].b.d - 1};
 }
 
 static void				yrng_b_li(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].b.s.x,
-		map->m[in.y][in.x].b.s.y};
+	*out = (t_crd){map->m[in.y][in.x].b->s.x,
+		map->m[in.y][in.x].b->s.y};
 }
 
 static unsigned char	yrng_s_ho(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].s.s.x + map->m[in.y][in.x].s.d,
-		map->m[in.y][in.x].s.s.y - map->m[in.y][in.x].s.d};
+	*out = (t_crd){map->m[in.y][in.x].s->s.x + map->m[in.y][in.x].s->d,
+		map->m[in.y][in.x].s->s.y - map->m[in.y][in.x].s->d};
 	return (out->x < map->w && out->y > 0);
 }
 
 static unsigned char	yrng_s_lo(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].s.s.x - 1,
-		map->m[in.y][in.x].s.s.y + 1};
+	*out = (t_crd){map->m[in.y][in.x].s->s.x - 1,
+		map->m[in.y][in.x].s->s.y + 1};
 	return (out->x > 0 && out->y < map->h);
 }
 
 static void				yrng_s_hi(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].s.s.x + map->m[in.y][in.x].s.d - 1,
-		map->m[in.y][in.x].s.s.y - map->m[in.y][in.x].s.d + 1};
+	*out = (t_crd){map->m[in.y][in.x].s->s.x + map->m[in.y][in.x].s->d - 1,
+		map->m[in.y][in.x].s->s.y - map->m[in.y][in.x].s->d + 1};
 }
 
 static void				yrng_s_li(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].s.s.x,
-		map->m[in.y][in.x].s.s.y};
+	*out = (t_crd){map->m[in.y][in.x].s->s.x,
+		map->m[in.y][in.x].s->s.y};
 }
 
 static unsigned char	yidentify_pos_vp(t_gm *gm, t_crd in)
@@ -281,6 +281,16 @@ static unsigned char	yenclosed_piece(t_crd origin, t_pc *pc, t_map *map)
 			origin.y + pc->map.h <= map->h);
 }
 
+static unsigned char	ytest_range(t_crd n, t_pc *pc, t_map *map)
+{
+
+}
+
+static unsigned char	ycut_ranges(t_crd n, t_crd ap, t_pc *pc, t_map *map)
+{
+
+}
+
 static unsigned char	ycan_put_piece(t_crd am, t_crd ap, t_pc *pc, t_map *map)
 {
 	t_crd		origin;
@@ -294,12 +304,12 @@ static unsigned char	ycan_put_piece(t_crd am, t_crd ap, t_pc *pc, t_map *map)
 	{
 		while (pc->map[n.y][n.x].o != '.' || yrng_h_ho(&(pc->map), n, &n))
 		{
-			if ()//range at n contains ap
-				//divide range in two and test both
-				//if error -> quit
-			else
-				//test range
-				//if error -> quit
+			if (n.y == ap.y && pc->map[n.y][n.x].h->s.x <= ap.x &&
+				pc->map[n.y][n.x].h->s.x + pc->map[n.y][n.x].h->d > ap.x &&
+				!ycut_ranges(n, ap, pc, map))
+				return (0);
+			else if (!ytest_range(n, pc, map))
+				return (0);
 			if (!yrng_h_ho(&(pc->map), n, &n))
 				break ;
 		}
