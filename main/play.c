@@ -6,7 +6,7 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/05 18:39:13 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/06 13:50:05 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/06 13:57:37 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,6 +190,11 @@ static unsigned char	yfind_start_hp(t_gm *gm)
 static unsigned char	yfind_start_positions(t_gm *gm)
 {
 	return (yfind_start_hp(gm) && yfind_start_vp(gm));
+}
+
+static void				yreset_pc_pos(t_pc *pc)
+{
+	
 }
 
 static void				yreset_pc_pos(t_pc *pc)
