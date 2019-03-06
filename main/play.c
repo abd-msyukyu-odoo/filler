@@ -6,7 +6,7 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/05 18:39:13 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/06 16:59:11 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/06 17:02:08 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,7 +283,7 @@ static unsigned char	yenclosed_piece(t_crd origin, t_pc *pc, t_map *map)
 
 static unsigned char	ytest_range(t_crd n, t_pc *pc, t_map *map)
 {
-
+	//besoin de origin
 }
 
 static unsigned char	ycut_ranges(t_crd n, t_crd ap, t_pc *pc, t_map *map)
