@@ -1,3 +1,5 @@
 #abanlin.filler      carli.filler        champely.filler     grati.filler        hcao.filler         superjeannot.filler
 #map00 map01 map02
-./filler_vm -p1 players/abanlin.filler -p2 players/carli.filler -v -f maps/map04
+#./filler_vm -p1 players/abanlin.filler -p2 players/carli.filler -v -f maps/map04
+./filler_vm -p1 ../fillerminator -p2 ../fillerminator -v -f maps/map01
+rm filler.trace

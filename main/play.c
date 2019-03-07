@@ -6,7 +6,7 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/05 18:39:13 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/07 14:56:36 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/07 15:30:28 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ static unsigned char	yrng_h_ho(t_map *map, t_crd in, t_crd *out)
 {
 	*out = (t_crd){map->m[in.y][in.x].h->s.x + map->m[in.y][in.x].h->d,
 		map->m[in.y][in.x].h->s.y};
+	ft_printf("%d %d\n", out->x, out->y); //ici
 	return (out->x < map->w);
 }
 

@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/07 14:47:53 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/07 15:36:22 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,14 +128,14 @@ static unsigned char	ymalloc_range(t_rng **rng, int x, int y)
 
 static unsigned char	yadd_are_vh(int x, int y, t_map *map)
 {
-	if (x == 0)
+	if (x == 0 || map->m[y][x].o != map->m[y][x - 1].o)
 	{
 		if (!ymalloc_range(&(map->m[y][x].h), x, y))
 			return (0);
 	}
 	else
 		yappend_range(&(map->m[y][x].h), map->m[y][x - 1].h);
-	if (y == 0)
+	if (y == 0 || map->m[y][x].o != map->m[y - 1][x].o)
 	{
 		if (!ymalloc_range(&(map->m[y][x].v), x, y))
 		{
@@ -162,14 +162,14 @@ static unsigned char	yabort_are_bs(int x, int y, t_map *map)
 
 static unsigned char	yadd_are_bs(int x, int y, t_map *map)
 {
-	if (x == 0 || y == 0)
+	if (x == 0 || y == 0 || map->m[y][x].o != map->m[y - 1][x - 1].o)
 	{
 		if (!ymalloc_range(&(map->m[y][x].b), x, y))
 			return (yabort_are_bs(x, y, map));
 	}
 	else
 		yappend_range(&(map->m[y][x].b), map->m[y - 1][x - 1].b);
-	if (x == map->w - 1 || y == 0)
+	if (x == map->w - 1 || y == 0 || map->m[y][x].o != map->m[y - 1][x + 1].o)
 	{
 		if (!ymalloc_range(&(map->m[y][x].s), x, y))
 			return (yabort_are_bs(x, y, map));
