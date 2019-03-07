@@ -6,13 +6,13 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/07 15:36:22 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/07 19:50:24 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "filler.h"
 
-static unsigned int		yatoui_limited(t_in *in)
+unsigned int		yatoui_limited(t_in *in)
 {
 	unsigned int		result;
 	unsigned int		tmp;
