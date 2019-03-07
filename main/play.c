@@ -6,7 +6,7 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/05 18:39:13 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/06 17:02:08 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/07 14:44:45 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,9 +131,11 @@ static void				yrng_s_li(t_map *map, t_crd in, t_crd *out)
 
 static unsigned char	yidentify_pos_vp(t_gm *gm, t_crd in)
 {
-	if (!yis_coord(gm->en.vp, &(gm->map)) && gm->map.m[in.y][in.x].o == gm->en.o)
+	if (!yis_coord(gm->en.vp, &(gm->map)) &&
+			gm->map.m[in.y][in.x].o == gm->en.o)
 		gm->en.vp = in;
-	else if (!yis_coord(gm->me.vp, &(gm->map)) && gm->map.m[in.y][in.x].o == gm->me.o)
+	else if (!yis_coord(gm->me.vp, &(gm->map)) &&
+			gm->map.m[in.y][in.x].o == gm->me.o)
 		gm->me.vp = in;
 	if (yis_coord(gm->en.vp, &(gm->map)) && yis_coord(gm->me.vp, &(gm->map)))
 		return (1);
@@ -164,9 +166,11 @@ static unsigned char	yfind_start_vp(t_gm *gm)
 
 static unsigned char	yidentify_pos_hp(t_gm *gm, t_crd in)
 {
-	if (!yis_coord(gm->en.hp, &(gm->map)) && gm->map.m[in.y][in.x].o == gm->en.o)
+	if (!yis_coord(gm->en.hp, &(gm->map)) &&
+			gm->map.m[in.y][in.x].o == gm->en.o)
 		gm->en.hp = in;
-	else if (!yis_coord(gm->me.hp, &(gm->map)) && gm->map.m[in.y][in.x].o == gm->me.o)
+	else if (!yis_coord(gm->me.hp, &(gm->map)) &&
+			gm->map.m[in.y][in.x].o == gm->me.o)
 		gm->me.hp = in;
 	if (yis_coord(gm->en.hp, &(gm->map)) && yis_coord(gm->me.hp, &(gm->map)))
 		return (1);
@@ -242,17 +246,17 @@ static void				ynext_vp(char o, t_map *map, t_crd *vp)
 	*vp = (t_crd){-1, -1};
 }
 
-static unsigned char	ynext_map_pos(t_ply *ply, t_map *map, t_crd *am)
+static unsigned char	ynext_map_pos(t_ply *ply, t_map *map)
 {
 	if (yis_coord(ply->hp, map))
 	{
-		*am = ply->hp;
+		map->a = ply->hp;
 		ynext_hp(ply->o, map, &(ply->hp));
 		return (1);
 	}
 	else if (yis_coord(ply->vp, map))
 	{
-		*am = ply->vp;
+		map->a = ply->vp;
 		ynext_vp(ply->o, map, &(ply->vp));
 		return (1);
 	}
@@ -260,17 +264,17 @@ static unsigned char	ynext_map_pos(t_ply *ply, t_map *map, t_crd *am)
 		return (0);
 }
 
-static unsigned char	ynext_pc_pos(t_ply *ply, t_pc *pc, t_crd &ap)
+static unsigned char	ynext_pc_pos(t_ply *ply, t_pc *pc)
 {
 	if (yis_coord(pc->hp, &(pc->map)))
 	{
-		*ap = pc->hp;
+		pc->map.a = pc->hp;
 		ynext_hp(ply->o, &(pc->map), &(pc->hp));
 		return (1);
 	}
 	else if (yis_coord(pc->vp, &(pc->map)))
 	{
-		*ap = pc->vp;
+		pc->map.a = pc->vp;
 		ynext_vp(ply->o, &(pc->map), &(pc->hp));
 		return (1);
 	}
@@ -278,41 +282,54 @@ static unsigned char	ynext_pc_pos(t_ply *ply, t_pc *pc, t_crd &ap)
 		return (0);
 }
 
-static unsigned char	yenclosed_piece(t_crd am, t_crd ap, t_pc *pc, t_map *map)
+static unsigned char	yenclosed_piece(t_crd origin, t_pc *pc, t_map *map)
 {
-	t_crd		origin;
-
-	origin = (t_crd){am.x - ap.x, am.y - ap.y};
 	return (yis_coord(origin, map) && origin.x + pc->map.w <= map->w &&
 			origin.y + pc->map.h <= map->h);
 }
 
-static unsigned char	ytest_range(t_crd n, t_pc *pc, t_map *map)
+static unsigned char	ytest_range(t_crd n, t_crd origin, t_pc *pc, t_map *map)
 {
-	//besoin de origin
+	t_crd		srng;
+	t_crd		erng;
+	t_crd		en;
+
+	srng = (t_crd){origin.x + n.x, origin.y + n.y};
+	if (!yis_coord(&srng, map) || map->m[srng.y][srng.x].o != '.')
+		return (0);
+	yrng_h_hi(map, srng, &erng);
+	yrng_h_hi(&(pc->map), n, &en);
+	return (en.y <= erng.y);
 }
 
-static unsigned char	ycut_ranges(t_crd n, t_crd ap, t_pc *pc, t_map *map)
+static unsigned char	ycut_ranges(t_crd n, t_crd origin, t_pc *pc, t_map *map)
 {
+	t_crd		n2;
 
+	n2 = (t_crd){pc->map.a.x + 1, pc->map.a.y};
+	return (ytest_range(n, origin, pc, map) &&
+			ytest_range(n2, origin, pc, map));
 }
 
-static unsigned char	ycan_put_piece(t_crd am, t_crd ap, t_pc *pc, t_map *map)
+static unsigned char	ycan_put_piece(t_pc *pc, t_map *map)
 {
 	t_crd		n;
+	t_crd		origin;
 
-	if (!yenclosed_piece(am, ap, pc, map))
+	origin = (t_crd){map->a.x - pc->map.a.x, map->a.y - pc->map.a.y};
+	if (!yenclosed_piece(origin, pc, map))
 		return (0);
 	n = (t_crd){0, 0};
 	while (n.y < pc->map.h)
 	{
 		while (pc->map[n.y][n.x].o != '.' || yrng_h_ho(&(pc->map), n, &n))
 		{
-			if (n.y == ap.y && pc->map[n.y][n.x].h->s.x <= ap.x &&
-				pc->map[n.y][n.x].h->s.x + pc->map[n.y][n.x].h->d > ap.x &&
-				!ycut_ranges(n, ap, pc, map))
+			if (n.y == pc->map.a.y && pc->map[n.y][n.x].h->s.x <= pc->map.a.x &&
+				pc->map[n.y][n.x].h->s.x +
+				pc->map[n.y][n.x].h->d > pc->map.a.x &&
+				!ycut_ranges(n, origin, pc, map))
 				return (0);
-			else if (!ytest_range(n, pc, map))
+			else if (!ytest_range(n, origin, pc, map))
 				return (0);
 			if (!yrng_h_ho(&(pc->map), n, &n))
 				break ;
@@ -322,29 +339,27 @@ static unsigned char	ycan_put_piece(t_crd am, t_crd ap, t_pc *pc, t_map *map)
 	return (1);
 }
 
-static void				yput_piece(t_crd am, t_crd ap, t_pc *pc)
+static void				yput_piece(t_map *map, t_pc *pc)
 {
 	t_crd		origin;
 
-	origin = (t_crd){am.x - ap.x - pc->mic.x, am.y - ap.y - pc->mic.y};
+	origin = (t_crd){map->a.x - pc->map.a.x - pc->mic.x,
+		map->a.y - pc->map.a.y - pc->mic.y};
 	ft_printf("%d %d\n", origin.y, origin.x);
 }
 
 void					yplay(t_gm *gm)
 {
-	t_crd			am;
-	t_crd			ap;
-
 	if (!yfind_start_positions(gm))
 		return ;
-	while (ynext_map_pos(&(gm->me), &(gm->map), &am))
+	while (ynext_map_pos(&(gm->me), &(gm->map)))
 	{
 		yreset_pc_pos(&(gm->pc));
-		while (ynext_pc_pos(&(gm->me), &(gm->pc), &ap))
+		while (ynext_pc_pos(&(gm->me), &(gm->pc)))
 		{
-			if (ycan_put_piece(am, ap, &(gm->pc), &(gm->map)))
+			if (ycan_put_piece(&(gm->pc), &(gm->map)))
 			{
-				yput_piece(am, ap, &(gm->pc));
+				yput_piece(&(gm->map), &(gm->pc));
 				return ;
 			}
 		}

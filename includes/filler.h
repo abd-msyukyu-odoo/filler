@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/06 15:46:20 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/07 14:10:28 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,14 @@ typedef struct			s_are
 ** w : width
 ** h : height
 ** m : map
+** a : anchor
 */
 typedef struct			s_map
 {
 	int					w;
 	int					h;
 	t_are				**m;
+	t_crd				a;
 }						t_map;
 
 /*
@@ -96,6 +98,7 @@ typedef struct			s_player
  * mac : maximum coordinate
  * hp : horizeontal position
  * vp : vertical position
+ * a : anchor
  */
 typedef struct			s_piece
 {
