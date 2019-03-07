@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/07 14:10:28 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/07 18:49:04 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <sys/types.h>
 # include <unistd.h>
 # define BUFF_SIZE 50
-# define STD_OUT 1
+# define STD_OUT 0
 # define PLATEAU "Plateau "
 # define PIECE "Piece "
 

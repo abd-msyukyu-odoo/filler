@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/07 15:18:26 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/07 18:46:38 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ int				main(void)
 		//print_map_piece(gm.map, gm.pc);
 		yplay(&gm);
 		yfree_turn(in, &gm.map, &gm.pc);
-		break ;
 	}
 	return (0);
 }

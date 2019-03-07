@@ -6,7 +6,7 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/05 18:39:13 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/07 17:02:30 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/07 18:43:19 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -314,21 +314,41 @@ static unsigned char	ytest_range(t_crd n, t_crd origin, t_pc *pc, t_map *map)
 
 	srng = (t_crd){origin.x + n.x, origin.y + n.y};
 	if (!yis_coord(srng, map) || map->m[srng.y][srng.x].o != '.')
+	{
+		ft_printf("origin : %d %d\n", origin.x, origin.y);
+		ft_printf("srng : %d %d\n", srng.x, srng.y);
+		ft_printf("o : %c\n", map->m[srng.y][srng.x].o);
 		return (0);
+	}
 	yrng_h_hi(map, srng, &erng);
 	yrng_h_hi(&(pc->map), n, &en);
-	return (en.y <= erng.y);
+	return (en.y + origin.y <= erng.y);
 }
 
 static unsigned char	ycut_ranges(t_crd n, t_crd origin, t_pc *pc, t_map *map)
 {
 	t_crd		n2;
+	t_crd		srng;
+	t_crd		erng;
 
+	srng = (t_crd){origin.x + n.x, origin.y + n.y};
+	erng = (t_crd){origin.x + pc->map.a.x - 1, origin.y + pc->map.a.y};
+	if (!yis_coord(srng, map) || !yis_coord(erng, map) ||
+		map->m[srng.y][srng.x].o != '.' ||
+		map->m[srng.y][srng.x].h != map->m[erng.y][erng.x].h)
+		return (0);
 	n2 = (t_crd){pc->map.a.x + 1, pc->map.a.y};
-	return (ytest_range(n, origin, pc, map) &&
-			ytest_range(n2, origin, pc, map));
-}//probleme ici : il ne faut pas tester la range de n jusqu'au bout, vu qu'on
-//veut ignorer la position d'ancrage
+	return (ytest_range(n2, origin, pc, map));
+}
+
+static unsigned char	ytest_anchor_range(t_crd n, t_crd origin, t_pc *pc,
+		t_map *map)
+{
+	n = (t_crd){n.x + 1, n.y};
+	if (yis_coord(n, &(pc->map)) && pc->map.m[n.y][n.x].o != '.')
+		return (ytest_range(n, origin, pc, map));
+	return (1);
+}
 
 static unsigned char	ycan_put_piece(t_pc *pc, t_map *map)
 {
@@ -343,10 +363,15 @@ static unsigned char	ycan_put_piece(t_pc *pc, t_map *map)
 	{
 		while (pc->map.m[n.y][n.x].o != '.' || yrng_h_ho(&(pc->map), n, &n))
 		{
-			if (n.y == pc->map.a.y &&
-				pc->map.m[n.y][n.x].h->s.x <= pc->map.a.x &&
+			if (ycoord_equals(n, pc->map.a))
+			{
+				if (!ytest_anchor_range(n, origin, pc, map))
+					return (0);
+			}
+			else if (n.y == pc->map.a.y &&
+				pc->map.m[n.y][n.x].h->s.x < pc->map.a.x &&
 				pc->map.m[n.y][n.x].h->s.x +
-				pc->map.m[n.y][n.x].h->d > pc->map.a.x &&
+				pc->map.m[n.y][n.x].h->d - 1 > pc->map.a.x &&
 				!ycut_ranges(n, origin, pc, map))
 				return (0);
 			else if (!ytest_range(n, origin, pc, map))
@@ -375,17 +400,13 @@ void					yplay(t_gm *gm)
 	while (ynext_map_pos(&(gm->me), &(gm->map)))
 	{
 		yreset_pc_pos(&(gm->pc));
-		ft_printf("on map : %d %d\n", gm->map.a.x, gm->map.a.y);//ici
 		while (ynext_pc_pos(&(gm->me), &(gm->pc)))
 		{
-			ft_printf("on piece : %d %d\n", gm->pc.map.a.x, gm->pc.map.a.y);//ici
 			if (ycan_put_piece(&(gm->pc), &(gm->map)))
 			{
-				ft_printf("can put piece\n");//ici
 				yput_piece(&(gm->map), &(gm->pc));
 				return ;
 			}
-			ft_printf("cannot put piece\n");//ici
 		}
 	}
 }
