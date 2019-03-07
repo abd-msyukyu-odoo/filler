@@ -6,7 +6,7 @@
 #    By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/03/05 17:21:38 by dabeloos          #+#    #+#              #
-#    Updated: 2019/03/07 14:58:34 by dabeloos         ###   ########.fr        #
+#    Updated: 2019/03/07 15:57:41 by dabeloos         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,7 +46,7 @@ UNDERLINE_E	= \033[4m
 
 $(NAME):	$(O_FILES)
 			@make -C libft/
-			@gcc -o $(NAME) $(O_FILES) -L./libft/ -lft
+			@gcc -o $(NAME) $(O_FILES) -g -fsanitize=address -L./libft/ -lft
 			@echo "$(GREEN_E)end compilation$(END_E)"
 
 all:		$(NAME)

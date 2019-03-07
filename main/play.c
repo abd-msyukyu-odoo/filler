@@ -6,7 +6,7 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/05 18:39:13 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/07 15:30:28 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/07 17:02:30 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ static unsigned char	yrng_h_ho(t_map *map, t_crd in, t_crd *out)
 {
 	*out = (t_crd){map->m[in.y][in.x].h->s.x + map->m[in.y][in.x].h->d,
 		map->m[in.y][in.x].h->s.y};
-	ft_printf("%d %d\n", out->x, out->y); //ici
 	return (out->x < map->w);
 }
 
@@ -228,6 +227,15 @@ static void				ynext_hp(char o, t_map *map, t_crd *hp)
 	while (yrng_h_ho(map, *hp, hp))
 		if (map->m[hp->y][hp->x].o == o)
 			return ;
+	*hp = (t_crd){0, (*hp).y + 1};
+	if (yis_coord(*hp, map))
+	{
+		if (map->m[hp->y][hp->x].o == o)
+			return ;
+		while (yrng_h_ho(map, *hp, hp))
+			if (map->m[hp->y][hp->x].o == o)
+				return ;
+	}
 	*hp = (t_crd){-1, -1};
 }
 
@@ -244,6 +252,15 @@ static void				ynext_vp(char o, t_map *map, t_crd *vp)
 	while (yrng_v_ho(map, *vp, vp))
 		if (map->m[vp->y][vp->x].o == o)
 			return ;
+	*vp = (t_crd){(*vp).x + 1, 0};
+	if (yis_coord(*vp, map))
+	{
+		if (map->m[vp->y][vp->x].o == o)
+			return ;
+		while (yrng_v_ho(map, *vp, vp))
+			if (map->m[vp->y][vp->x].o == o)
+				return ;
+	}
 	*vp = (t_crd){-1, -1};
 }
 
@@ -276,7 +293,7 @@ static unsigned char	ynext_pc_pos(t_ply *ply, t_pc *pc)
 	else if (yis_coord(pc->vp, &(pc->map)))
 	{
 		pc->map.a = pc->vp;
-		ynext_vp(ply->o, &(pc->map), &(pc->hp));
+		ynext_vp(ply->o, &(pc->map), &(pc->vp));
 		return (1);
 	}
 	else
@@ -310,7 +327,8 @@ static unsigned char	ycut_ranges(t_crd n, t_crd origin, t_pc *pc, t_map *map)
 	n2 = (t_crd){pc->map.a.x + 1, pc->map.a.y};
 	return (ytest_range(n, origin, pc, map) &&
 			ytest_range(n2, origin, pc, map));
-}
+}//probleme ici : il ne faut pas tester la range de n jusqu'au bout, vu qu'on
+//veut ignorer la position d'ancrage
 
 static unsigned char	ycan_put_piece(t_pc *pc, t_map *map)
 {
@@ -336,7 +354,7 @@ static unsigned char	ycan_put_piece(t_pc *pc, t_map *map)
 			if (!yrng_h_ho(&(pc->map), n, &n))
 				break ;
 		}
-		n = (t_crd){n.x, n.y + 1};
+		n = (t_crd){0, n.y + 1};
 	}
 	return (1);
 }
@@ -357,13 +375,17 @@ void					yplay(t_gm *gm)
 	while (ynext_map_pos(&(gm->me), &(gm->map)))
 	{
 		yreset_pc_pos(&(gm->pc));
+		ft_printf("on map : %d %d\n", gm->map.a.x, gm->map.a.y);//ici
 		while (ynext_pc_pos(&(gm->me), &(gm->pc)))
 		{
+			ft_printf("on piece : %d %d\n", gm->pc.map.a.x, gm->pc.map.a.y);//ici
 			if (ycan_put_piece(&(gm->pc), &(gm->map)))
 			{
+				ft_printf("can put piece\n");//ici
 				yput_piece(&(gm->map), &(gm->pc));
 				return ;
 			}
+			ft_printf("cannot put piece\n");//ici
 		}
 	}
 }
