@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/06 12:34:40 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/07 14:47:53 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,7 +302,7 @@ static unsigned char	ydecode_pc(t_in *in, t_pc *pc, char o)
 
 	in->p += (pc->map.w + 1) * pc->mic.y;
 	pc->map = (t_map){pc->mac.x + 1 - pc->mic.x, pc->mac.y + 1 - pc->mic.y,
-		NULL};
+		NULL, (t_crd){-1, -1}};
 	if (!ymalloc_map(&(pc->map)))
 		return (0);
 	y = 0;

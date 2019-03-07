@@ -6,7 +6,7 @@
 #    By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/03/05 17:21:38 by dabeloos          #+#    #+#              #
-#    Updated: 2019/03/05 18:44:58 by dabeloos         ###   ########.fr        #
+#    Updated: 2019/03/07 14:49:24 by dabeloos         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,8 @@ THISHEAD	= ./includes
 
 MINILIBXH	= ./minilibx_macos
 
-MAIN_F		= main.o
+MAIN_F		= main.o \
+			  play.o
 
 PARSING_F	= decode_input.o \
 			  decode_player.o \
