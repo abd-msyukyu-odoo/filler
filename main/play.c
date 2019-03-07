@@ -6,29 +6,29 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/05 18:39:13 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/07 14:44:45 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/07 14:56:36 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "filler.h"
 
-static unsigned char	yis_coord(t_crd *crd, t_map *map)
+static unsigned char	yis_coord(t_crd crd, t_map *map)
 {
 	if (!map)
-		return (crd->x > -1 && crd->y > -1);
-	return (crd->x > -1 && crd->y > -1 && crd->x < map->w &&
-			crd->y < map->h);
+		return (crd.x > -1 && crd.y > -1);
+	return (crd.x > -1 && crd.y > -1 && crd.x < map->w &&
+			crd.y < map->h);
 }
 
 static unsigned char	ycoord_equals(t_crd c1, t_crd c2)
 {
-	return (c1->x == c2->x && c1->y == c2->y);
+	return (c1.x == c2.x && c1.y == c2.y);
 }
 
 static unsigned char	yrng_v_ho(t_map *map, t_crd in, t_crd *out)
 {
 	*out = (t_crd){map->m[in.y][in.x].v->s.x,
-		map->m[in.y][in.x].v->s.y + map->m[in.y][in.x].v.d};
+		map->m[in.y][in.x].v->s.y + map->m[in.y][in.x].v->d};
 	return (out->y < map->h);
 }
 
@@ -42,7 +42,7 @@ static unsigned char	yrng_v_lo(t_map *map, t_crd in, t_crd *out)
 static void				yrng_v_hi(t_map *map, t_crd in, t_crd *out)
 {
 	*out = (t_crd){map->m[in.y][in.x].v->s.x,
-		map->m[in.y][in.x].v->s.y + map->m[in.y][in.x].v.d - 1};
+		map->m[in.y][in.x].v->s.y + map->m[in.y][in.x].v->d - 1};
 }
 
 static void				yrng_v_li(t_map *map, t_crd in, t_crd *out)
@@ -53,7 +53,7 @@ static void				yrng_v_li(t_map *map, t_crd in, t_crd *out)
 
 static unsigned char	yrng_h_ho(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].h->s.x + map->m[in.y][in.x].h.d,
+	*out = (t_crd){map->m[in.y][in.x].h->s.x + map->m[in.y][in.x].h->d,
 		map->m[in.y][in.x].h->s.y};
 	return (out->x < map->w);
 }
@@ -67,7 +67,7 @@ static unsigned char	yrng_h_lo(t_map *map, t_crd in, t_crd *out)
 
 static void				yrng_h_hi(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].h->s.x + map->m[in.y][in.x].h.d - 1,
+	*out = (t_crd){map->m[in.y][in.x].h->s.x + map->m[in.y][in.x].h->d - 1,
 		map->m[in.y][in.x].h->s.y};
 }
 
@@ -79,8 +79,8 @@ static void				yrng_h_li(t_map *map, t_crd in, t_crd *out)
 
 static unsigned char	yrng_b_ho(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].b->s.x + map->m[in.y][in.x].b.d,
-		map->m[in.y][in.x].b->s.y + map->m[in.y][in.x].b.d};
+	*out = (t_crd){map->m[in.y][in.x].b->s.x + map->m[in.y][in.x].b->d,
+		map->m[in.y][in.x].b->s.y + map->m[in.y][in.x].b->d};
 	return (out->x < map->w && out->y < map->h);
 }
 
@@ -93,8 +93,8 @@ static unsigned char	yrng_b_lo(t_map *map, t_crd in, t_crd *out)
 
 static void				yrng_b_hi(t_map *map, t_crd in, t_crd *out)
 {
-	*out = (t_crd){map->m[in.y][in.x].b->s.x + map->m[in.y][in.x].b.d - 1,
-		map->m[in.y][in.x].b->s.y + map->m[in.y][in.x].b.d - 1};
+	*out = (t_crd){map->m[in.y][in.x].b->s.x + map->m[in.y][in.x].b->d - 1,
+		map->m[in.y][in.x].b->s.y + map->m[in.y][in.x].b->d - 1};
 }
 
 static void				yrng_b_li(t_map *map, t_crd in, t_crd *out)
@@ -207,10 +207,10 @@ static unsigned char	yfind_start_positions(t_gm *gm)
 static void				yreset_pc_pos(t_pc *pc)
 {
 	pc->hp = (t_crd){0, 0};
-	if (pc->map.m[0][0] == '.')
+	if (pc->map.m[0][0].o == '.')
 		yrng_h_ho(&(pc->map), pc->hp, &(pc->hp));
 	pc->vp = (t_crd){0, 0};
-	if (pc->map.m[0][0] == '.')
+	if (pc->map.m[0][0].o == '.')
 		yrng_v_ho(&(pc->map), pc->vp, &(pc->vp));
 }
 
@@ -295,7 +295,7 @@ static unsigned char	ytest_range(t_crd n, t_crd origin, t_pc *pc, t_map *map)
 	t_crd		en;
 
 	srng = (t_crd){origin.x + n.x, origin.y + n.y};
-	if (!yis_coord(&srng, map) || map->m[srng.y][srng.x].o != '.')
+	if (!yis_coord(srng, map) || map->m[srng.y][srng.x].o != '.')
 		return (0);
 	yrng_h_hi(map, srng, &erng);
 	yrng_h_hi(&(pc->map), n, &en);
@@ -322,11 +322,12 @@ static unsigned char	ycan_put_piece(t_pc *pc, t_map *map)
 	n = (t_crd){0, 0};
 	while (n.y < pc->map.h)
 	{
-		while (pc->map[n.y][n.x].o != '.' || yrng_h_ho(&(pc->map), n, &n))
+		while (pc->map.m[n.y][n.x].o != '.' || yrng_h_ho(&(pc->map), n, &n))
 		{
-			if (n.y == pc->map.a.y && pc->map[n.y][n.x].h->s.x <= pc->map.a.x &&
-				pc->map[n.y][n.x].h->s.x +
-				pc->map[n.y][n.x].h->d > pc->map.a.x &&
+			if (n.y == pc->map.a.y &&
+				pc->map.m[n.y][n.x].h->s.x <= pc->map.a.x &&
+				pc->map.m[n.y][n.x].h->s.x +
+				pc->map.m[n.y][n.x].h->d > pc->map.a.x &&
 				!ycut_ranges(n, origin, pc, map))
 				return (0);
 			else if (!ytest_range(n, origin, pc, map))
