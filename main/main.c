@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/08 17:44:55 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/08 18:49:23 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,13 @@ void			test_reading()
 	char			*out;
 	char			k = 'z';
 
-	out = yread(53, NULL);
+	out = yread(5, NULL);
 	ft_printf("%s\n", out);
 	free(out);
 	out = yread(-1, &k);
+	ft_printf("%s\n", out);
+	free(out);
+	out = yread(7, NULL);
 	ft_printf("%s\n", out);
 	free(out);
 }
@@ -89,11 +92,11 @@ int				main(void)
 	}
 	free(in.s);
 	in.p = 0;
-	while (yread_turn(in, &gm))
+	while (yread_turn(&in, &gm))
 	{
 		print_map_piece(gm.map, gm.pc);
-		//yplay(&gm);
-		yfree_turn(in, &gm.map, &gm.pc);
+		yplay(&gm);
+		//yfree_turn(&gm.map, &gm.pc);
 		in.p = 0;
 	}
 	/*

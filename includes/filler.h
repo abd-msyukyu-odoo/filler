@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/08 17:41:05 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/08 18:46:58 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,8 +135,8 @@ char					*yread(ssize_t n, char *end);
  */
 unsigned int			yatoui_limited(t_in *in);
 //unsigned char			ydecode_input(t_in in, t_map *map, t_pc *pc, char o);
-void					yfree_turn(t_in in, t_map *map, t_pc *pc);
-unsigned char			yread_turn(t_in in, t_gm *gm);
+void					yfree_turn(t_map *map, t_pc *pc);
+unsigned char			yread_turn(t_in *in, t_gm *gm);
 
 /*
  * decode_player.c
