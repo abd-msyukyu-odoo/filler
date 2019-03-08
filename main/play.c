@@ -317,7 +317,7 @@ static unsigned char	ytest_range(t_crd n, t_crd origin, t_pc *pc, t_map *map)
 		return (0);
 	yrng_h_hi(map, srng, &erng);
 	yrng_h_hi(&(pc->map), n, &en);
-	return (en.y + origin.y <= erng.y);
+	return (en.x + origin.x <= erng.x);
 }
 
 static unsigned char	ycut_ranges(t_crd n, t_crd origin, t_pc *pc, t_map *map)
@@ -397,8 +397,8 @@ void					yplay(t_gm *gm)
 		yreset_pc_pos(&(gm->pc));
 		while (ynext_pc_pos(&(gm->me), &(gm->pc)))
 		{
-			ft_printf("map : %d %d\n", gm->map.a.x, gm->map.a.y);
-			ft_printf("piece : %d %d\n", gm->pc.map.a.x, gm->pc.map.a.y);
+			//ft_printf("map : %d %d\n", gm->map.a.x, gm->map.a.y);
+			//ft_printf("piece : %d %d\n", gm->pc.map.a.x, gm->pc.map.a.y);
 			if (ycan_put_piece(&(gm->pc), &(gm->map)))
 			{
 				yput_piece(&(gm->map), &(gm->pc));
