@@ -17,3 +17,9 @@ yread input -> read bloc
 	yread y * (1 + x)
 	ydecode crop + ydecode piece
 
+a scorer : 	atteindre un mur pour la premiere fois, proche de l'ennemi (mid to high) / securiser une surface
+			bloquer une diagonale (mid to high)
+			reduire le perimetre de l'ennemi (mid to high)
+			remplir un trou interne (low)
+			se rapprocher de l'ennemi (high to zero (upon contact))
+			
