@@ -16,7 +16,7 @@
 # include <sys/types.h>
 # include <limits.h>
 # ifndef OPEN_MAX
-#  define OPEN_NAX 256
+#  define OPEN_MAX 256
 # endif
 # ifndef BUFF_SIZE
 #  define BUFF_SIZE 128
