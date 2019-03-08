@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 18:26:59 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/07 19:50:24 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/08 17:40:26 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -366,6 +366,7 @@ void					yfree_turn(t_in in, t_map *map, t_pc *pc)
 	free(in.s);
 }
 
+/*
 unsigned char			ydecode_input(t_in in, t_map *map, t_pc *pc, char o)
 {
 	if (!ydecode_size(&in, &(map->w), &(map->h), PLATEAU))
@@ -392,4 +393,118 @@ unsigned char			ydecode_input(t_in in, t_map *map, t_pc *pc, char o)
 		return (0);
 	}
 	return (1);
+}
+*/
+
+static void				yreset_in(t_in *in)
+{
+	free(in->s);
+	in->p = 0;
+}
+
+static ssize_t			ymap_read_size(t_map *map)
+{
+	int				i;
+	size_t			ref;
+	int				info;
+	ssize_t			res;
+
+	ref = 1000;
+	i = 0;
+	info = 3;
+	res = 0;
+	while (i < map->h)
+	{
+		if ((size_t)i == ref)
+		{
+			info++;
+			ref *= 10;
+		}
+		res += (ssize_t)info;
+		i++;
+	}
+	return ((ssize_t)map->h * (2 + (ssize_t)map->w + res));
+}
+
+static unsigned char	yread_turn3(t_in in, t_gm *gm)
+{
+	if (!(in.s = yread((ssize_t)((gm->pc.map.w + 1) * gm->pc.map.h), NULL)))
+	{
+		yfree_ares(&(gm->map), gm->map.w, gm->map.h);
+		yfree_map(&(gm->map));
+		return (0);
+	}
+	if (!ydecode_crop(&in, &(gm->pc)))
+	{
+		yreset_in(&in);
+		yfree_ares(&(gm->map), gm->map.w, gm->map.h);
+		yfree_map(&(gm->map));
+		return (0);
+	}
+	if (!ydecode_pc(&in, &(gm->pc), o))
+	{
+		yreset_in(&in);
+		yfree_map(&(gm->pc.map));
+		yfree_ares(&(gm->map), gm->map.w, gm->map.h);
+		yfree_map(&(gm->map));
+		return (0);
+	}
+	yreset_in(&in);
+	return (1);
+}
+
+static unsigned char	yread_turn2(t_in in, t_gm *gm)
+{
+	if (!ydecode_map(&in, !(gm->map)))
+	{
+		yreset_in(&in);
+		yfree_map(&(gm->map));
+		return (0);
+	}
+	yreset_in(&in);
+	if (!(in.s = yread(0, "\n")))
+	{
+		yfree_ares(&(gm->map), gm->map.w, gm->map.h);
+		yfree_map(&(gm->map));
+		return (0);
+	}
+	if (!ydecode_size(&in, &(gm->pc.map.w), &(gm->pc.map.h), PIECE) ||
+		gm->pc.map.w == 0 || gm->pc.map.h == 0)
+	{
+		yreset_in(&in);
+		yfree_ares(&(gm->map), gm->map.w, gm->map.h);
+		yfree_map(&(gm->map));
+		return (0);
+	}
+	yreset_in(&in);
+	return (yread_turn3(in, gm));
+}
+
+unsigned char			yread_turn(t_in in, t_gm *gm)
+{
+	if (!(in.s = yread(0, "\n")))
+		return (0);
+	if (!ydecode_size(&in, &(gm->map.w), &(gm->map.h), PLATEAU))
+	{
+		yreset_in(&in);
+		return (0);
+	}
+	if (gm->map.w == 0 || gm->map.h == 0 || !ymalloc_map(&(gm->map)))
+	{
+		yreset_in(&in);
+		return (0);
+	}
+	yreset_in(&in);
+	if (!(in.s = yread(0, "\n")))
+	{
+		yfree_map(&(gm->map));
+		return (0);
+	}
+	yreset_in(&in);
+	if (!(in.s = yread(ymap_read_size(&(gm->map), NULL))))
+	{
+		yfree_map(&(gm->map));
+		return (0);
+	}
+	return (yread_turn2(in, gm));
 }

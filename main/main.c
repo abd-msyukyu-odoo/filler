@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/08 16:11:26 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/08 17:44:55 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,11 @@ int				main(void)
 //	win_ptr = mlx_new_window(mlx_ptr, 500, 500, "mlx 42");
 //	mlx_key_hook(win_ptr, yon_release, NULL);
 //	mlx_loop(mlx_ptr);
-	test_reading();
-	/*
+	//test_reading();
 	t_in				in;
 	t_gm				gm;
 
-	if (!(in.s = yread_input()))
+	if (!(in.s = yread(0, "\n")))
 		return (0);
 	in.p = 0;
 	if (!ydecode_player(in, &gm.me, &gm.en))
@@ -89,6 +88,15 @@ int				main(void)
 		return (0);
 	}
 	free(in.s);
+	in.p = 0;
+	while (yread_turn(in, &gm))
+	{
+		print_map_piece(gm.map, gm.pc);
+		//yplay(&gm);
+		yfree_turn(in, &gm.map, &gm.pc);
+		in.p = 0;
+	}
+	/*
 	while ((in.s = yread_input()))
 	{
 		in.p = 0;
@@ -97,8 +105,8 @@ int				main(void)
 			free(in.s);
 			return (0);
 		}
-		//print_map_piece(gm.map, gm.pc);
-		yplay(&gm);
+		print_map_piece(gm.map, gm.pc);
+		//yplay(&gm);
 		yfree_turn(in, &gm.map, &gm.pc);
 	}
 	*/

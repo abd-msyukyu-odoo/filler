@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:43:51 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/08 16:38:42 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/08 17:06:08 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,7 @@ static unsigned char	ystr_realloc(char **in, ssize_t old, ssize_t new)
 	char		*out;
 
 	if (old < 0 || new < 0 || new < old || (*in == NULL && old != 0))
-	{
-		ft_printf("%ld %ld %s\n", old, new, *in);
 		return (0);
-	}
 	out = (char*)malloc(new + 1);
 	if (!out)
 		return (0);
@@ -204,5 +201,7 @@ char					*yread(ssize_t n, char *end)
 
 	if (end)
 		return (yread_until(*end, rmn));
-	return (yread_n(n, rmn));
+	if (n > 0)
+		return (yread_n(n, rmn));
+	return (NULL);
 }

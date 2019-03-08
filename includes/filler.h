@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/08 16:29:06 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/08 17:41:05 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <sys/types.h>
 # include <unistd.h>
 # define BUFF_SIZE 50
-# define INPUT 1
+# define INPUT 0
 # define PLATEAU "Plateau "
 # define PIECE "Piece "
 
@@ -134,8 +134,9 @@ char					*yread(ssize_t n, char *end);
  * decode_input.c
  */
 unsigned int			yatoui_limited(t_in *in);
-unsigned char			ydecode_input(t_in in, t_map *map, t_pc *pc, char o);
+//unsigned char			ydecode_input(t_in in, t_map *map, t_pc *pc, char o);
 void					yfree_turn(t_in in, t_map *map, t_pc *pc);
+unsigned char			yread_turn(t_in in, t_gm *gm);
 
 /*
  * decode_player.c
