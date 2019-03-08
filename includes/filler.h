@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/08 15:04:18 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/08 16:29:06 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <sys/types.h>
 # include <unistd.h>
 # define BUFF_SIZE 50
-# define INPUT 0
+# define INPUT 1
 # define PLATEAU "Plateau "
 # define PIECE "Piece "
 
@@ -128,7 +128,7 @@ typedef struct			s_game_master
 /*
 ** read.c
 */
-char					*yread_input();
+char					*yread(ssize_t n, char *end);
 
 /*
  * decode_input.c

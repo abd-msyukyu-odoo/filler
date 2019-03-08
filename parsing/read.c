@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:43:51 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/08 15:52:46 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/08 16:38:42 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,10 @@ static unsigned char	ystr_realloc(char **in, ssize_t old, ssize_t new)
 	char		*out;
 
 	if (old < 0 || new < 0 || new < old || (*in == NULL && old != 0))
+	{
+		ft_printf("%ld %ld %s\n", old, new, *in);
 		return (0);
+	}
 	out = (char*)malloc(new + 1);
 	if (!out)
 		return (0);
@@ -46,9 +49,9 @@ static char				*yread_input(char *out, ssize_t *len)
 	char			buff[BUFF_SIZE + 1];
 	ssize_t			nread;
 
-	while ((nread = read(INPUT, buff, BUFF_SIZE)))
+	if ((nread = read(INPUT, buff, BUFF_SIZE)))
 	{
-		if (nread < 0 || -1 == (len = ystr_join(&out, len, buff, nread)))
+		if (nread < 0 || -1 == (*len = ystr_join(&out, *len, buff, nread)))
 		{
 			free(out);
 			return (NULL);
@@ -79,7 +82,7 @@ static unsigned char	yempty_until(char **out, ssize_t *len, char *rmn,
 		rmn[j - i] = rmn[j];
 		j++;
 	}
-	return ((out[*len - 1] == end) ? 1 : 0);
+	return (((*out)[*len - 1] == end) ? 1 : 0);
 }
 
 static unsigned char	yempty_n(char **out, ssize_t *len, char *rmn, ssize_t n)
@@ -131,8 +134,7 @@ static unsigned char	yfind_end(t_fe fe, ssize_t plen, ssize_t *len,
 	return (0);
 }
 
-static unsigned char	yfind_n(t_fe fe, ssize_t plen, ssize_t *len,
-		ssize_t n)
+static unsigned char	yfind_n(t_fe fe, ssize_t *len, ssize_t n)
 {
 	ssize_t			i;
 
@@ -151,15 +153,15 @@ static unsigned char	yfind_n(t_fe fe, ssize_t plen, ssize_t *len,
 	return (1);
 }
 
-static char				*yread_until(char end)
+static char				*yread_until(char end, char *rmn)
 {
-	static char		rmn[BUFF_SIZE + 1] = {0};
 	ssize_t			len;
 	char			*out;
 	ssize_t			plen;
 	t_fe			fe;
 
 	out = NULL;
+	len = 0;
 	if (yempty_until(&out, &len, rmn, end))
 		return (out);
 	if (!out)
@@ -175,33 +177,32 @@ static char				*yread_until(char end)
 	return (out);
 }
 
-static char				*yread_n(ssize_t n)
+static char				*yread_n(ssize_t n, char *rmn)
 {
-	static char		rmn[BUFF_SIZE + 1] = {0};
 	ssize_t			len;
 	char			*out;
-	ssize_t			plen;
 	t_fe			fe;
 
 	out = NULL;
+	len = 0;
 	if (yempty_n(&out, &len, rmn, n))
 		return (out);
 	if (!out)
 		return (NULL);
-	plen = len;
 	while ((out = yread_input(out, &len)))
 	{
 		fe = (t_fe){out, rmn};
-		if (yfind_n(fe, plen, &len, end))
+		if (yfind_n(fe, &len, n))
 			return (out);
-		plen = len;
 	}
 	return (out);
 }
 
 char					*yread(ssize_t n, char *end)
 {
+	static char		rmn[BUFF_SIZE + 1] = {0};
+
 	if (end)
-		return (yread_until(*end));
-	return (yread_n(n));
+		return (yread_until(*end, rmn));
+	return (yread_n(n, rmn));
 }

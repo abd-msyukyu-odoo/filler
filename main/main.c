@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/07 18:46:38 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/08 16:11:26 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,19 @@ void			print_map_piece(t_map map, t_pc pc)
 	}
 }
 
+void			test_reading()
+{
+	char			*out;
+	char			k = 'z';
+
+	out = yread(53, NULL);
+	ft_printf("%s\n", out);
+	free(out);
+	out = yread(-1, &k);
+	ft_printf("%s\n", out);
+	free(out);
+}
+
 int				main(void)
 {
 //
@@ -62,6 +75,8 @@ int				main(void)
 //	win_ptr = mlx_new_window(mlx_ptr, 500, 500, "mlx 42");
 //	mlx_key_hook(win_ptr, yon_release, NULL);
 //	mlx_loop(mlx_ptr);
+	test_reading();
+	/*
 	t_in				in;
 	t_gm				gm;
 
@@ -86,5 +101,6 @@ int				main(void)
 		yplay(&gm);
 		yfree_turn(in, &gm.map, &gm.pc);
 	}
+	*/
 	return (0);
 }
