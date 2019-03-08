@@ -6,7 +6,7 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/05 18:39:13 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/07 18:43:19 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/08 18:54:09 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -314,12 +314,7 @@ static unsigned char	ytest_range(t_crd n, t_crd origin, t_pc *pc, t_map *map)
 
 	srng = (t_crd){origin.x + n.x, origin.y + n.y};
 	if (!yis_coord(srng, map) || map->m[srng.y][srng.x].o != '.')
-	{
-		ft_printf("origin : %d %d\n", origin.x, origin.y);
-		ft_printf("srng : %d %d\n", srng.x, srng.y);
-		ft_printf("o : %c\n", map->m[srng.y][srng.x].o);
 		return (0);
-	}
 	yrng_h_hi(map, srng, &erng);
 	yrng_h_hi(&(pc->map), n, &en);
 	return (en.y + origin.y <= erng.y);
