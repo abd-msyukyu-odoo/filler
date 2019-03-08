@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:43:51 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/08 15:08:40 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/08 15:52:46 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static char				*yread_input(char *out, ssize_t *len)
 	return (out);
 }
 
-static char				*yempty_until(char *out, ssize_t *len, char *rmn,
+static unsigned char	yempty_until(char **out, ssize_t *len, char *rmn,
 		char end)
 {
 	ssize_t			i;
@@ -67,10 +67,11 @@ static char				*yempty_until(char *out, ssize_t *len, char *rmn,
 	while (rmn[i] != '\0' && rmn[i] != end)
 		i++;
 	i = (rmn[i] == end) ? i + 1 : i;
-	if (-1 == (*len = ystr_join(&out, *len, rmn, i)))
+	if (-1 == (*len = ystr_join(out, *len, rmn, i)))
 	{
-		free(out);
-		return (NULL);
+		free(*out);
+		*out = NULL;
+		return (0);
 	}
 	j = i;
 	while (j < BUFF_SIZE + 1)
@@ -78,20 +79,76 @@ static char				*yempty_until(char *out, ssize_t *len, char *rmn,
 		rmn[j - i] = rmn[j];
 		j++;
 	}
-	return (out);
+	return ((out[*len - 1] == end) ? 1 : 0);
+}
+
+static unsigned char	yempty_n(char **out, ssize_t *len, char *rmn, ssize_t n)
+{
+	ssize_t			i;
+	ssize_t			j;
+
+	if (*len >= n)
+		return (1);
+	i = 0;
+	while (rmn[i] != '\0' && *len + i < n)
+		i++;
+	if (-1 == (*len = ystr_join(out, *len, rmn, i)))
+	{
+		free(*out);
+		*out = NULL;
+		return (0);
+	}
+	j = i;
+	while (j < BUFF_SIZE + 1)
+	{
+		rmn[j - i] = rmn[j];
+		j++;
+	}
+	return ((*len == n) ? 1 : 0);
 }
 
 static unsigned char	yfind_end(t_fe fe, ssize_t plen, ssize_t *len,
 		char end)
 {
 	ssize_t			i;
+	ssize_t			j;
 
 	i = plen;
-	while (i < *len && fe.out[i] != )
+	while (i < *len && fe.out[i] != end)
+		i++;
+	if (fe.out[i++] == end)
 	{
+		j = 0;
+		while (i + j < *len)
+		{
+			fe.rmn[j] = fe.out[i + j];
+			j++;
+		}
+		fe.out[i] = '\0';
+		*len = i;
+		return (1);
+	}
+	return (0);
+}
 
+static unsigned char	yfind_n(t_fe fe, ssize_t plen, ssize_t *len,
+		ssize_t n)
+{
+	ssize_t			i;
+
+	if (*len < n)
+		return (0);
+	if (*len == n)
+		return (1);
+	i = 0;
+	while (n + i < *len)
+	{
+		fe.rmn[i] = fe.out[n + i];
 		i++;
 	}
+	fe.out[n] = '\0';
+	*len = n;
+	return (1);
 }
 
 static char				*yread_until(char end)
@@ -103,7 +160,8 @@ static char				*yread_until(char end)
 	t_fe			fe;
 
 	out = NULL;
-	out = yempty_until(out, &len, rmn, end);
+	if (yempty_until(&out, &len, rmn, end))
+		return (out);
 	if (!out)
 		return (NULL);
 	plen = len;
@@ -117,7 +175,31 @@ static char				*yread_until(char end)
 	return (out);
 }
 
-char					*yread_input(ssize_t n, char *end)
+static char				*yread_n(ssize_t n)
+{
+	static char		rmn[BUFF_SIZE + 1] = {0};
+	ssize_t			len;
+	char			*out;
+	ssize_t			plen;
+	t_fe			fe;
+
+	out = NULL;
+	if (yempty_n(&out, &len, rmn, n))
+		return (out);
+	if (!out)
+		return (NULL);
+	plen = len;
+	while ((out = yread_input(out, &len)))
+	{
+		fe = (t_fe){out, rmn};
+		if (yfind_n(fe, plen, &len, end))
+			return (out);
+		plen = len;
+	}
+	return (out);
+}
+
+char					*yread(ssize_t n, char *end)
 {
 	if (end)
 		return (yread_until(*end));
