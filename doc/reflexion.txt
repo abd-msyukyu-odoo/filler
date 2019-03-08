@@ -5,3 +5,15 @@ ajouter la couleur de contact pour les ranges ?
 -> les ranges doivent contenir les coordonnees (sans blague)
 
 retirer le flag -Wno-unused-function
+
+ydecode player -> read line
+
+yread input -> read bloc
+	yread plateau -> read line + ydecode size plateau
+	read line >< yignore line
+	read y * (1 + x + (3 * min(x, 1000)) + (4 * min(x - 1000, 9000)) + ...
+	ydecode map
+	yread piece -> read line + ydecode size piece
+	yread y * (1 + x)
+	ydecode crop + ydecode piece
+
