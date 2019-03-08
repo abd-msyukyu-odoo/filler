@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/07 19:50:56 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/08 15:04:18 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,12 @@
 # define INPUT 0
 # define PLATEAU "Plateau "
 # define PIECE "Piece "
+
+typedef struct			s_find_end
+{
+	char				*out;
+	char				*rmn;
+}						t_fe;
 
 typedef struct			s_coord
 {
