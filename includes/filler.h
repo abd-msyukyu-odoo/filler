@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/08 18:50:28 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/11 16:28:37 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 # define INPUT 0
 # define PLATEAU "Plateau "
 # define PIECE "Piece "
+
+# include <stdio.h>
 
 typedef struct			s_find_end
 {

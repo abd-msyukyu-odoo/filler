@@ -23,3 +23,6 @@ a scorer : 	atteindre un mur pour la premiere fois, proche de l'ennemi (mid to h
 			remplir un trou interne (low)
 			se rapprocher de l'ennemi (high to zero (upon contact))
 			
+
+2 segfault :	decode pc (decode_input)
+				yrng_h_hi (ynext_hp) (ynext_pc_pos)

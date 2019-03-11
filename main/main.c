@@ -6,11 +6,13 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/08 18:51:30 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/11 16:55:51 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "filler.h"
+#include "libft.h"
+
 
 int				yon_release(int key, void *param)
 {
@@ -68,6 +70,8 @@ void			test_reading()
 	free(out);
 }
 
+FILE *fd;
+
 int				main(void)
 {
 //
@@ -79,9 +83,14 @@ int				main(void)
 //	mlx_key_hook(win_ptr, yon_release, NULL);
 //	mlx_loop(mlx_ptr);
 	//test_reading();
+	//
+	
 	t_in				in;
 	t_gm				gm;
 
+
+	fd = fopen("output_test.txt", "w");
+	fclose(fd);
 	if (!(in.s = yread(0, "\n")))
 		return (0);
 	in.p = 0;
@@ -99,6 +108,7 @@ int				main(void)
 		yfree_turn(&gm.map, &gm.pc);
 		in.p = 0;
 	}
+	ft_putstr_fd("read error\n", 2);
 	/*
 	while ((in.s = yread_input()))
 	{

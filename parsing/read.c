@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:43:51 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/08 18:34:07 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/11 16:56:12 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,13 +195,27 @@ static char				*yread_n(ssize_t n, char *rmn)
 	return (out);
 }
 
+extern FILE *fd;
 char					*yread(ssize_t n, char *end)
 {
 	static char		rmn[BUFF_SIZE + 1] = {0};
-
+	
+	fd = fopen("output_test.txt", "a");
+	fprintf(fd, "read : \n");
 	if (end)
-		return (yread_until(*end, rmn));
+	{
+		char *o1 = yread_until(*end, rmn);
+		fprintf(fd, "%s\n", o1);
+		fclose(fd);
+		return (o1);
+	}
 	if (n > 0)
-		return (yread_n(n, rmn));
+	{
+		char *o2 = yread_n(n, rmn);
+		fprintf(fd, "%s\n", o2);
+		fclose(fd);
+		return (o2);
+	}
+	fclose(fd);
 	return (NULL);
 }
