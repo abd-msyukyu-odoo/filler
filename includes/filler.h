@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:44:53 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/11 16:28:37 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/12 13:32:38 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,6 @@ unsigned char			ydecode_player(t_in in, t_ply *me, t_ply *en);
 /*
  * play.c
  */
-void					yplay(t_gm *gm);
+unsigned char			yplay(t_gm *gm);
 
 #endif

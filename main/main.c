@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/11 16:55:51 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/12 13:35:15 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ int				main(void)
 	
 	t_in				in;
 	t_gm				gm;
+	unsigned char		played;
 
 
 	fd = fopen("output_test.txt", "w");
@@ -104,9 +105,11 @@ int				main(void)
 	while (yread_turn(&in, &gm))
 	{
 		//print_map_piece(gm.map, gm.pc);
-		yplay(&gm);
+		played = yplay(&gm);
 		yfree_turn(&gm.map, &gm.pc);
 		in.p = 0;
+		if (!played)
+			return (0);
 	}
 	ft_putstr_fd("read error\n", 2);
 	/*

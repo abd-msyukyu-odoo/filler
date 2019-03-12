@@ -6,7 +6,7 @@
 /*   By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/05 18:39:13 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/11 16:37:11 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/12 13:33:43 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -385,17 +385,13 @@ static void				yput_piece(t_map *map, t_pc *pc)
 
 	origin = (t_crd){map->a.x - pc->map.a.x - pc->mic.x,
 		map->a.y - pc->map.a.y - pc->mic.y};
-	write(2, "yolo1", 6);
 	ft_printf("%d %d\n", origin.y, origin.x);
 }
 
-void					yplay(t_gm *gm)
+unsigned char			yplay(t_gm *gm)
 {
 	if (!yfind_start_positions(gm))
-	{
-		write(2, "yolo2", 6);
-		return ;
-	}
+		return (0);
 	while (ynext_map_pos(&(gm->me), &(gm->map)))
 	{
 		yreset_pc_pos(&(gm->pc));
@@ -404,9 +400,9 @@ void					yplay(t_gm *gm)
 			if (ycan_put_piece(&(gm->pc), &(gm->map)))
 			{
 				yput_piece(&(gm->map), &(gm->pc));
-				return ;
+				return (1);
 			}
 		}
 	}
-	write(2, "yolo3", 6);
+	return (0);
 }

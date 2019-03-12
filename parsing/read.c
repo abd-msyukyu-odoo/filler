@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 15:43:51 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/12 13:23:02 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/12 13:28:34 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ static unsigned char	yfind_n(t_fe fe, ssize_t *len, ssize_t n)
 		i++;
 	}
 	fe.out[n] = '\0';
-	fe.rmn[n] = '\0';
+	fe.rmn[i] = '\0';
 	*len = n;
 	return (1);
 }
