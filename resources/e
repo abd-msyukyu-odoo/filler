@@ -5,10 +5,10 @@
 while :
 do
 	./filler_vm -p1 ../fillerminator -p2 ../fillerminator -f maps/map01
-	read -r -p "continue ? [-1] : " c
-	case $c in
-		1) break;;
-		*) echo "next try : "
-	esac
+	# read -r -p "continue ? [-1] : " c
+	# case $c in
+	#	1) break;;
+	#	*) echo "next try : "
+	# esac
 	rm filler.trace
 done
