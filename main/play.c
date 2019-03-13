@@ -416,6 +416,30 @@ static void				yput_piece(t_map *map, t_pc *pc)
 	ft_printf("%d %d\n", origin.y, origin.x);
 }
 
+static t_crd			yfind_collision(t_gm *gm, t_crd o, char t, int size)
+{
+	//calcul du slash bas droite a une distance size du point o
+	//si deborde de la map, on prend le premier point sur la map en utilisant
+	//le backslash a partir du point "hors zone" (il faut des lors "reduire size")
+	//une fois sur la map on parcourt le backslash issu du point sur une distance size (modifie)
+	//limite par les bords de la map
+	//on ne doit calculer que les backslash externes
+}
+
+static t_crd			yfind_nearest(t_gm *gm, t_crd o, char t)
+{
+	int					size;
+	t_crd				out;
+
+    if (!yis_coord(o, &gm->map))
+		return ((t_crd){-1, -1});
+	if (gm->map.m[o.y][o.x].o == t)
+		return (o);
+	size = 1;
+	while (!yis_coord((out = yfind_collision(gm, o, t, size)), &gm->map))
+		size++;
+}
+
 unsigned char			yplay(t_gm *gm)
 {
 	if (!yfind_start_positions(gm))
