@@ -6,7 +6,7 @@
 /*   By: dabeloos <dabeloos@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/01 16:25:26 by dabeloos          #+#    #+#             */
-/*   Updated: 2019/03/12 13:35:15 by dabeloos         ###   ########.fr       */
+/*   Updated: 2019/03/13 13:55:00 by dabeloos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,10 @@ int				main(void)
 	unsigned char		played;
 
 
+	/*
 	fd = fopen("output_test.txt", "w");
 	fclose(fd);
+	*/
 	if (!(in.s = yread(0, "\n")))
 		return (0);
 	in.p = 0;
@@ -111,7 +113,7 @@ int				main(void)
 		if (!played)
 			return (0);
 	}
-	ft_putstr_fd("read error\n", 2);
+	//ft_putstr_fd("read error\n", 2);
 	/*
 	while ((in.s = yread_input()))
 	{
