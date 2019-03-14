@@ -175,7 +175,10 @@ static unsigned char	yadd_are_bs(int x, int y, t_map *map)
 			return (yabort_are_bs(x, y, map));
 	}
 	else
+	{
 		yappend_range(&(map->m[y][x].s), map->m[y - 1][x + 1].s);
+		map->m[y][x].s->s = (t_crd){x, y};
+	}
 	return (1);
 }
 

@@ -6,11 +6,11 @@
 #    By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/03/05 17:21:38 by dabeloos          #+#    #+#              #
-#    Updated: 2019/03/13 13:49:59 by dabeloos         ###   ########.fr        #
+#    Updated: 2019/03/14 19:27:32 by dabeloos         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME		= fillerminator.filler
+NAME		= dabeloos.filler
 
 CC			= gcc
 
