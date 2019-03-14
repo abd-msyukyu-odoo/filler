@@ -130,7 +130,7 @@ typedef struct			s_game_master
 /*
 ** read.c
 */
-char					*yread(ssize_t n, char *end);
+char					*yread(ssize_t n, char end);
 
 /*
  * decode_input.c

@@ -430,7 +430,7 @@ static ssize_t			ymap_read_size(t_map *map)
 
 static unsigned char	yread_turn3(t_in *in, t_gm *gm)
 {
-	if (!(in->s = yread((ssize_t)((gm->pc.map.w + 1) * gm->pc.map.h), NULL)))
+	if (!(in->s = yread((ssize_t)((gm->pc.map.w + 1) * gm->pc.map.h), (char)-1)))
 	{
 		yfree_ares(&(gm->map), gm->map.w, gm->map.h);
 		yfree_map(&(gm->map));
@@ -464,7 +464,7 @@ static unsigned char	yread_turn2(t_in *in, t_gm *gm)
 		return (0);
 	}
 	yreset_in(in);
-	if (!(in->s = yread(0, "\n")))
+	if (!(in->s = yread(0, '\n')))
 	{
 		yfree_ares(&(gm->map), gm->map.w, gm->map.h);
 		yfree_map(&(gm->map));
@@ -484,7 +484,7 @@ static unsigned char	yread_turn2(t_in *in, t_gm *gm)
 
 unsigned char			yread_turn(t_in *in, t_gm *gm)
 {
-	if (!(in->s = yread(0, "\n")))
+	if (!(in->s = yread(0, '\n')))
 		return (0);
 	if (!ydecode_size(in, &(gm->map.w), &(gm->map.h), PLATEAU))
 	{
@@ -497,13 +497,13 @@ unsigned char			yread_turn(t_in *in, t_gm *gm)
 		return (0);
 	}
 	yreset_in(in);
-	if (!(in->s = yread(0, "\n")))
+	if (!(in->s = yread(0, '\n')))
 	{
 		yfree_map(&(gm->map));
 		return (0);
 	}
 	yreset_in(in);
-	if (!(in->s = yread(ymap_read_size(&(gm->map)), NULL)))
+	if (!(in->s = yread(ymap_read_size(&(gm->map)), (char)-1)))
 	{
 		yfree_map(&(gm->map));
 		return (0);

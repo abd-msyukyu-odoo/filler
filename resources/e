@@ -4,11 +4,14 @@
 
 while :
 do
-	./filler_vm -p1 ../fillerminator.filler -p2 ../fillerminator.filler -f maps/map01 | ./graphic &
+	rm output_test.txt
+	#./filler_vm -p1 players/rhunders.filler -p2 players/rhunders.filler -f maps/map01 | ./graphic
+	./filler_vm -p1 players/sofchami.filler -p2 players/sofchami.filler -f maps/map01 | python3 ./visu/filler_visu.py 500 &
 	read -r -p "continue ? [-1] : " c
 	case $c in
 		1) break;;
 		*) echo "next try : "
 	esac
+#	sleep 0.2
 	rm filler.trace
 done

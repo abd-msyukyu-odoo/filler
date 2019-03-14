@@ -59,13 +59,13 @@ void			test_reading()
 	char			*out;
 	char			k = 'z';
 
-	out = yread(5, NULL);
+	out = yread(5, (char)-1);
 	ft_printf("%s\n", out);
 	free(out);
-	out = yread(-1, &k);
+	out = yread(-1, k);
 	ft_printf("%s\n", out);
 	free(out);
-	out = yread(7, NULL);
+	out = yread(7, (char)-1);
 	ft_printf("%s\n", out);
 	free(out);
 }
@@ -90,11 +90,8 @@ int				main(void)
 	unsigned char		played;
 
 
-	/*
-	fd = fopen("output_test.txt", "w");
-	fclose(fd);
-	*/
-	if (!(in.s = yread(0, "\n")))
+	FILE *fd;
+	if (!(in.s = yread(0, '\n')))
 		return (0);
 	in.p = 0;
 	if (!ydecode_player(in, &gm.me, &gm.en))
@@ -113,20 +110,9 @@ int				main(void)
 		if (!played)
 			return (0);
 	}
+	fd = fopen("output_test.txt", "a");
+	fprintf(fd, "read error\n\n");
+	fclose(fd);
 	//ft_putstr_fd("read error\n", 2);
-	/*
-	while ((in.s = yread_input()))
-	{
-		in.p = 0;
-		if (!ydecode_input(in, &gm.map, &gm.pc, gm.me.o))
-		{
-			free(in.s);
-			return (0);
-		}
-		print_map_piece(gm.map, gm.pc);
-		//yplay(&gm);
-		yfree_turn(in, &gm.map, &gm.pc);
-	}
-	*/
 	return (0);
 }

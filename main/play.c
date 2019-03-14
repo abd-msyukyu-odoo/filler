@@ -414,6 +414,9 @@ static void				yput_piece(t_map *map, t_pc *pc)
 	origin = (t_crd){map->a.x - pc->map.a.x - pc->mic.x,
 		map->a.y - pc->map.a.y - pc->mic.y};
 	ft_printf("%d %d\n", origin.y, origin.x);
+	FILE *fd = fopen("output_test.txt", "a");
+	fprintf(fd, "%d %d\n\n", origin.y, origin.x);
+	fclose(fd);
 }
 
 static void				yidentify_quarter(t_crd o, t_crd d, t_crd *s, t_crd *e)
