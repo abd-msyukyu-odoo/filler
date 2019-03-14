@@ -90,7 +90,7 @@ int				main(void)
 	unsigned char		played;
 
 
-	FILE *fd;
+	//FILE *fd;
 	if (!(in.s = yread(0, '\n')))
 		return (0);
 	in.p = 0;
@@ -110,9 +110,9 @@ int				main(void)
 		if (!played)
 			return (0);
 	}
-	fd = fopen("output_test.txt", "a");
+	/*fd = fopen("output_test.txt", "a");
 	fprintf(fd, "read error\n\n");
-	fclose(fd);
+	fclose(fd);*/
 	//ft_putstr_fd("read error\n", 2);
 	return (0);
 }

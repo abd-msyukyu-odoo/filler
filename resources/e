@@ -6,7 +6,7 @@ while :
 do
 	rm output_test.txt
 	#./filler_vm -p1 players/rhunders.filler -p2 players/rhunders.filler -f maps/map01 | ./graphic
-	./filler_vm -p1 players/sofchami.filler -p2 players/sofchami.filler -f maps/map01 | python3 ./visu/filler_visu.py 500 &
+	./filler_vm -p1 ../dabeloos.filler -p2 ../dabeloos.filler -f maps/map01 | python3 ./visu/filler_visu.py 500 &
 	read -r -p "continue ? [-1] : " c
 	case $c in
 		1) break;;
