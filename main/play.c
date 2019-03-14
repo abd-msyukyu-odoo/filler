@@ -416,7 +416,7 @@ static void				yput_piece(t_map *map, t_pc *pc)
 	ft_printf("%d %d\n", origin.y, origin.x);
 }
 
-static void				yidentify_se_sonar(t_crd o, t_crd d, t_crd *s, t_crd *e)
+static void				yidentify_quarter(t_crd o, t_crd d, t_crd *s, t_crd *e)
 {
 	if (o.x < d.x)
 	{
@@ -432,71 +432,102 @@ static void				yidentify_se_sonar(t_crd o, t_crd d, t_crd *s, t_crd *e)
 
 static unsigned char	yfit_backslash(t_gm *gm, t_crd *s, t_crd *e)
 {
-	//incomplet : le x de depart peut etre en y negatif ainsi qu'en x negatif, check l'un ou l'autre
-	if (!yis_coord(*s, &gm->map))
-	{
+	if (s->x < 0)
 		*s = (t_crd){0, s->y - s->x};
-		if (!yis_coord(*s, &gm->map))
-			return (0);
-	}
-	if (!yis_coord(*e, &gm->map))
-	{
+	if (s->y < 0)
+		*s = (t_crd){s->x - s->y, 0};
+	if (!yis_coord(*s, &gm->map))
+		return (0);
+	if (e->x >= gm->map.w)
+		*e = (t_crd){gm->map.w - 1, e->y - (e->x - gm->map.w + 1)};
+	if (e->y >= gm->map.h)
 		*e = (t_crd){e->x - (e->y - gm->map.h + 1), gm->map.h - 1};
-		if (!yis_coord(*e, &gm->map))
-			return (0);
-	}
+	if (!yis_coord(*e, &gm->map))
+		return (0);
 	return (1);
 }
 
 static unsigned char	yfit_slash(t_gm *gm, t_crd *s, t_crd *e)
 {
+	if (s->x < 0)
+		*s = (t_crd){0, s->y - s->x};
+	if (s->y >= gm->map.h)
+		*s = (t_crd){s->x - (s->y - gm->map.h + 1), gm->map.h - 1};
 	if (!yis_coord(*s, &gm->map))
-	{
-		*s = (t_crd){0, s->y + s->x};
-		if (!yis_coord(*s, &gm->map))
-			return (0);
-	}
+		return(0);
+	if (e->x >= gm->map.w)
+		*e = (t_crd){gm->map.w - 1, e->y - (e->x - gm->map.w + 1)};
+	if (e->y < 0)
+		*e = (t_crd){e->x - e->y, 0};
 	if (!yis_coord(*e, &gm->map))
-	{
-		*e = (t_crd){e->x + (e->y - gm->map.h + 1), 0};
-	}
+		return (0);
+	return (1);
 }
 
-static t_crd			yfind_quad_sonar(t_gm *gm, t_crd o, char t, t_crd d)
+static t_crd			ysonar_backslash(t_gm *gm, char t, t_crd s, t_crd e)
+{
+	t_crd				d;
+
+	if (!yfit_backslash(gm, &s, &e))
+		return ((t_crd){-1, -1});
+	d = s;
+	if (gm->map.m[d.y][d.x].o == t)
+		return (d);
+	while (yrng_b_ho(&gm->map, d, &d))
+	{
+		if (d.x > e.x)
+			return ((t_crd){-1, -1});
+		if (gm->map.m[d.y][d.x].o == t)
+			return (d);
+	}
+	return ((t_crd){-1, -1});
+}
+
+static t_crd			ysonar_slash(t_gm *gm, char t, t_crd s, t_crd e)
+{
+	t_crd				d;
+
+	if (!yfit_slash(gm, &s, &e))
+		return ((t_crd){-1, -1});
+	d = s;
+	if (gm->map.m[d.y][d.x].o == t)
+		return (d);
+	while (yrng_s_ho(&gm->map, d, &d))
+	{
+		if (d.x > e.x)
+			return ((t_crd){-1, -1});
+		if (gm->map.m[d.y][d.x].o == t)
+			return (d);
+	}
+	return ((t_crd){-1, -1});
+}
+
+static t_crd			ysonar_quarter(t_gm *gm, t_crd o, char t, t_crd d)
 {
 	t_crd				s;
 	t_crd				e;
 
-	yidentify_se_sonar(o, d, &s, &e);
-	//identifier le quadrant a partir de s.y et e.y
-	//chercher un point s et e dans la map selon la diagonale du quadrant (peuvent etre les memes)
-	//faire les jumps a la recherche de t
+	yidentify_quarter(o, d, &s, &e);
 	if (s.y > e.y)
-	{
-		//backslash
-		yfit_backslash(gm, &s, &e);
-	}
+		return (ysonar_backslash(gm, t, s, e));
 	else
-	{
-		//slash
-		yfit_slash(gm, &s, &e);
-	}
+		return (ysonar_slash(gm, t, s, e));
 }
 
-static t_crd			yfind_sonar(t_gm *gm, t_crd o, char t, int size)
+static t_crd			ysonar(t_gm *gm, t_crd o, char t, int size)
 {
 	t_crd				out;
 
-	if (yis_coord((out = yfind_quad_sonar(gm, o, t, (t_crd){o.x + size, o.y +
+	if (yis_coord((out = ysonar_quarter(gm, o, t, (t_crd){o.x + size, o.y +
 		size})), &gm->map))
 		return (out);
-	if (yis_coord((out = yfind_quad_sonar(gm, o, t, (t_crd){o.x + size, o.y -
+	if (yis_coord((out = ysonar_quarter(gm, o, t, (t_crd){o.x + size, o.y -
 		size})), &gm->map))
 		return (out);
-	if (yis_coord((out = yfind_quad_sonar(gm, o, t, (t_crd){o.x - size, o.y -
+	if (yis_coord((out = ysonar_quarter(gm, o, t, (t_crd){o.x - size, o.y -
 		size})), &gm->map))
 		return (out);
-	if (yis_coord((out = yfind_quad_sonar(gm, o, t, (t_crd){o.x - size, o.y +
+	if (yis_coord((out = ysonar_quarter(gm, o, t, (t_crd){o.x - size, o.y +
 		size})), &gm->map))
 		return (out);
 	return ((t_crd){-1, -1});
@@ -507,13 +538,15 @@ static t_crd			yfind_nearest(t_gm *gm, t_crd o, char t)
 	int					size;
 	t_crd				out;
 
-    if (!yis_coord(o, &gm->map))
+    if (!yis_coord(o, &gm->map) || (gm->me.o != t && gm->en.o == '\0'))
 		return ((t_crd){-1, -1});
 	if (gm->map.m[o.y][o.x].o == t)
 		return (o);
 	size = 1;
-	while (!yis_coord((out = yfind_sonar(gm, o, t, size)), &gm->map))
+	while (!yis_coord((out = ysonar(gm, o, t, size)), &gm->map) &&
+		size < gm->map.h + gm->map.w)
 		size++;
+	return ((t_crd){-1, -1});
 }
 
 unsigned char			yplay(t_gm *gm)
@@ -523,6 +556,7 @@ unsigned char			yplay(t_gm *gm)
 	while (ynext_map_pos(&(gm->me), &(gm->map)))
 	{
 		//ft_printf("\nmap pos : %d %d\n", gm->map.a.x, gm->map.a.y);
+		fprintf(2, "\n%d %d\n", yfind_nearest(gm, gm->map.a, gm->en.o));
 		yreset_pc_pos(&(gm->pc));
 		while (ynext_pc_pos(&(gm->me), &(gm->pc)))
 		{
