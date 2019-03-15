@@ -9,6 +9,7 @@
 #    Updated: 2019/03/15 14:27:28 by dabeloos         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+# -g -fsanitize=address
 
 NAME		= dabeloos.filler
 
@@ -46,7 +47,7 @@ UNDERLINE_E	= \033[4m
 
 $(NAME):	$(O_FILES)
 			@make -C libft/
-			@gcc -o $(NAME) $(O_FILES) -g -fsanitize=address -L./libft/ -lft
+			@gcc -o $(NAME) $(O_FILES) -L./libft/ -lft
 			@echo "$(GREEN_E)end compilation$(END_E)"
 
 all:		$(NAME)

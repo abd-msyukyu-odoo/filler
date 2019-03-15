@@ -4,14 +4,18 @@
 
 while :
 do
-	rm output_test.txt
+	# rm output_test.txt
 	#./filler_vm -p1 players/rhunders.filler -p2 players/rhunders.filler -f maps/map01 | ./graphic
-	./filler_vm -p1 ../dabeloos.filler -p2 ../dabeloos.filler -f maps/map01 | python3 ./visu/filler_visu.py 500 &
+	read -r -p "p1 : " first
+	read -r -p "p2 : " second
+	read -r -p "map : " map
+	./filler_vm -p1 "players/$first.filler" -p2 "players/$second.filler" -f "maps/map0$map" | python3 ./visu/filler_visu.py 500 &
 	read -r -p "continue ? [-1] : " c
 	case $c in
 		1) break;;
 		*) echo "next try : "
 	esac
+	pkill dabeloos.filler
 #	sleep 0.2
 	rm filler.trace
 done

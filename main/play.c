@@ -203,18 +203,18 @@ static unsigned char	yfind_start_hp(t_gm *gm, t_crd *mehp, t_crd *enhp)
 
 static unsigned char	yfind_start_positions(t_gm *gm)
 {
-	return (yfind_start_hp(gm, &gm->me.base.hp, &gm->en.base.hp) &&
-		yfind_start_vp(gm, &gm->me.base.vp, &gm->en.base.vp));
+	return (yfind_start_hp(gm, &gm->me.it.hp, &gm->en.it.hp) &&
+		yfind_start_vp(gm, &gm->me.it.vp, &gm->en.it.vp));
 }
 
-static void				yreset_pc_pos(t_pc *pc, t_base *base)
+static void				yreset_pc_pos(t_pc *pc, t_m_it *it)
 {
-	base->hp = (t_crd){0, 0};
+	it->hp = (t_crd){0, 0};
 	if (pc->map.m[0][0].o == '.')
-		yrng_h_ho(&(pc->map), base->hp, &(base->hp));
-	base->vp = (t_crd){0, 0};
+		yrng_h_ho(&(pc->map), it->hp, &(it->hp));
+	it->vp = (t_crd){0, 0};
 	if (pc->map.m[0][0].o == '.')
-		yrng_v_ho(&(pc->map), base->vp, &(base->vp));
+		yrng_v_ho(&(pc->map), it->vp, &(it->vp));
 }
 
 static void				ynext_hp(char o, t_map *map, t_crd *hp)
@@ -267,52 +267,54 @@ static void				ynext_vp(char o, t_map *map, t_crd *vp)
 	*vp = (t_crd){-1, -1};
 }
 
-static unsigned char	ynext_map_pos(t_ply *ply, t_map *map, t_base *base)
+static unsigned char	ynext_map_pos(t_ply *ply, t_map *map, t_m_it *it,
+	t_crd *anchor)
 {
 	t_crd		li;
 	t_crd		hi;
 
-	if (yis_coord(base->hp, map))
+	if (yis_coord(it->hp, map))
 	{
-		map->a = base->hp;
-		ynext_hp(ply->o, map, &(base->hp));
+		*anchor = it->hp;
+		ynext_hp(ply->o, map, &(it->hp));
 		return (1);
 	}
 	else
 	{
-		while (yis_coord(base->vp, map))
+		while (yis_coord(it->vp, map))
 		{
-			map->a = base->vp;
-			ynext_vp(ply->o, map, &(base->vp));
-			yrng_h_li(map, map->a, &li);
-			yrng_h_hi(map, map->a, &hi);
-			if (!ycoord_equals(map->a, li) && !ycoord_equals(map->a, hi))
+			*anchor = it->vp;
+			ynext_vp(ply->o, map, &(it->vp));
+			yrng_h_li(map, *anchor, &li);
+			yrng_h_hi(map, *anchor, &hi);
+			if (!ycoord_equals(*anchor, li) && !ycoord_equals(*anchor, hi))
 				return (1);
 		}
 		return (0);
 	}
 }
 
-static unsigned char	ynext_pc_pos(t_ply *ply, t_pc *pc, t_base *base)
+static unsigned char	ynext_pc_pos(t_ply *ply, t_pc *pc, t_m_it *it,
+	t_crd *anchor)
 {
 	t_crd		li;
 	t_crd		hi;
 
-	if (yis_coord(base->hp, &(pc->map)))
+	if (yis_coord(it->hp, &(pc->map)))
 	{
-		pc->map.a = base->hp;
-		ynext_hp(ply->o, &(pc->map), &(base->hp));
+		*anchor = it->hp;
+		ynext_hp(ply->o, &(pc->map), &(it->hp));
 		return (1);
 	}
 	else
 	{
-		while (yis_coord(base->vp, &(pc->map)))
+		while (yis_coord(it->vp, &(pc->map)))
 		{
-			pc->map.a = base->vp;
-			ynext_vp(ply->o, &(pc->map), &(base->vp));
-			yrng_h_li(&(pc->map), pc->map.a, &li);
-			yrng_h_hi(&(pc->map), pc->map.a, &hi);
-			if (!ycoord_equals(pc->map.a, li) && !ycoord_equals(pc->map.a, hi))
+			*anchor = it->vp;
+			ynext_vp(ply->o, &(pc->map), &(it->vp));
+			yrng_h_li(&(pc->map), *anchor, &li);
+			yrng_h_hi(&(pc->map), *anchor, &hi);
+			if (!ycoord_equals(*anchor, li) && !ycoord_equals(*anchor, hi))
 				return (1);
 		}
 		return (0);
@@ -475,7 +477,7 @@ static t_crd			ysonar_backslash(t_gm *gm, char t, t_crd s, t_crd e)
 {
 	t_crd				d;
 
-	//fprintf(stderr, "backslash base : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
+	//fprintf(stderr, "backslash it : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
 	if (!yfit_backslash(gm, &s, &e))
 		return ((t_crd){-1, -1});
 	//fprintf(stderr, "backslash fit : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
@@ -496,7 +498,7 @@ static t_crd			ysonar_slash(t_gm *gm, char t, t_crd s, t_crd e)
 {
 	t_crd				d;
 
-	//fprintf(stderr, "slash base : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
+	//fprintf(stderr, "slash it : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
 	if (!yfit_slash(gm, &s, &e))
 		return ((t_crd){-1, -1});
 	//fprintf(stderr, "slash fit : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
@@ -565,26 +567,191 @@ static t_crd			yfind_nearest(t_gm *gm, t_crd o, char t)
 	return (out);
 }
 
+static int				ydistance(t_crd c1, t_crd c2)
+{
+	int			tmp;
+	int			score;
+
+	tmp = c2.y - c1.y;
+	score = (tmp < 0) ? -tmp : tmp;
+	tmp = c2.x - c1.x;
+	score += (tmp < 0) ? -tmp : tmp;
+	return (score);
+}
+
+static int				yscore_closest(t_gm *gm)
+{
+	t_pc_nav	nav;
+	t_crd		nearest;
+	int			score;
+
+	score = 0;
+	nav.m_o = (t_crd){gm->map.a.x - gm->pc.map.a.x,
+		gm->map.a.y - gm->pc.map.a.y};
+	yreset_pc_pos(&gm->pc, &nav.it);
+	while (ynext_pc_pos(&gm->me, &gm->pc, &nav.it, &nav.p))
+	{
+		nav.m_p = (t_crd){nav.m_o.x + nav.p.x, nav.m_o.y + nav.p.y};
+		nearest = yfind_nearest(gm, nav.m_p, gm->en.o);
+		score += ydistance(nav.m_p, nearest);
+	}
+	return (score);
+}
+
+static unsigned char	yseek_target_from_on(t_crd o, char t, t_map *map,
+	unsigned char (*yrng_o)(t_map*, t_crd, t_crd*))
+{
+	t_crd 	n;
+
+	if (yrng_o(map, o, &n) && map->m[n.y][n.x].o == t)
+		return (1);
+	return (0);
+}
+
+static unsigned char	yseek_target_from_anchor_on(t_crd o, char t, t_map *map,
+	t_dir f)
+{
+	t_crd	n;
+
+	f.yrng_i(map, o, &n);
+	if (ycoord_equals(o, n) && f.yrng_o(map, o, &n))
+	{
+		if (map->m[n.y][n.x].o == t)
+			return (1);
+		else if (f.yrng_o(map, n, &n) && map->m[n.y][n.x].o == t)
+			return (1);
+	}
+	return (0);
+}
+
+static unsigned char	yseek_target_from(t_crd o, char t, t_map *map)
+{
+	if (map->m[o.y][o.x].o == t)
+		return (1);
+	if (yseek_target_from_on(o, t, map, yrng_b_ho))
+		return (1);
+	if (yseek_target_from_on(o, t, map, yrng_b_lo))
+		return (1);
+	if (yseek_target_from_on(o, t, map, yrng_h_ho))
+		return (1);
+	if (yseek_target_from_on(o, t, map, yrng_h_lo))
+		return (1);
+	if (yseek_target_from_on(o, t, map, yrng_s_ho))
+		return (1);
+	if (yseek_target_from_on(o, t, map, yrng_s_lo))
+		return (1);
+	if (yseek_target_from_on(o, t, map, yrng_v_ho))
+		return (1);
+	if (yseek_target_from_on(o, t, map, yrng_v_lo))
+		return (1);
+	return (0);
+}
+
+static unsigned char	yseek_target_from_anchor(t_crd o, char t, t_map *map)
+{
+	if (map->m[o.y][o.x].o == t)
+		return (1);
+	if (yseek_target_from_anchor_on(o, t, map, (t_dir){yrng_b_ho, yrng_b_hi}))
+		return (1);
+	if (yseek_target_from_anchor_on(o, t, map, (t_dir){yrng_b_lo, yrng_b_li}))
+		return (1);
+	if (yseek_target_from_anchor_on(o, t, map, (t_dir){yrng_h_ho, yrng_h_hi}))
+		return (1);
+	if (yseek_target_from_anchor_on(o, t, map, (t_dir){yrng_h_lo, yrng_h_li}))
+		return (1);
+	if (yseek_target_from_anchor_on(o, t, map, (t_dir){yrng_s_ho, yrng_s_hi}))
+		return (1);
+	if (yseek_target_from_anchor_on(o, t, map, (t_dir){yrng_s_lo, yrng_s_li}))
+		return (1);
+	if (yseek_target_from_anchor_on(o, t, map, (t_dir){yrng_v_ho, yrng_v_hi}))
+		return (1);
+	if (yseek_target_from_anchor_on(o, t, map, (t_dir){yrng_v_lo, yrng_v_li}))
+		return (1);
+	return (0);
+}
+
+static unsigned char	yenemy_on_sight(t_gm *gm)
+{
+	t_pc_nav	nav;
+
+	nav.m_o = (t_crd){gm->map.a.x - gm->pc.map.a.x,
+		gm->map.a.y - gm->pc.map.a.y};
+	yreset_pc_pos(&gm->pc, &nav.it);
+	while (ynext_pc_pos(&gm->me, &gm->pc, &nav.it, &nav.p))
+	{
+		nav.m_p = (t_crd){nav.m_o.x + nav.p.x, nav.m_o.y + nav.p.y};
+		if (ycoord_equals(nav.p, gm->pc.map.a))
+		{
+			if (yseek_target_from_anchor(nav.m_p, gm->en.o, &gm->map))
+				return (1);
+		}
+		else if (yseek_target_from(nav.m_p, gm->en.o, &gm->map))
+			return (1);
+	}
+	return (0);
+}
+
 unsigned char			yplay(t_gm *gm)
 {
+	t_crd			best;
+	t_crd			best_map;
+	int				score;
+	int				cur_score;
+	unsigned char	on_sight;
+	unsigned char	cur_on_sight;
+
+	best = (t_crd){-1, -1};
+	score = -1;
+	on_sight = 0;
 	if (!yfind_start_positions(gm))
 		return (0);
-	while (ynext_map_pos(&(gm->me), &(gm->map), &gm->me.base))
+	while (ynext_map_pos(&(gm->me), &(gm->map), &gm->me.it, &gm->map.a))
 	{
 		//ft_printf("\nmap pos : %d %d\n", gm->map.a.x, gm->map.a.y);
 		//fprintf(stderr, "\nfrom : %d %d\n", gm->map.a.x, gm->map.a.y);
 		//t_crd tst = yfind_nearest(gm, gm->map.a, gm->en.o);
 		//fprintf(stderr, "\nto : %d %d\n\n\n", tst.x, tst.y);
-		yreset_pc_pos(&(gm->pc), &gm->pc.base);
-		while (ynext_pc_pos(&(gm->me), &(gm->pc), &gm->pc.base))
+		yreset_pc_pos(&(gm->pc), &gm->pc.it);
+		while (ynext_pc_pos(&(gm->me), &(gm->pc), &gm->pc.it, &gm->pc.map.a))
 		{
 			//ft_printf("pc pos : %d %d\n", gm->pc.map.a.x, gm->pc.map.a.y);
 			if (ycan_put_piece(&(gm->pc), &(gm->map)))
+			//minimiser la distance qui a vue sur l'ennemi ? 
+			//reconnaitre la configuration en "bouche ouverte" et eviter de jouer
+			//dedans
 			{
-				yput_piece(&(gm->map), &(gm->pc));
-				return (1);
+				cur_score = yscore_closest(gm);
+				cur_on_sight = yenemy_on_sight(gm);
+				if (!on_sight)
+				{
+					if (cur_on_sight)
+						on_sight = 1;
+					if (on_sight || score == -1 || cur_score < score)
+					{
+						score = cur_score;
+						best = gm->pc.map.a;
+						best_map = gm->map.a;
+					}
+				}
+				else if (cur_on_sight)
+				{
+					if (score == -1 || cur_score < score)
+					{
+						score = cur_score;
+						best = gm->pc.map.a;
+						best_map = gm->map.a;
+					}
+				}
+				//fprintf(stderr, "\n%d\n", score);
 			}
 		}
+	}
+	if (yis_coord(best, &gm->map))
+	{
+		gm->pc.map.a = best;
+		gm->map.a = best_map;
+		yput_piece(&gm->map, &gm->pc);
+		return (1);
 	}
 	return (0);
 }

@@ -36,3 +36,12 @@ garder le placement de piece qui minimise la somme des distances
 -> condition : avoir un point de depart secondaire pour le contour de la piece (autre que celui utilise pour le placement de la piece)
 -> creer une structure "point de depart", changer la structure de player et de piece
 -> changer la signature des fonctions relatives au point de depart pour se baser sur un point de depart externe
+
+
+>>>>>>>>>>>optionnel :
+-> fusion de la nouvelle piece avec l'ancienne map (limiter le nombre de malloc/free)
+
+>>>>>>>>>>>indispensable :
+-> exception a la regle du plus "proche de l'ennemi" si :
+	ne touche pas l'ennemi (ambigu, a preciser) -> aucun rayon du contour ne vise l'ennemi directement
+		-> ajouter une limite de distance a cette regle ? -> rare

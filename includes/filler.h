@@ -48,11 +48,19 @@ typedef struct			s_range
 	int					d;
 }						t_rng;
 
-typedef struct 			s_base
+typedef struct 			s_map_iterator
 {
 	t_crd				hp;
 	t_crd				vp;
-}						t_base;
+}						t_m_it;
+
+typedef struct			s_pc_navigation
+{
+	t_m_it				it;
+	t_crd				p;
+	t_crd				m_o;
+	t_crd				m_p;
+}						t_pc_nav;
 
 /*
 ** v : vertical
@@ -84,6 +92,12 @@ typedef struct			s_map
 	t_crd				a;
 }						t_map;
 
+typedef struct 			s_direction
+{
+	unsigned char		(*yrng_o)(t_map*, t_crd, t_crd*);
+	void				(*yrng_i)(t_map*, t_crd, t_crd*);
+}						t_dir;
+
 /*
  * s : string
  * p : position
@@ -102,7 +116,7 @@ typedef struct			s_input
 typedef struct			s_player
 {
 	char				o;
-	t_base				base;
+	t_m_it				it;
 }						t_ply;
 
 /*
@@ -118,7 +132,7 @@ typedef struct			s_piece
 	t_map				map;
 	t_crd				mic;
 	t_crd				mac;
-	t_base				base;
+	t_m_it				it;
 }						t_pc;
 
 /*
