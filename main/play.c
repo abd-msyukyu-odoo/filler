@@ -129,89 +129,92 @@ static void				yrng_s_li(t_map *map, t_crd in, t_crd *out)
 		map->m[in.y][in.x].s->s.y};
 }
 
-static unsigned char	yidentify_pos_vp(t_gm *gm, t_crd in)
+static unsigned char	yidentify_pos_vp(t_gm *gm, t_crd in, t_crd *mevp,
+	t_crd *envp)
 {
-	if (!yis_coord(gm->en.vp, &(gm->map)) &&
+	if (!yis_coord(*envp, &(gm->map)) &&
 			gm->map.m[in.y][in.x].o == gm->en.o)
-		gm->en.vp = in;
-	else if (!yis_coord(gm->me.vp, &(gm->map)) &&
+		*envp = in;
+	else if (!yis_coord(*mevp, &(gm->map)) &&
 			gm->map.m[in.y][in.x].o == gm->me.o)
-		gm->me.vp = in;
-	if (yis_coord(gm->en.vp, &(gm->map)) && yis_coord(gm->me.vp, &(gm->map)))
+		*mevp = in;
+	if (yis_coord(*envp, &(gm->map)) && yis_coord(*mevp, &(gm->map)))
 		return (1);
 	return (0);
 }
 
-static unsigned char	yfind_start_vp(t_gm *gm)
+static unsigned char	yfind_start_vp(t_gm *gm, t_crd *mevp, t_crd *envp)
 {
 	t_crd		in;
 
 	in = (t_crd){0, 0};
-	gm->me.vp = (t_crd){-1, -1};
-	gm->en.vp = (t_crd){-1, -1};
+	*mevp = (t_crd){-1, -1};
+	*envp = (t_crd){-1, -1};
 	while (in.x < gm->map.w)
 	{
-		if (yidentify_pos_vp(gm, in))
+		if (yidentify_pos_vp(gm, in, mevp, envp))
 			return (1);
 		while (yrng_v_ho(&(gm->map), in, &(in)))
-			if (yidentify_pos_vp(gm, in))
+			if (yidentify_pos_vp(gm, in, mevp, envp))
 				return (1);
 		in = (t_crd){in.x + 1, 0};
 	}
 	gm->en.o = '\0';
-	if (!yis_coord(gm->me.vp, &(gm->map)))
+	if (!yis_coord(*mevp, &(gm->map)))
 		return (0);
 	return (1);
 }
 
-static unsigned char	yidentify_pos_hp(t_gm *gm, t_crd in)
+static unsigned char	yidentify_pos_hp(t_gm *gm, t_crd in, t_crd *mehp,
+	t_crd *enhp)
 {
-	if (!yis_coord(gm->en.hp, &(gm->map)) &&
+	if (!yis_coord(*enhp, &(gm->map)) &&
 			gm->map.m[in.y][in.x].o == gm->en.o)
-		gm->en.hp = in;
-	else if (!yis_coord(gm->me.hp, &(gm->map)) &&
+		*enhp = in;
+	else if (!yis_coord(*mehp, &(gm->map)) &&
 			gm->map.m[in.y][in.x].o == gm->me.o)
-		gm->me.hp = in;
-	if (yis_coord(gm->en.hp, &(gm->map)) && yis_coord(gm->me.hp, &(gm->map)))
+		*mehp = in;
+	if (yis_coord(*enhp, &(gm->map)) && yis_coord(*mehp, &(gm->map)))
 		return (1);
 	return (0);
 }
 
-static unsigned char	yfind_start_hp(t_gm *gm)
+static unsigned char	yfind_start_hp(t_gm *gm, t_crd *mehp, t_crd *enhp)
 {
 	t_crd		in;
 
 	in = (t_crd){0, 0};
-	gm->me.hp = (t_crd){-1, -1};
-	gm->en.hp = (t_crd){-1, -1};
+	*mehp = (t_crd){-1, -1};
+	*enhp = (t_crd){-1, -1};
 	while (in.y < gm->map.h)
 	{
-		if (yidentify_pos_hp(gm, in))
+		if (yidentify_pos_hp(gm, in, mehp, enhp))
 			return (1);
 		while (yrng_h_ho(&(gm->map), in, &(in)))
-			if (yidentify_pos_hp(gm, in))
+			if (yidentify_pos_hp(gm, in, mehp, enhp))
 				return (1);
 		in = (t_crd){0, in.y + 1};
 	}
 	gm->en.o = '\0';
-	if (!yis_coord(gm->me.hp, &(gm->map)))
+	if (!yis_coord(*mehp, &(gm->map)))
 		return (0);
 	return (1);
 }
 
 static unsigned char	yfind_start_positions(t_gm *gm)
 {
-	return (yfind_start_hp(gm) && yfind_start_vp(gm));
+	return (yfind_start_hp(gm, &gm->me.base.hp, &gm->en.base.hp) &&
+		yfind_start_vp(gm, &gm->me.base.vp, &gm->en.base.vp));
 }
 
-static void				yreset_pc_pos(t_pc *pc)
+static void				yreset_pc_pos(t_pc *pc, t_base *base)
 {
-	pc->hp = (t_crd){0, 0};
+	base->hp = (t_crd){0, 0};
 	if (pc->map.m[0][0].o == '.')
-		yrng_h_ho(&(pc->map), pc->hp, &(pc->hp));
-	pc->vp = (t_crd){0, 0};
+		yrng_h_ho(&(pc->map), base->hp, &(base->hp));
+	base->vp = (t_crd){0, 0};
 	if (pc->map.m[0][0].o == '.')
-		yrng_v_ho(&(pc->map), pc->vp, &(pc->vp));
+		yrng_v_ho(&(pc->map), base->vp, &(base->vp));
 }
 
 static void				ynext_hp(char o, t_map *map, t_crd *hp)
@@ -264,23 +267,23 @@ static void				ynext_vp(char o, t_map *map, t_crd *vp)
 	*vp = (t_crd){-1, -1};
 }
 
-static unsigned char	ynext_map_pos(t_ply *ply, t_map *map)
+static unsigned char	ynext_map_pos(t_ply *ply, t_map *map, t_base *base)
 {
 	t_crd		li;
 	t_crd		hi;
 
-	if (yis_coord(ply->hp, map))
+	if (yis_coord(base->hp, map))
 	{
-		map->a = ply->hp;
-		ynext_hp(ply->o, map, &(ply->hp));
+		map->a = base->hp;
+		ynext_hp(ply->o, map, &(base->hp));
 		return (1);
 	}
 	else
 	{
-		while (yis_coord(ply->vp, map))
+		while (yis_coord(base->vp, map))
 		{
-			map->a = ply->vp;
-			ynext_vp(ply->o, map, &(ply->vp));
+			map->a = base->vp;
+			ynext_vp(ply->o, map, &(base->vp));
 			yrng_h_li(map, map->a, &li);
 			yrng_h_hi(map, map->a, &hi);
 			if (!ycoord_equals(map->a, li) && !ycoord_equals(map->a, hi))
@@ -290,23 +293,23 @@ static unsigned char	ynext_map_pos(t_ply *ply, t_map *map)
 	}
 }
 
-static unsigned char	ynext_pc_pos(t_ply *ply, t_pc *pc)
+static unsigned char	ynext_pc_pos(t_ply *ply, t_pc *pc, t_base *base)
 {
 	t_crd		li;
 	t_crd		hi;
 
-	if (yis_coord(pc->hp, &(pc->map)))
+	if (yis_coord(base->hp, &(pc->map)))
 	{
-		pc->map.a = pc->hp;
-		ynext_hp(ply->o, &(pc->map), &(pc->hp));
+		pc->map.a = base->hp;
+		ynext_hp(ply->o, &(pc->map), &(base->hp));
 		return (1);
 	}
 	else
 	{
-		while (yis_coord(pc->vp, &(pc->map)))
+		while (yis_coord(base->vp, &(pc->map)))
 		{
-			pc->map.a = pc->vp;
-			ynext_vp(ply->o, &(pc->map), &(pc->vp));
+			pc->map.a = base->vp;
+			ynext_vp(ply->o, &(pc->map), &(base->vp));
 			yrng_h_li(&(pc->map), pc->map.a, &li);
 			yrng_h_hi(&(pc->map), pc->map.a, &hi);
 			if (!ycoord_equals(pc->map.a, li) && !ycoord_equals(pc->map.a, hi))
@@ -566,14 +569,14 @@ unsigned char			yplay(t_gm *gm)
 {
 	if (!yfind_start_positions(gm))
 		return (0);
-	while (ynext_map_pos(&(gm->me), &(gm->map)))
+	while (ynext_map_pos(&(gm->me), &(gm->map), &gm->me.base))
 	{
 		//ft_printf("\nmap pos : %d %d\n", gm->map.a.x, gm->map.a.y);
 		//fprintf(stderr, "\nfrom : %d %d\n", gm->map.a.x, gm->map.a.y);
 		//t_crd tst = yfind_nearest(gm, gm->map.a, gm->en.o);
 		//fprintf(stderr, "\nto : %d %d\n\n\n", tst.x, tst.y);
-		yreset_pc_pos(&(gm->pc));
-		while (ynext_pc_pos(&(gm->me), &(gm->pc)))
+		yreset_pc_pos(&(gm->pc), &gm->pc.base);
+		while (ynext_pc_pos(&(gm->me), &(gm->pc), &gm->pc.base))
 		{
 			//ft_printf("pc pos : %d %d\n", gm->pc.map.a.x, gm->pc.map.a.y);
 			if (ycan_put_piece(&(gm->pc), &(gm->map)))

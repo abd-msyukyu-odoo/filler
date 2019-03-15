@@ -48,6 +48,12 @@ typedef struct			s_range
 	int					d;
 }						t_rng;
 
+typedef struct 			s_base
+{
+	t_crd				hp;
+	t_crd				vp;
+}						t_base;
+
 /*
 ** v : vertical
 ** h : horizontal
@@ -96,8 +102,7 @@ typedef struct			s_input
 typedef struct			s_player
 {
 	char				o;
-	t_crd				hp;
-	t_crd				vp;
+	t_base				base;
 }						t_ply;
 
 /*
@@ -113,8 +118,7 @@ typedef struct			s_piece
 	t_map				map;
 	t_crd				mic;
 	t_crd				mac;
-	t_crd				hp;
-	t_crd				vp;
+	t_base				base;
 }						t_pc;
 
 /*

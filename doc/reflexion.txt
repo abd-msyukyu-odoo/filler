@@ -26,3 +26,13 @@ a scorer : 	atteindre un mur pour la premiere fois, proche de l'ennemi (mid to h
 
 2 segfault :	decode pc (decode_input)
 				yrng_h_hi (ynext_hp) (ynext_pc_pos)
+
+-> 
+
+pour chaque placement de piece, parcourir le contour de la piece
+pour chaque case du contour, calculer la distance avec l'ennemi
+faire la somme de ces distances
+garder le placement de piece qui minimise la somme des distances
+-> condition : avoir un point de depart secondaire pour le contour de la piece (autre que celui utilise pour le placement de la piece)
+-> creer une structure "point de depart", changer la structure de player et de piece
+-> changer la signature des fonctions relatives au point de depart pour se baser sur un point de depart externe
