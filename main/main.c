@@ -101,8 +101,7 @@ int				main(void)
 	}
 	free(in.s);
 	in.p = 0;
-	int i = 0;
-	while (i++ < 5 && yread_turn(&in, &gm))
+	while (yread_turn(&in, &gm))
 	{
 		//print_map_piece(gm.map, gm.pc);
 		played = yplay(&gm);
