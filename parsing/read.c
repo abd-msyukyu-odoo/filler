@@ -79,7 +79,7 @@ static unsigned char	yempty_until(char **out, ssize_t *len, char *rmn,
 		rmn[j - i] = rmn[j];
 		j++;
 	}
-	return (((*out)[*len - 1] == end) ? 1 : 0);
+	return (*len != 0 && ((*out)[*len - 1] == end) ? 1 : 0);
 }
 
 static unsigned char	yempty_n(char **out, ssize_t *len, char *rmn, ssize_t n)
@@ -198,15 +198,15 @@ static char				*yread_n(ssize_t n, char *rmn)
 }
 
 extern FILE *fd;
-char					*yread(ssize_t n, char end)
+char					*yread(ssize_t n, char *end)
 {
 	static char		rmn[BUFF_SIZE + 1];
 	
 	//FILE *fd = fopen("output_test.txt", "a");
 	//fprintf(fd, "read : \n");
-	if (end != (char)-1)
+	if (end != NULL)
 	{
-		char *o1 = yread_until(end, rmn);
+		char *o1 = yread_until(*end, rmn);
 		//fprintf(fd, "%s\n", o1);
 		//fclose(fd);
 		return (o1);

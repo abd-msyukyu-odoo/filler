@@ -59,13 +59,13 @@ void			test_reading()
 	char			*out;
 	char			k = 'z';
 
-	out = yread(5, (char)-1);
+	out = yread(5, NULL);
 	ft_printf("%s\n", out);
 	free(out);
-	out = yread(-1, k);
+	out = yread(-1, &k);
 	ft_printf("%s\n", out);
 	free(out);
-	out = yread(7, (char)-1);
+	out = yread(7, NULL);
 	ft_printf("%s\n", out);
 	free(out);
 }
@@ -91,7 +91,7 @@ int				main(void)
 
 
 	//FILE *fd;
-	if (!(in.s = yread(0, '\n')))
+	if (!(in.s = yread(0, "\n")))
 		return (0);
 	in.p = 0;
 	if (!ydecode_player(in, &gm.me, &gm.en))
@@ -101,7 +101,8 @@ int				main(void)
 	}
 	free(in.s);
 	in.p = 0;
-	while (yread_turn(&in, &gm))
+	int i = 0;
+	while (i++ < 5 && yread_turn(&in, &gm))
 	{
 		//print_map_piece(gm.map, gm.pc);
 		played = yplay(&gm);
