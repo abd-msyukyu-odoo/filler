@@ -694,6 +694,64 @@ static unsigned char	yenemy_on_sight(t_gm *gm)
 	return (0);
 }
 
+static unsigned char	yseek_eater(t_crd o, char t, t_map *map,
+	unsigned char (*yrng_o)(t_map*, t_crd, t_crd*))
+{
+	while (yrng_o(map, o, &o))
+		if (map->m[o.y][o.x].o == t)
+			return (1);
+	return (0);
+}
+
+static unsigned char	yeaten_partial(t_crd o, char t, t_map *map)
+{
+	int		eaten;
+
+	eaten = 0;
+	if (map->m[o.y][o.x].o == t)
+		return (1);
+	if (yseek_eater(o, t, map, yrng_b_ho))
+		eaten++;
+	if (yseek_eater(o, t, map, yrng_b_lo))
+		eaten++;
+	if (yseek_eater(o, t, map, yrng_h_ho))
+		eaten++;
+	if (yseek_eater(o, t, map, yrng_h_lo))
+		eaten++;
+	if (yseek_eater(o, t, map, yrng_s_ho))
+		eaten++;
+	if (yseek_eater(o, t, map, yrng_s_lo))
+		eaten++;
+	if (yseek_eater(o, t, map, yrng_v_ho))
+		eaten++;
+	if (yseek_eater(o, t, map, yrng_v_lo))
+		eaten++;
+	return (eaten == 5);
+}
+
+static unsigned char	yeaten(t_gm *gm)
+{
+	t_pc_nav	nav;
+	int			n;
+	int			eaten;
+
+	nav.m_o = (t_crd){gm->map.a.x - gm->pc.map.a.x,
+		gm->map.a.y - gm->pc.map.a.y};
+	yreset_pc_pos(&gm->pc, &nav.it);
+	n = 0;
+	eaten = 0;
+	while (ynext_pc_pos(&gm->me, &gm->pc, &nav.it, &nav.p))
+	{
+		nav.m_p = (t_crd){nav.m_o.x + nav.p.x, nav.m_o.y + nav.p.y};
+		if (ycoord_equals(nav.p, gm->pc.map.a))
+			continue ;
+		n++;
+		if (yeaten_partial(nav.m_p, gm->en.o, &gm->map))
+			eaten++;
+	}
+	return (n == eaten);
+}
+
 unsigned char			yplay(t_gm *gm)
 {
 	t_crd			best;
@@ -702,10 +760,13 @@ unsigned char			yplay(t_gm *gm)
 	int				cur_score;
 	unsigned char	on_sight;
 	unsigned char	cur_on_sight;
+	unsigned char	not_eaten;
+	unsigned char	cur_not_eaten;
 
 	best = (t_crd){-1, -1};
 	score = -1;
 	on_sight = 0;
+	not_eaten = 0;
 	if (!yfind_start_positions(gm))
 		return (0);
 	while (ynext_map_pos(&(gm->me), &(gm->map), &gm->me.it, &gm->map.a))
@@ -738,11 +799,26 @@ unsigned char			yplay(t_gm *gm)
 				}
 				else if (cur_on_sight)
 				{
-					if (score == -1 || cur_score < score)
+					cur_not_eaten = !yeaten(gm);
+					if (!not_eaten)
 					{
-						score = cur_score;
-						best = gm->pc.map.a;
-						best_map = gm->map.a;
+						if (cur_not_eaten)
+							not_eaten = 1;
+						if (not_eaten || score == -1 || cur_score < score)
+						{
+							score = cur_score;
+							best = gm->pc.map.a;
+							best_map = gm->map.a;
+						}
+					}
+					else if (cur_not_eaten)
+					{
+						if (score == -1 || cur_score < score)
+						{
+							score = cur_score;
+							best = gm->pc.map.a;
+							best_map = gm->map.a;
+						}
 					}
 				}
 				//fprintf(stderr, "\n%d\n", score);
