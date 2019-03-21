@@ -6,7 +6,7 @@
 #    By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/03/05 17:21:38 by dabeloos          #+#    #+#              #
-#    Updated: 2019/03/15 14:27:28 by dabeloos         ###   ########.fr        #
+#    Updated: 2019/03/21 18:17:40 by dabeloos         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 # -g -fsanitize=address
@@ -15,7 +15,7 @@ NAME		= dabeloos.filler
 
 CC			= gcc
 
-CFLAGS		= -Wall -Wextra -Werror -Wno-unused-function
+CFLAGS		= -Wall -Wextra -Werror -Wno-unused-function -O3
 
 PRINTFHEAD	= ./libft/ft_printf/includes
 

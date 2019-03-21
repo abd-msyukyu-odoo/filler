@@ -45,3 +45,6 @@ garder le placement de piece qui minimise la somme des distances
 -> exception a la regle du plus "proche de l'ennemi" si :
 	ne touche pas l'ennemi (ambigu, a preciser) -> aucun rayon du contour ne vise l'ennemi directement
 		-> ajouter une limite de distance a cette regle ? -> rare
+	
+-> evaluer a chaque tour si l'ennemi possede une frontiere de la taille de la map
+-> dans ce cas, prendre en compte les murs de la map dans la definition du U

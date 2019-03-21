@@ -752,6 +752,31 @@ static unsigned char	yeaten(t_gm *gm)
 	return (n / 2 <= eaten);
 }
 
+unsigned char			yenemy_frontier(t_gm *gm)
+{
+	t_crd		o;
+
+	o = (t_crd){0, 0};
+	while (o.x < gm->map.w)
+	{
+		if (!yseek_eater(o, gm->en.o, &gm->map, yrng_v_ho))
+			break ;
+		o.x++;
+	}
+	if (o.x == gm->map.w)
+		return (1);
+	o = (t_crd){0, 0};
+	while (o.y < gm->map.h)
+	{
+		if (!yseek_eater(o, gm->en.o, &gm->map, yrng_h_ho))
+			break ;
+		o.y++;
+	}
+	if (o.y == gm->map.h)
+		return (1);
+	return (0);
+}
+
 unsigned char			yplay(t_gm *gm)
 {
 	t_crd			best;
@@ -762,11 +787,13 @@ unsigned char			yplay(t_gm *gm)
 	unsigned char	cur_on_sight;
 	unsigned char	not_eaten;
 	unsigned char	cur_not_eaten;
+	unsigned char	enemy_frontier;
 
 	best = (t_crd){-1, -1};
 	score = -1;
 	on_sight = 0;
 	not_eaten = 0;
+	//enemy_frontier = yenemy_frontier(gm);
 	if (!yfind_start_positions(gm))
 		return (0);
 	while (ynext_map_pos(&(gm->me), &(gm->map), &gm->me.it, &gm->map.a))
@@ -799,6 +826,18 @@ unsigned char			yplay(t_gm *gm)
 				}
 				else if (cur_on_sight)
 				{
+					/*
+					if (enemy_frontier)
+					{
+						if (score == -1 || cur_score < score)
+						{
+							score = cur_score;
+							best = gm->pc.map.a;
+							best_map = gm->map.a;
+						}
+						continue ;
+					}
+					*/
 					cur_not_eaten = !yeaten(gm);
 					if (!not_eaten)
 					{
