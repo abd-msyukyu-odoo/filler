@@ -680,12 +680,15 @@ static unsigned char	yenemy_on_sight(t_gm *gm)
 	while (ynext_pc_pos(&gm->me, &gm->pc, &nav.it, &nav.p))
 	{
 		nav.m_p = (t_crd){nav.m_o.x + nav.p.x, nav.m_o.y + nav.p.y};
+		/*
 		if (ycoord_equals(nav.p, gm->pc.map.a))
 		{
 			if (yseek_target_from_anchor(nav.m_p, gm->en.o, &gm->map))
 				return (1);
 		}
-		else if (yseek_target_from(nav.m_p, gm->en.o, &gm->map))
+		*/
+		if (!ycoord_equals(nav.p, gm->pc.map.a) &&
+			yseek_target_from(nav.m_p, gm->en.o, &gm->map))
 			return (1);
 	}
 	return (0);
