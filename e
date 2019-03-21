@@ -1,3 +1,0 @@
-make
-./fillerminator
-make fclean
