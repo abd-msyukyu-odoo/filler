@@ -726,14 +726,14 @@ static unsigned char	yeaten_partial(t_crd o, char t, t_map *map)
 		eaten++;
 	if (yseek_eater(o, t, map, yrng_v_lo))
 		eaten++;
-	return (eaten == 5);
+	return (eaten >= 5);
 }
 
 static unsigned char	yeaten(t_gm *gm)
 {
 	t_pc_nav	nav;
-	int			n;
-	int			eaten;
+	int				n;
+	int				eaten;
 
 	nav.m_o = (t_crd){gm->map.a.x - gm->pc.map.a.x,
 		gm->map.a.y - gm->pc.map.a.y};
@@ -749,7 +749,7 @@ static unsigned char	yeaten(t_gm *gm)
 		if (yeaten_partial(nav.m_p, gm->en.o, &gm->map))
 			eaten++;
 	}
-	return (n == eaten);
+	return (n / 2 <= eaten);
 }
 
 unsigned char			yplay(t_gm *gm)

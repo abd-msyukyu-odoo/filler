@@ -16,6 +16,7 @@ do
 		*) echo "next try : "
 	esac
 	pkill dabeloos.filler
+	pkill dabeloos0.filler
 #	sleep 0.2
 	rm filler.trace
 done
