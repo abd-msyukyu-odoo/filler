@@ -787,7 +787,7 @@ unsigned char			yplay(t_gm *gm)
 	unsigned char	cur_on_sight;
 	unsigned char	not_eaten;
 	unsigned char	cur_not_eaten;
-	unsigned char	enemy_frontier;
+	//unsigned char	enemy_frontier;
 
 	best = (t_crd){-1, -1};
 	score = -1;
