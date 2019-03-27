@@ -197,10 +197,13 @@ class Game:
         self.window.mainloop()
 
     def loop(self):
-        input()
-        self.update_board()
-        while (self.next_turn()):
-            pass
+        try:
+            input()
+            self.update_board()
+            while (self.next_turn()):
+                pass
+        except:
+            return
 
     def next_turn(self):
         read = ""
@@ -274,11 +277,14 @@ if __name__ == '__main__':
     p1 = None
     p2 = None
     while "Plateau" not in read:
-        read = input()
-        if "p1" in read:
-            p1 = Player(1, read)
-        elif "p2" in read:
-            p2 = Player(2, read)
+        try:
+            read = input()
+            if "p1" in read:
+                p1 = Player(1, read)
+            elif "p2" in read:
+                p2 = Player(2, read)
+        except:
+            exit()
     if "Plateau" not in read:
         exit()
     dimensions = read[:-1].split(" ")

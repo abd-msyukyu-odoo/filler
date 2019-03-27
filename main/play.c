@@ -603,11 +603,13 @@ static unsigned char	yseek_target_from_on(t_crd o, char t, t_map *map,
 {
 	t_crd 	n;
 
-	if (yrng_o(map, o, &n) && map->m[n.y][n.x].o == t)
+	if (yrng_o(map, o, &n) && map->m[n.y][n.x].o == t &&
+		ydistance(o, n) < ((double)(map->w + map->h)) / 8)
 		return (1);
 	return (0);
 }
 
+/*
 static unsigned char	yseek_target_from_anchor_on(t_crd o, char t, t_map *map,
 	t_dir f)
 {
@@ -623,6 +625,7 @@ static unsigned char	yseek_target_from_anchor_on(t_crd o, char t, t_map *map,
 	}
 	return (0);
 }
+*/
 
 static unsigned char	yseek_target_from(t_crd o, char t, t_map *map)
 {
@@ -647,6 +650,7 @@ static unsigned char	yseek_target_from(t_crd o, char t, t_map *map)
 	return (0);
 }
 
+/*
 static unsigned char	yseek_target_from_anchor(t_crd o, char t, t_map *map)
 {
 	if (map->m[o.y][o.x].o == t)
@@ -669,6 +673,7 @@ static unsigned char	yseek_target_from_anchor(t_crd o, char t, t_map *map)
 		return (1);
 	return (0);
 }
+*/
 
 static unsigned char	yenemy_on_sight(t_gm *gm)
 {
@@ -695,38 +700,46 @@ static unsigned char	yenemy_on_sight(t_gm *gm)
 }
 
 static unsigned char	yseek_eater(t_crd o, char t, t_map *map,
-	unsigned char (*yrng_o)(t_map*, t_crd, t_crd*))
+	unsigned char (*yrng_o)(t_map*, t_crd, t_crd*), int *dist)
 {
-	while (yrng_o(map, o, &o))
-		if (map->m[o.y][o.x].o == t)
+	t_crd	c;
+
+	c = o;
+	while (yrng_o(map, c, &c))
+		if (map->m[c.y][c.x].o == t)
+		{
+			*dist += ydistance(c, o);
 			return (1);
+		}
 	return (0);
 }
 
 static unsigned char	yeaten_partial(t_crd o, char t, t_map *map)
 {
 	int		eaten;
+	int		dist;
 
 	eaten = 0;
+	dist = 0;
 	if (map->m[o.y][o.x].o == t)
 		return (1);
-	if (yseek_eater(o, t, map, yrng_b_ho))
+	if (yseek_eater(o, t, map, yrng_b_ho, &dist))
 		eaten++;
-	if (yseek_eater(o, t, map, yrng_b_lo))
+	if (yseek_eater(o, t, map, yrng_b_lo, &dist))
 		eaten++;
-	if (yseek_eater(o, t, map, yrng_h_ho))
+	if (yseek_eater(o, t, map, yrng_h_ho, &dist))
 		eaten++;
-	if (yseek_eater(o, t, map, yrng_h_lo))
+	if (yseek_eater(o, t, map, yrng_h_lo, &dist))
 		eaten++;
-	if (yseek_eater(o, t, map, yrng_s_ho))
+	if (yseek_eater(o, t, map, yrng_s_ho, &dist))
 		eaten++;
-	if (yseek_eater(o, t, map, yrng_s_lo))
+	if (yseek_eater(o, t, map, yrng_s_lo, &dist))
 		eaten++;
-	if (yseek_eater(o, t, map, yrng_v_ho))
+	if (yseek_eater(o, t, map, yrng_v_ho, &dist))
 		eaten++;
-	if (yseek_eater(o, t, map, yrng_v_lo))
+	if (yseek_eater(o, t, map, yrng_v_lo, &dist))
 		eaten++;
-	return (eaten >= 5);
+	return (eaten >= 5 && (double)dist / eaten < ((double)(map->w + map->h)) / 8);
 }
 
 static unsigned char	yeaten(t_gm *gm)
@@ -752,6 +765,7 @@ static unsigned char	yeaten(t_gm *gm)
 	return (n / 2 <= eaten);
 }
 
+/*
 unsigned char			yenemy_frontier(t_gm *gm)
 {
 	t_crd		o;
@@ -776,6 +790,7 @@ unsigned char			yenemy_frontier(t_gm *gm)
 		return (1);
 	return (0);
 }
+*/
 
 unsigned char			yplay(t_gm *gm)
 {
