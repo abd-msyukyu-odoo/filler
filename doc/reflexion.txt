@@ -56,3 +56,6 @@ fusion : lors du placement de notre piece, on effectue la fusion
 lecture de la carte reduite a une comparaison avec la carte actuelle, on recree
 la piece, ensuite meme fusion que pour le play, mais pour l'ennemi
 (il faut toujours lire la piece) -> au final : moins de realloc
+
+
+algo de distance : 1 a 10 non dichotomique (contact), ensuite dichotomique

@@ -562,25 +562,34 @@ static int				ydistance(t_crd c1, t_crd c2)
 static t_crd			yfind_nearest(t_gm *gm, t_crd o, char t)
 {
 	int					size;
-	//int					ref;
+	int					ref;
 	t_crd				out;
-	//t_crd				cur;
-	//t_crd				verif;
+	t_crd				cur;
+	t_crd				verif;
 
     if (!yis_coord(o, &gm->map) || (gm->me.o != t && gm->en.o == '\0'))
 		return ((t_crd){-1, -1});
 	if (gm->map.m[o.y][o.x].o == t)
 		return (o);
-	/* dichotomique (opti en debut de partie, pas apres)
+	size = 1;
+	//fprintf(stderr, "\nsize : %d\n", size);
+	while (!yis_coord((out = ysonar(gm, o, t, size)), &gm->map) &&
+		size < gm->map.h + gm->map.w && size < 10)
+	{
+		size++;
+		//fprintf(stderr, "\nsize : %d\n", size);
+	}
+	if (yis_coord(out, &gm->map))
+		return (out);
 	out = gm->en.it.hp;
 	ref = ydistance(o, out);
-	size = ref / 2 + 1;
+	size = size + (ref - size) / 2;
 	verif = (t_crd){-1, -1};
-	while (size < ref && size > 1)
+	while (size < ref && size > 10)
 	{
 		if (!yis_coord((cur = ysonar(gm, o, t, size)), &gm->map) &&
 			!yis_coord((verif = ysonar(gm, o, t, size - 1)), &gm->map))
-			size = size + 1 + (ref - size) / 2;
+			size = size + (ref - size + 1) / 2;
 		else
 		{
 			if (yis_coord(verif, &gm->map))
@@ -588,19 +597,9 @@ static t_crd			yfind_nearest(t_gm *gm, t_crd o, char t)
 			else
 				out = cur;
 			ref = size;
-			size = size / 2;
+			size = 10 + (size - 10) / 2;
 		}
 	}
-	*/
-	size = 1;
-	//fprintf(stderr, "\nsize : %d\n", size);
-	while (!yis_coord((out = ysonar(gm, o, t, size)), &gm->map) &&
-		size < gm->map.h + gm->map.w)
-	{
-		size++;
-		//fprintf(stderr, "\nsize : %d\n", size);
-	}
-	
 	return (out);
 }
 
