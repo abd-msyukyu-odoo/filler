@@ -9,7 +9,7 @@ do
 	read -r -p "p1 : " first
 	read -r -p "p2 : " second
 	read -r -p "map : " map
-	./filler_vm -p1 "players/$first.filler" -p2 "players/$second.filler" -f "maps/map0$map" # | python3 ./visu/filler_visu.py &
+	./filler_vm -p1 "players/$first.filler" -p2 "players/$second.filler" -f "maps/map0$map" | python3 ./myvisu/filler_visu.py &
 	read -r -p "continue ? [-1] : " c
 	case $c in
 		1) break;;
