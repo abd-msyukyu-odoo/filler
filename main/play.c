@@ -547,26 +547,6 @@ static t_crd			ysonar(t_gm *gm, t_crd o, char t, int size)
 	return ((t_crd){-1, -1});
 }
 
-static t_crd			yfind_nearest(t_gm *gm, t_crd o, char t)
-{
-	int					size;
-	t_crd				out;
-
-    if (!yis_coord(o, &gm->map) || (gm->me.o != t && gm->en.o == '\0'))
-		return ((t_crd){-1, -1});
-	if (gm->map.m[o.y][o.x].o == t)
-		return (o);
-	size = 1;
-	//fprintf(stderr, "\nsize : %d\n", size);
-	while (!yis_coord((out = ysonar(gm, o, t, size)), &gm->map) &&
-		size < gm->map.h + gm->map.w)
-	{
-		size++;
-		//fprintf(stderr, "\nsize : %d\n", size);
-	}
-	return (out);
-}
-
 static int				ydistance(t_crd c1, t_crd c2)
 {
 	int			tmp;
@@ -577,6 +557,51 @@ static int				ydistance(t_crd c1, t_crd c2)
 	tmp = c2.x - c1.x;
 	score += (tmp < 0) ? -tmp : tmp;
 	return (score);
+}
+
+static t_crd			yfind_nearest(t_gm *gm, t_crd o, char t)
+{
+	int					size;
+	//int					ref;
+	t_crd				out;
+	//t_crd				cur;
+	//t_crd				verif;
+
+    if (!yis_coord(o, &gm->map) || (gm->me.o != t && gm->en.o == '\0'))
+		return ((t_crd){-1, -1});
+	if (gm->map.m[o.y][o.x].o == t)
+		return (o);
+	/* dichotomique (opti en debut de partie, pas apres)
+	out = gm->en.it.hp;
+	ref = ydistance(o, out);
+	size = ref / 2 + 1;
+	verif = (t_crd){-1, -1};
+	while (size < ref && size > 1)
+	{
+		if (!yis_coord((cur = ysonar(gm, o, t, size)), &gm->map) &&
+			!yis_coord((verif = ysonar(gm, o, t, size - 1)), &gm->map))
+			size = size + 1 + (ref - size) / 2;
+		else
+		{
+			if (yis_coord(verif, &gm->map))
+				out = verif;
+			else
+				out = cur;
+			ref = size;
+			size = size / 2;
+		}
+	}
+	*/
+	size = 1;
+	//fprintf(stderr, "\nsize : %d\n", size);
+	while (!yis_coord((out = ysonar(gm, o, t, size)), &gm->map) &&
+		size < gm->map.h + gm->map.w)
+	{
+		size++;
+		//fprintf(stderr, "\nsize : %d\n", size);
+	}
+	
+	return (out);
 }
 
 static int				yscore_closest(t_gm *gm)

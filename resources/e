@@ -17,6 +17,7 @@ do
 	esac
 	pkill dabeloos.filler
 	pkill dabeloos0.filler
+	pkill dabeloosd.filler
 #	sleep 0.2
 	rm filler.trace
 done
