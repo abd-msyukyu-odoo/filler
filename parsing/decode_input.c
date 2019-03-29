@@ -522,14 +522,6 @@ static unsigned char	yread_turn1(t_in *in, t_gm *gm)
 	return (yread_turn2(in, gm));
 }
 
-unsigned char			yfuse_pc(t_map *map, t_pc *pc)
-{
-	// il faut free les ares rendus inutiles et malloc ceux qui le deviennent ici.
-	
-	yfree_m(&pc->map);
-	return (1);
-}
-
 static unsigned char	yread_turn_lite1(t_in *in, t_gm *gm)
 {
 	t_pc		en_pc;

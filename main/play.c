@@ -917,3 +917,11 @@ unsigned char			yplay(t_gm *gm)
 	}
 	return (0);
 }
+
+unsigned char			yfuse_pc(t_map *map, t_pc *pc)
+{
+	// il faut free les ares rendus inutiles et malloc ceux qui le deviennent ici.
+	
+	yfree_m(&pc->map);
+	return (1);
+}

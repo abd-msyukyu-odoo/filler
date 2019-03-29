@@ -59,3 +59,35 @@ la piece, ensuite meme fusion que pour le play, mais pour l'ennemi
 
 
 algo de distance : 1 a 10 non dichotomique (contact), ensuite dichotomique
+
+
+
+methodologie de fusion : 
+
+
+parcourir les elements pleins de la map de la piece
+pour chacun d'eux : 
+	se mettre sur la case concernee sur la map finale
+	si la couleur est la meme que nous
+		return
+	changer sa couleur
+	regarder dans les 4 axes (2 directions simultanement)
+	si 2x ennemi
+		rien faire
+	si 2x allie
+		prendre le pointeur en x minimum, ajuster la longueur a la fin de celui
+		...du x maximum, parcourir tous les elements sur l'axe dont le pointeur est
+		...supprime (y compris cette case]), ajouter le pointeur en x minimum
+	si 2x vide
+		creer un nouveau pointeur de longueur 1 a cette case
+		ajuster le pointeur vide en x minimum (longueur)
+		creer un nouveau pointeur en x maximum jusqu'a l'ancienne longueur,
+		...parcourir tous les points et ajouter ce pointeur
+	si 1x vide et ennemi
+		ajuster la fin ou le debut du pointeur vide
+		creer un nouveau pointeur de longueur 1 a cette case
+	si 1x vide et allie
+		ajuster la fin ou le debut du pointeur vide
+		ajuster la fin ou le debut du pointeur allie
+	si 1x allie et ennemi
+		ajuster la fin ou le debut du pointeur allie
