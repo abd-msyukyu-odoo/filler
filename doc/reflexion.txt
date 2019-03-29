@@ -73,7 +73,7 @@ pour chacun d'eux :
 	changer sa couleur
 	regarder dans les 4 axes (2 directions simultanement)
 	si 2x ennemi
-		rien faire
+		creer un nouveau pointeur de longueur 1 a cette case
 	si 2x allie
 		prendre le pointeur en x minimum, ajuster la longueur a la fin de celui
 		...du x maximum, parcourir tous les elements sur l'axe dont le pointeur est
