@@ -918,10 +918,34 @@ unsigned char			yplay(t_gm *gm)
 	return (0);
 }
 
+static unsigned char	yplace_pc_elem(t_crd p, t_map *map, char t)
+{
+	if (map->m[p.y][p.x].o == t)
+		return (1);
+	map->m[p.y][p.x].o = t;
+	
+}
+
 unsigned char			yfuse_pc(t_map *map, t_pc *pc)
 {
+	t_crd		verif;
+	t_crd		cur;
+
+	verif = (t_crd){-1,-1};
+	yreset_pc_pos(pc, &pc->it);
+	cur = pc->it.hp;
 	// il faut free les ares rendus inutiles et malloc ceux qui le deviennent ici.
-	
-	yfree_m(&pc->map);
+	while (!yis_coord(cur, &pc->map))
+	{
+		if (!yplace_pc_elem((t_crd){cur.x + pc->mic.x, cur.y + pc->mic.y},
+			map, pc->map.m[cur.y][cur.x].o))
+			return (0);
+		yrng_h_hi(&pc->map, cur, &verif);
+		if (ycoord_equals(cur, verif))
+			ynext_hp(pc->map.m[cur.y][cur.x].o, &pc->map, &cur);
+		else
+			cur.x += 1;
+	}
+	yfree_map(&pc->map);
 	return (1);
 }

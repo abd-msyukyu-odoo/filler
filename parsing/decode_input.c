@@ -564,7 +564,7 @@ static unsigned char	yread_turn_lite1(t_in *in, t_gm *gm)
 	yreset_in(in);
 	if (!yfuse_pc(&gm->map, &en_pc))
 	{
-		yfree_m(&(en_pc.map));
+		yfree_map(&(en_pc.map));
 		yfree_map(&(gm->map));
 		return (0);
 	}
