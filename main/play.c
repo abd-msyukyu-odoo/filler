@@ -923,7 +923,9 @@ static unsigned char	yplace_pc_elem(t_crd p, t_map *map, char t)
 	if (map->m[p.y][p.x].o == t)
 		return (1);
 	map->m[p.y][p.x].o = t;
-	
+	if (!yadjust_h(p, *map, t))
+		return (0);
+	if (!yadjust_v(p, *map, t))
 }
 
 unsigned char			yfuse_pc(t_map *map, t_pc *pc)
