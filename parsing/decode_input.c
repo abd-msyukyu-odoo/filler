@@ -217,14 +217,14 @@ static unsigned char	ydecode_line_map(t_in *in, t_map *map, int y)
 	return (1);
 }
 
-static unsigned char	ydecode_line_pc(t_in *in, t_map *map, int y, char o)
+static unsigned char	ydecode_line_pc(t_in *in, t_map *map, int y, char o, char t)
 {
 	int				x;
 
 	x = 0;
-	while (x < map->w && yvalid_for_piece(in->s[in->p]))
+	while (x < map->w) //&& yvalid_for_piece(in->s[in->p])) // deja verifie
 	{
-		in->s[in->p] = (in->s[in->p] == '*') ? o : in->s[in->p];
+		in->s[in->p] = (in->s[in->p] == t) ? o : in->s[in->p];
 		if (!yadd_are(in->s[in->p], x, y, map))
 		{
 			if (x > 0)
@@ -289,7 +289,7 @@ static unsigned char	ymalloc_map(t_map *map)
 	return (1);
 }
 
-static void				yfree_map(t_map *map)
+static void				yfree_m(t_map *map)
 {
 	int			y;
 
@@ -299,7 +299,7 @@ static void				yfree_map(t_map *map)
 	free(map->m);
 }
 
-static unsigned char	ydecode_pc(t_in *in, t_pc *pc, char o)
+static unsigned char	ydecode_pc(t_in *in, t_pc *pc, char o, char t)
 {
 	int			y;
 
@@ -312,7 +312,7 @@ static unsigned char	ydecode_pc(t_in *in, t_pc *pc, char o)
 	while (y < pc->map.h)
 	{
 		in->p += pc->mic.x;
-		if (!ydecode_line_pc(in, &(pc->map), y, o))
+		if (!ydecode_line_pc(in, &(pc->map), y, o, t))
 		{
 			if (y > 0)
 				yfree_ares(&(pc->map), pc->map.w, y);
@@ -331,7 +331,8 @@ static void				yinit_mic_mac(t_pc *pc)
 	pc->mac = (t_crd){-1, -1};
 }
 
-static unsigned char	ydecode_crop(t_in *in, t_pc *pc)
+static unsigned char	ydecode_crop(t_in *in, t_pc *pc, char t,
+	unsigned char (*valid)(char))
 {
 	int			y;
 	int			x;
@@ -343,9 +344,9 @@ static unsigned char	ydecode_crop(t_in *in, t_pc *pc)
 	while (++y < pc->map.h)
 	{
 		x = -1;
-		while (++x < pc->map.w && yvalid_for_piece(in->s[l]))
+		while (++x < pc->map.w && valid(in->s[l]))
 		{
-			if (in->s[l] == '*')
+			if (in->s[l] == t)
 			{
 				pc->mic.x = (pc->mic.x == -1 || x < pc->mic.x) ? x : pc->mic.x;
 				pc->mic.y = (pc->mic.y == -1 || y < pc->mic.y) ? y : pc->mic.y;
@@ -360,11 +361,21 @@ static unsigned char	ydecode_crop(t_in *in, t_pc *pc)
 	return (1);
 }
 
-void					yfree_turn(t_map *map, t_pc *pc)
+void					yfree_pc(t_pc *pc)
 {
 	yfree_ares(&(pc->map), pc->map.w, pc->map.h);
-	yfree_map(&(pc->map));
+	yfree_m(&(pc->map));
+}
+
+void					yfree_map(t_map *map)
+{
 	yfree_ares(map, map->w, map->h);
+	yfree_m(map);
+}
+
+void					yfree_turn(t_map *map, t_pc *pc)
+{
+	yfree_pc(pc);
 	yfree_map(map);
 }
 
@@ -430,24 +441,22 @@ static ssize_t			ymap_read_size(t_map *map)
 
 static unsigned char	yread_turn3(t_in *in, t_gm *gm)
 {
+	//map piece
 	if (!(in->s = yread((ssize_t)((gm->pc.map.w + 1) * gm->pc.map.h), NULL)))
 	{
-		yfree_ares(&(gm->map), gm->map.w, gm->map.h);
 		yfree_map(&(gm->map));
 		return (0);
 	}
-	if (!ydecode_crop(in, &(gm->pc)))
+	if (!ydecode_crop(in, &(gm->pc), '*', yvalid_for_piece))
 	{
 		yreset_in(in);
-		yfree_ares(&(gm->map), gm->map.w, gm->map.h);
 		yfree_map(&(gm->map));
 		return (0);
 	}
-	if (!ydecode_pc(in, &(gm->pc), gm->me.o))
+	if (!ydecode_pc(in, &(gm->pc), gm->me.o, '*'))
 	{
 		yreset_in(in);
-		yfree_map(&(gm->pc.map));
-		yfree_ares(&(gm->map), gm->map.w, gm->map.h);
+		yfree_m(&(gm->pc.map));
 		yfree_map(&(gm->map));
 		return (0);
 	}
@@ -457,16 +466,9 @@ static unsigned char	yread_turn3(t_in *in, t_gm *gm)
 
 static unsigned char	yread_turn2(t_in *in, t_gm *gm)
 {
-	if (!ydecode_map(in, &(gm->map)))
-	{
-		yreset_in(in);
-		yfree_map(&(gm->map));
-		return (0);
-	}
-	yreset_in(in);
+	//piece
 	if (!(in->s = yread(0, "\n")))
 	{
-		yfree_ares(&(gm->map), gm->map.w, gm->map.h);
 		yfree_map(&(gm->map));
 		return (0);
 	}
@@ -474,7 +476,6 @@ static unsigned char	yread_turn2(t_in *in, t_gm *gm)
 		gm->pc.map.w == 0 || gm->pc.map.h == 0)
 	{
 		yreset_in(in);
-		yfree_ares(&(gm->map), gm->map.w, gm->map.h);
 		yfree_map(&(gm->map));
 		return (0);
 	}
@@ -482,8 +483,9 @@ static unsigned char	yread_turn2(t_in *in, t_gm *gm)
 	return (yread_turn3(in, gm));
 }
 
-unsigned char			yread_turn(t_in *in, t_gm *gm)
+static unsigned char	yread_turn1(t_in *in, t_gm *gm)
 {
+	//pateau
 	if (!(in->s = yread(0, "\n")))
 		return (0);
 	if (!ydecode_size(in, &(gm->map.w), &(gm->map.h), PLATEAU))
@@ -497,16 +499,92 @@ unsigned char			yread_turn(t_in *in, t_gm *gm)
 		return (0);
 	}
 	yreset_in(in);
+	//ligne inutile
 	if (!(in->s = yread(0, "\n")))
 	{
-		yfree_map(&(gm->map));
+		yfree_m(&(gm->map));
 		return (0);
 	}
 	yreset_in(in);
+	//map plateau
+	if (!(in->s = yread(ymap_read_size(&(gm->map)), NULL)))
+	{
+		yfree_m(&(gm->map));
+		return (0);
+	}
+	if (!ydecode_map(in, &(gm->map)))
+	{
+		yreset_in(in);
+		yfree_m(&(gm->map));
+		return (0);
+	}
+	yreset_in(in);
+	return (yread_turn2(in, gm));
+}
+
+unsigned char			yfuse_pc(t_map *map, t_pc *pc)
+{
+	// il faut free les ares rendus inutiles et malloc ceux qui le deviennent ici.
+	
+	yfree_m(&pc->map);
+	return (1);
+}
+
+static unsigned char	yread_turn_lite1(t_in *in, t_gm *gm)
+{
+	t_pc		en_pc;
+	//plateau
+	if (!(in->s = yread(0, "\n")))
+	{
+		yfree_map(&gm->map);
+		return (0);
+	}
+	yreset_in(in);
+	//ligne inutile
+	if (!(in->s = yread(0, "\n")))
+	{
+		yfree_map(&gm->map);
+		return (0);
+	}
+	yreset_in(in);
+	//map (read)
 	if (!(in->s = yread(ymap_read_size(&(gm->map)), NULL)))
 	{
 		yfree_map(&(gm->map));
 		return (0);
 	}
+	//piece (nouvel ennemi sur map)
+	en_pc.map.w = gm->map.w;
+	en_pc.map.h = gm->map.h;
+	if (!ydecode_crop(in, &en_pc, ft_tolower(gm->en.o), yvalid_for_map))
+	{
+		yreset_in(in);
+		yfree_map(&(gm->map));
+		return (0);
+	}
+	if (!ydecode_pc(in, &en_pc, ft_tolower(gm->en.o), ft_tolower(gm->en.o)))
+	{
+		yreset_in(in);
+		yfree_m(&(en_pc.map));
+		yfree_map(&(gm->map));
+		return (0);
+	}
+	yreset_in(in);
+	if (!yfuse_pc(&gm->map, &en_pc))
+	{
+		yfree_m(&(en_pc.map));
+		yfree_map(&(gm->map));
+		return (0);
+	}
 	return (yread_turn2(in, gm));
+}
+
+unsigned char			yread_turn(t_in *in, t_gm *gm)
+{
+	//return yread_turn1(in, gm);
+	
+	if (gm->map.m == NULL)
+		return yread_turn1(in, gm);
+	else
+		return yread_turn_lite1(in, gm);
 }

@@ -101,14 +101,17 @@ int				main(void)
 	}
 	free(in.s);
 	in.p = 0;
-	while (yread_turn(&in, &gm))
+	gm.map.m = NULL;
+	while (yread_turn(&in, &gm))//ajout piece ennemi, free la piece ennemie creee
 	{
 		//print_map_piece(gm.map, gm.pc);
-		played = yplay(&gm);
-		yfree_turn(&gm.map, &gm.pc);
+		played = yplay(&gm);//ajout piece allie, free la piece allie creee
+		//yfree_turn(&gm.map, &gm.pc);
 		in.p = 0;
-		if (!played)
+		if (!played) {
+			yfree_turn(&gm.map, &gm.pc);
 			return (0);
+		}
 	}
 	/*fd = fopen("output_test.txt", "a");
 	fprintf(fd, "read error\n\n");

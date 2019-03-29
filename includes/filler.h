@@ -16,6 +16,7 @@
 # include "keycode.h"
 # include "mlx.h"
 # include "ft_printf.h"
+# include "libft.h"
 # include <stdlib.h>
 # include <sys/types.h>
 # include <unistd.h>
@@ -156,7 +157,10 @@ char					*yread(ssize_t n, char *end);
 unsigned int			yatoui_limited(t_in *in);
 //unsigned char			ydecode_input(t_in in, t_map *map, t_pc *pc, char o);
 void					yfree_turn(t_map *map, t_pc *pc);
+void					yfree_pc(t_pc *pc);
+void					yfree_map(t_map *map);
 unsigned char			yread_turn(t_in *in, t_gm *gm);
+unsigned char			yfuse_pc(t_map *map, t_pc *pc);
 
 /*
  * decode_player.c
