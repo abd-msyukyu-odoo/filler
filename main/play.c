@@ -34,6 +34,11 @@ static t_rng*			yrng_v_ho(t_map *map, t_crd in, t_crd *out)
 	return (NULL);
 }
 
+static t_rng*			yrng_v_no(t_map *map, t_crd in, t_crd *out)
+{
+	
+}
+
 static t_rng*			yrng_v_lo(t_map *map, t_crd in, t_crd *out)
 {
 	*out = (t_crd){map->m[in.y][in.x].v->s.x,
@@ -946,7 +951,11 @@ static unsigned char	ycheck_l_me(t_dot d, t_map *map, char t, t_dir dir, t_dot l
 {
 	if (yis_coord(h.c, map) && map->m[h.c.y][h.c.x].o == t)
 	{
-		map->m[l.c.y][l.c.x].
+		l.r->d += 1 + h.r->d;
+		free(d.r);
+		free(h.r);
+		d.r = l.r;
+
 	}
 	else if (yis_coord(h.c, map) && map->m[h.c.y][h.c.x].o == '.')
 	{
