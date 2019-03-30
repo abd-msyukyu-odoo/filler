@@ -93,10 +93,16 @@ typedef struct			s_map
 	t_crd				a;
 }						t_map;
 
-typedef struct 			s_direction
+typedef struct 			s_sense
 {
 	unsigned char		(*yrng_o)(t_map*, t_crd, t_crd*);
 	void				(*yrng_i)(t_map*, t_crd, t_crd*);
+}						t_sen;
+
+typedef struct			s_direction
+{
+	t_sen				l;
+	t_sen				h;
 }						t_dir;
 
 /*

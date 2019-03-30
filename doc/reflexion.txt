@@ -91,3 +91,12 @@ pour chacun d'eux :
 		ajuster la fin ou le debut du pointeur allie
 	si 1x allie et ennemi
 		ajuster la fin ou le debut du pointeur allie
+	si 1x mur et allie
+		ajuster la fin ou le debut du pointeur allie
+	si 1x mur et ennemi
+		recuperer le pointeur vide pour la couleur
+	si 1x mur et vide
+		ajuster la fin ou le debut du pointeur vide
+		creer un nouveau pointeur de longueur 1 a cette case
+	si 2x mur
+		recuperer le pointeur vide pour la couleur

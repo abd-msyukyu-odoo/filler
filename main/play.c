@@ -918,14 +918,41 @@ unsigned char			yplay(t_gm *gm)
 	return (0);
 }
 
-static unsigned char	yplace_pc_elem(t_crd p, t_map *map, char t)
+static unsigned char	ycheck_dir(t_crd p, t_map *map, char t, t_dir dir)
 {
+	t_crd		l;
+	t_crd		h;
+
+	dir.l.yrng_i(map, p, &l);
+	if (ycoord_equals(p, l) && !dir.l.yrng_o(map, p, &l))
+		l = (t_crd){-1, -1}; // wall
+	//color of l is correct if l is a valid coord
+	dir.h.yrng_i(map, p, &h);
+	if (ycoord_equals(p, h) && !dir.h.yrng_o(map, p, &h))
+		h = (t_crd){-1, -1}; // wall
+	//color of h is correct if h is a valid coord
+}
+
+static unsigned char	yfuse_pc_elem(t_crd p, t_map *map, char t)
+{
+	t_dir		dir;
+
 	if (map->m[p.y][p.x].o == t)
 		return (1);
 	map->m[p.y][p.x].o = t;
-	if (!yadjust_h(p, *map, t))
+	dir = (t_dir){(t_sen){yrng_h_lo, yrng_h_li}, (t_sen){yrng_h_ho, yrng_h_hi}};
+	if (!ycheck_dir(p, map, t, dir))
 		return (0);
-	if (!yadjust_v(p, *map, t))
+	dir = (t_dir){(t_sen){yrng_v_lo, yrng_v_li}, (t_sen){yrng_v_ho, yrng_v_hi}};
+	if (!ycheck_dir(p, map, t, dir))
+		return (0);
+	dir = (t_dir){(t_sen){yrng_b_lo, yrng_b_li}, (t_sen){yrng_b_ho, yrng_b_hi}};
+	if (!ycheck_dir(p, map, t, dir))
+		return (0);
+	dir = (t_dir){(t_sen){yrng_s_lo, yrng_s_li}, (t_sen){yrng_s_ho, yrng_s_hi}};
+	if (!ycheck_dir(p, map, t, dir))
+		return (0);
+	return (1);
 }
 
 unsigned char			yfuse_pc(t_map *map, t_pc *pc)
@@ -939,7 +966,7 @@ unsigned char			yfuse_pc(t_map *map, t_pc *pc)
 	// il faut free les ares rendus inutiles et malloc ceux qui le deviennent ici.
 	while (!yis_coord(cur, &pc->map))
 	{
-		if (!yplace_pc_elem((t_crd){cur.x + pc->mic.x, cur.y + pc->mic.y},
+		if (!yfuse_pc_elem((t_crd){cur.x + pc->mic.x, cur.y + pc->mic.y},
 			map, pc->map.m[cur.y][cur.x].o))
 			return (0);
 		yrng_h_hi(&pc->map, cur, &verif);
