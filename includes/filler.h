@@ -97,6 +97,7 @@ typedef struct 			s_sense
 {
 	t_rng*				(*yrng_o)(t_map*, t_crd, t_crd*);
 	t_rng*				(*yrng_i)(t_map*, t_crd, t_crd*);
+	t_rng*				(*yrng_n)(t_map*, t_crd, t_crd*);
 }						t_sen;
 
 typedef struct			s_direction

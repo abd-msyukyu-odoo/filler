@@ -34,11 +34,6 @@ static t_rng*			yrng_v_ho(t_map *map, t_crd in, t_crd *out)
 	return (NULL);
 }
 
-static t_rng*			yrng_v_no(t_map *map, t_crd in, t_crd *out)
-{
-	
-}
-
 static t_rng*			yrng_v_lo(t_map *map, t_crd in, t_crd *out)
 {
 	*out = (t_crd){map->m[in.y][in.x].v->s.x,
@@ -59,6 +54,15 @@ static t_rng*			yrng_v_li(t_map *map, t_crd in, t_crd *out)
 {
 	*out = (t_crd){map->m[in.y][in.x].v->s.x,
 		map->m[in.y][in.x].v->s.y};
+	return (map->m[(*out).y][(*out).x].v);
+}
+
+static t_rng*			yrng_v_hn(t_map *map, t_crd in, t_crd *out)
+{
+	rng_v_hi(map, in, out);
+	if (ycoord_equals(in, *out))
+		return (NULL);
+	*out = (t_crd){in.x, in.y + 1};
 	return (map->m[(*out).y][(*out).x].v);
 }
 
@@ -94,6 +98,15 @@ static t_rng*			yrng_h_li(t_map *map, t_crd in, t_crd *out)
 	return (map->m[(*out).y][(*out).x].h);
 }
 
+static t_rng*			yrng_h_hn(t_map *map, t_crd in, t_crd *out)
+{
+	rng_h_hi(map, in, out);
+	if (ycoord_equals(in, *out))
+		return (NULL);
+	*out = (t_crd){in.x + 1, in.y};
+	return (map->m[(*out).y][(*out).x].h);
+}
+
 static t_rng*			yrng_b_ho(t_map *map, t_crd in, t_crd *out)
 {
 	*out = (t_crd){map->m[in.y][in.x].b->s.x + map->m[in.y][in.x].b->d,
@@ -126,6 +139,15 @@ static t_rng*			yrng_b_li(t_map *map, t_crd in, t_crd *out)
 	return (map->m[(*out).y][(*out).x].b);
 }
 
+static t_rng*			yrng_b_hn(t_map *map, t_crd in, t_crd *out)
+{
+	rng_b_hi(map, in, out);
+	if (ycoord_equals(in, *out))
+		return (NULL);
+	*out = (t_crd){in.x + 1, in.y + 1};
+	return (map->m[(*out).y][(*out).x].b);
+}
+
 static t_rng*			yrng_s_ho(t_map *map, t_crd in, t_crd *out)
 {
 	*out = (t_crd){map->m[in.y][in.x].s->s.x + map->m[in.y][in.x].s->d,
@@ -155,6 +177,15 @@ static t_rng*			yrng_s_li(t_map *map, t_crd in, t_crd *out)
 {
 	*out = (t_crd){map->m[in.y][in.x].s->s.x,
 		map->m[in.y][in.x].s->s.y};
+	return (map->m[(*out).y][(*out).x].s);
+}
+
+static t_rng*			yrng_s_hn(t_map *map, t_crd in, t_crd *out)
+{
+	rng_s_hi(map, in, out);
+	if (ycoord_equals(in, *out))
+		return (NULL);
+	*out = (t_crd){in.x + 1, in.y - 1};
 	return (map->m[(*out).y][(*out).x].s);
 }
 
@@ -947,24 +978,54 @@ unsigned char			yplay(t_gm *gm)
 	return (0);
 }
 
+static void				yoverwrite_rng(t_rng *new, t_rng *ref, t_map *map, t_crd crd)
+{
+	t_are		are;
+
+	are = map->m[crd.y][crd.x];
+	if (ref == are.b)
+		map->m[crd.y][crd.x].b = new;
+	else if (ref == are.s)
+		map->m[crd.y][crd.x].s = new;
+	else if (ref == are.v)
+		map->m[crd.y][crd.x].v = new;
+	else if (ref == are.h)
+		map->m[crd.y][crd.x].h = new;
+}
+
 static unsigned char	ycheck_l_me(t_dot d, t_map *map, char t, t_dir dir, t_dot l, t_dot h)
 {
+	t_crd		it;
+	t_rng		*ref;
+
 	if (yis_coord(h.c, map) && map->m[h.c.y][h.c.x].o == t)
 	{
 		l.r->d += 1 + h.r->d;
-		free(d.r);
-		free(h.r);
-		d.r = l.r;
-
+		ref = h.r;
+		dir.h.yrng_o(map, d.c, &it);
+		while (dir.h.yrng_n(map, it, &it))
+			yoverwrite_rng(l.r, ref, map, it);
+		free(ref);
+		ref = d.r;
+		yoverwrite_rng(l.r, d.r, map, d.c);
+		free(ref);
 	}
 	else if (yis_coord(h.c, map) && map->m[h.c.y][h.c.x].o == '.')
 	{
-
+		l.r->d += 1;
+		h.r->d -= 1;
+		dir.h.yrng_o(map, d.c, &it);
+		h.r->s = it;
+		yoverwrite_rng(l.r, d.r, map, d.c);
 	}
 	else
 	{
-
+		l.r->d += 1;
+		ref = d.r;
+		yoverwrite_rng(l.r, d.r, map, d.c);
+		free(ref);
 	}
+	return (1);
 }
 
 static unsigned char	ycheck_l_void(t_dot d, t_map *map, char t, t_dir dir, t_dot l, t_dot h)
@@ -1029,19 +1090,23 @@ static unsigned char	yfuse_pc_elem(t_crd p, t_map *map, char t)
 	if (map->m[p.y][p.x].o == t)
 		return (1);
 	map->m[p.y][p.x].o = t;
-	dir = (t_dir){(t_sen){yrng_h_lo, yrng_h_li}, (t_sen){yrng_h_ho, yrng_h_hi}};
+	dir = (t_dir){(t_sen){yrng_h_lo, yrng_h_li, NULL},
+		(t_sen){yrng_h_ho, yrng_h_hi, yrng_h_hn}};
 	dot.r = map->m[p.y][p.x].h;
 	if (!ycheck_dir(dot, map, t, dir))
 		return (0);
-	dir = (t_dir){(t_sen){yrng_v_lo, yrng_v_li}, (t_sen){yrng_v_ho, yrng_v_hi}};
+	dir = (t_dir){(t_sen){yrng_v_lo, yrng_v_li, NULL}, 
+		(t_sen){yrng_v_ho, yrng_v_hi, yrng_h_hn}};
 	dot.r = map->m[p.y][p.x].v;
 	if (!ycheck_dir(dot, map, t, dir))
 		return (0);
-	dir = (t_dir){(t_sen){yrng_b_lo, yrng_b_li}, (t_sen){yrng_b_ho, yrng_b_hi}};
+	dir = (t_dir){(t_sen){yrng_b_lo, yrng_b_li, NULL},
+		(t_sen){yrng_b_ho, yrng_b_hi, yrng_h_hn}};
 	dot.r = map->m[p.y][p.x].b;
 	if (!ycheck_dir(dot, map, t, dir))
 		return (0);
-	dir = (t_dir){(t_sen){yrng_s_lo, yrng_s_li}, (t_sen){yrng_s_ho, yrng_s_hi}};
+	dir = (t_dir){(t_sen){yrng_s_lo, yrng_s_li, NULL},
+		(t_sen){yrng_s_ho, yrng_s_hi, yrng_h_hn}};
 	dot.r = map->m[p.y][p.x].s;
 	if (!ycheck_dir(dot, map, t, dir))
 		return (0);
