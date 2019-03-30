@@ -73,11 +73,12 @@ pour chacun d'eux :
 	changer sa couleur
 	regarder dans les 4 axes (2 directions simultanement)
 	si 2x ennemi
-		creer un nouveau pointeur de longueur 1 a cette case
+		rien faire
 	si 2x allie
 		prendre le pointeur en x minimum, ajuster la longueur a la fin de celui
 		...du x maximum, parcourir tous les elements sur l'axe dont le pointeur est
 		...supprime (y compris cette case]), ajouter le pointeur en x minimum
+		supprimer le pointeur vide
 	si 2x vide
 		creer un nouveau pointeur de longueur 1 a cette case
 		ajuster le pointeur vide en x minimum (longueur)
@@ -94,9 +95,49 @@ pour chacun d'eux :
 	si 1x mur et allie
 		ajuster la fin ou le debut du pointeur allie
 	si 1x mur et ennemi
-		recuperer le pointeur vide pour la couleur
+		rien faire
 	si 1x mur et vide
 		ajuster la fin ou le debut du pointeur vide
 		creer un nouveau pointeur de longueur 1 a cette case
 	si 2x mur
-		recuperer le pointeur vide pour la couleur
+		rien faire
+
+
+
+-> autre facon de faire : 
+
+low :
+	si allie
+		tester le high
+		si allie
+			ajuster et recuperer le pointeur allie low pour contenir ce point et le pointeur high
+			supprimer le pointeur high
+			supprimer le pointeur vide
+		si vide
+			ajuster le pointeur allie low pour contenir ce point
+			ajuste le depart du pointeur vide high
+		si ennemi ou mur (else)
+			ajuster le pointeur allie low pour contenir ce point
+			supprimer le pointeur vide
+	si vide
+		tester le high
+		si allie
+			ajuster le pointeur vide pour les low
+			ajuster et recuperer le pointeur allie high
+		si vide
+			creer un pointeur vide pour les high
+			ajuster le pointeur vide pour les low
+			creer un pointeur allie de longueur 1
+		si ennemi ou mur (else)
+			ajuster le pointeur vide pour les low
+			creer un pointeur allie de longueur 1
+	si mur ou ennemi (else)
+		tester le high
+		si allie
+			ajuster le pointeur allie high
+			supprimer le pointeur vide
+		si vide
+			ajuster le pointeur vide high
+			creer un pointeur allie de longueur 1
+		si ennemi ou mur
+			rien
