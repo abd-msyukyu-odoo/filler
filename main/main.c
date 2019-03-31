@@ -13,7 +13,6 @@
 #include "filler.h"
 #include "libft.h"
 
-
 int				yon_release(int key, void *param)
 {
 	param = NULL;
@@ -91,6 +90,7 @@ int				main(void)
 
 
 	//FILE *fd;
+	fd = stderr;
 	if (!(in.s = yread(0, "\n")))
 		return (0);
 	in.p = 0;
@@ -109,10 +109,10 @@ int				main(void)
 		//yfree_turn(&gm.map, &gm.pc);
 		in.p = 0;
 		if (!played) {
-			yfree_turn(&gm.map, &gm.pc);
 			return (0);
 		}
 	}
+	fprintf(fd, "read error");
 	/*fd = fopen("output_test.txt", "a");
 	fprintf(fd, "read error\n\n");
 	fclose(fd);*/

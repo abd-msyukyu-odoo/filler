@@ -6,7 +6,7 @@
 #    By: dabeloos <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/03/05 17:21:38 by dabeloos          #+#    #+#              #
-#    Updated: 2019/03/21 18:17:40 by dabeloos         ###   ########.fr        #
+#    Updated: 2019/03/31 05:52:18 by dabeloos         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 # -g -fsanitize=address
@@ -15,7 +15,7 @@ NAME		= dabeloos.filler
 
 CC			= gcc
 
-CFLAGS		= -Wall -Wextra -Werror -Wno-unused-function -O3
+CFLAGS		= -Wall -Wextra -Werror -Wno-unused-function
 
 PRINTFHEAD	= ./libft/ft_printf/includes
 
@@ -47,7 +47,7 @@ UNDERLINE_E	= \033[4m
 
 $(NAME):	$(O_FILES)
 			@make -C libft/
-			@gcc -o $(NAME) $(O_FILES) -L./libft/ -lft
+			@gcc -o $(NAME) $(O_FILES) -L./libft/ -lft -g -fsanitize=address
 			@echo "$(GREEN_E)end compilation$(END_E)"
 
 all:		$(NAME)

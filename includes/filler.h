@@ -27,6 +27,8 @@
 
 # include <stdio.h>
 
+FILE	*fd;
+
 typedef struct			s_find_end
 {
 	char				*out;

@@ -203,18 +203,18 @@ char					*yread(ssize_t n, char *end)
 	static char		rmn[BUFR_SIZE + 1];
 	
 	//FILE *fd = fopen("output_test.txt", "a");
-	//fprintf(fd, "read : \n");
+	//ft_putstr_fd(fd, "read : \n");
 	if (end != NULL)
 	{
 		char *o1 = yread_until(*end, rmn);
-		//fprintf(fd, "%s\n", o1);
+		//ft_putstr_fd(fd, "%s\n", o1);
 		//fclose(fd);
 		return (o1);
 	}
 	if (n > 0)
 	{
 		char *o2 = yread_n(n, rmn);
-		//fprintf(fd, "%s\n", o2);
+		//ft_putstr_fd(fd, "%s\n", o2);
 		//fclose(fd);
 		return (o2);
 	}

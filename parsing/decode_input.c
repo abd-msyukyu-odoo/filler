@@ -445,12 +445,14 @@ static unsigned char	yread_turn3(t_in *in, t_gm *gm)
 	if (!(in->s = yread((ssize_t)((gm->pc.map.w + 1) * gm->pc.map.h), NULL)))
 	{
 		yfree_map(&(gm->map));
+		fprintf(fd, "h");
 		return (0);
 	}
 	if (!ydecode_crop(in, &(gm->pc), '*', yvalid_for_piece))
 	{
 		yreset_in(in);
 		yfree_map(&(gm->map));
+		fprintf(fd, "i");
 		return (0);
 	}
 	if (!ydecode_pc(in, &(gm->pc), gm->me.o, '*'))
@@ -458,6 +460,7 @@ static unsigned char	yread_turn3(t_in *in, t_gm *gm)
 		yreset_in(in);
 		yfree_m(&(gm->pc.map));
 		yfree_map(&(gm->map));
+		fprintf(fd, "j");
 		return (0);
 	}
 	yreset_in(in);
@@ -470,6 +473,7 @@ static unsigned char	yread_turn2(t_in *in, t_gm *gm)
 	if (!(in->s = yread(0, "\n")))
 	{
 		yfree_map(&(gm->map));
+		fprintf(fd, "f");
 		return (0);
 	}
 	if (!ydecode_size(in, &(gm->pc.map.w), &(gm->pc.map.h), PIECE) ||
@@ -477,6 +481,7 @@ static unsigned char	yread_turn2(t_in *in, t_gm *gm)
 	{
 		yreset_in(in);
 		yfree_map(&(gm->map));
+		fprintf(fd, "g");
 		return (0);
 	}
 	yreset_in(in);
@@ -529,6 +534,7 @@ static unsigned char	yread_turn_lite1(t_in *in, t_gm *gm)
 	if (!(in->s = yread(0, "\n")))
 	{
 		yfree_map(&gm->map);
+		fprintf(fd, "a");
 		return (0);
 	}
 	yreset_in(in);
@@ -536,6 +542,7 @@ static unsigned char	yread_turn_lite1(t_in *in, t_gm *gm)
 	if (!(in->s = yread(0, "\n")))
 	{
 		yfree_map(&gm->map);
+		fprintf(fd, "b");
 		return (0);
 	}
 	yreset_in(in);
@@ -543,15 +550,26 @@ static unsigned char	yread_turn_lite1(t_in *in, t_gm *gm)
 	if (!(in->s = yread(ymap_read_size(&(gm->map)), NULL)))
 	{
 		yfree_map(&(gm->map));
+		fprintf(fd, "c");
 		return (0);
 	}
 	//piece (nouvel ennemi sur map)
+	fprintf(fd, "\n\n%s\n\n", in->s);
+	for (int y = 0; y < gm->map.h; y++)
+	{
+		for (int x = 0; x < gm->map.w; x++)
+		{
+			fprintf(fd, "%c", gm->map.m[y][x].o);
+		}
+		fprintf(fd, "\n");
+	}
 	en_pc.map.w = gm->map.w;
 	en_pc.map.h = gm->map.h;
 	if (!ydecode_crop(in, &en_pc, ft_tolower(gm->en.o), yvalid_for_map))
 	{
 		yreset_in(in);
 		yfree_map(&(gm->map));
+		fprintf(fd, "d");
 		return (0);
 	}
 	if (!ydecode_pc(in, &en_pc, ft_tolower(gm->en.o), ft_tolower(gm->en.o)))
@@ -559,6 +577,7 @@ static unsigned char	yread_turn_lite1(t_in *in, t_gm *gm)
 		yreset_in(in);
 		yfree_m(&(en_pc.map));
 		yfree_map(&(gm->map));
+		fprintf(fd, "e");
 		return (0);
 	}
 	yreset_in(in);
@@ -566,6 +585,7 @@ static unsigned char	yread_turn_lite1(t_in *in, t_gm *gm)
 	{
 		yfree_map(&(en_pc.map));
 		yfree_map(&(gm->map));
+		fprintf(fd, "f");
 		return (0);
 	}
 	return (yread_turn2(in, gm));

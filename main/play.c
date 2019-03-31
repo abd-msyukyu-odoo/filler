@@ -100,9 +100,12 @@ static t_rng*			yrng_h_li(t_map *map, t_crd in, t_crd *out)
 
 static t_rng*			yrng_h_hn(t_map *map, t_crd in, t_crd *out)
 {
+	fprintf(fd, "hn\n");
 	yrng_h_hi(map, in, out);
+	fprintf(fd, "hn2\n");
 	if (ycoord_equals(in, *out))
 		return (NULL);
+	fprintf(fd, "hn3\n");
 	*out = (t_crd){in.x + 1, in.y};
 	return (map->m[(*out).y][(*out).x].h);
 }
@@ -472,7 +475,7 @@ static unsigned char	ycan_put_piece(t_pc *pc, t_map *map)
 	return (1);
 }
 
-static void				yput_piece(t_map *map, t_pc *pc)
+static unsigned char	yput_piece(t_map *map, t_pc *pc)
 {
 	t_crd		origin;
 
@@ -481,13 +484,14 @@ static void				yput_piece(t_map *map, t_pc *pc)
 	if (!yfuse_pc(map, pc))
 	{
 		yfree_turn(map, pc);
-		return ;
+		return (0);
 	}
 	ft_printf("%d %d\n", origin.y, origin.x);
 	/*FILE *fd = fopen("output_test.txt", "a");
 	fprintf(fd, "%d %d\n\n", origin.y, origin.x);
 	fclose(fd);
 	*/
+	return (1);
 }
 
 static void				yidentify_quarter(t_crd o, t_crd d, t_crd *s, t_crd *e)
@@ -542,10 +546,10 @@ static t_crd			ysonar_backslash(t_gm *gm, char t, t_crd s, t_crd e)
 {
 	t_crd				d;
 
-	//fprintf(stderr, "backslash it : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
+	//fprintf(fd, "backslash it : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
 	if (!yfit_backslash(gm, &s, &e))
 		return ((t_crd){-1, -1});
-	//fprintf(stderr, "backslash fit : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
+	//fprintf(fd, "backslash fit : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
 	d = s;
 	if (gm->map.m[d.y][d.x].o == t)
 		return (d);
@@ -563,16 +567,16 @@ static t_crd			ysonar_slash(t_gm *gm, char t, t_crd s, t_crd e)
 {
 	t_crd				d;
 
-	//fprintf(stderr, "slash it : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
+	//fprintf(fd, "slash it : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
 	if (!yfit_slash(gm, &s, &e))
 		return ((t_crd){-1, -1});
-	//fprintf(stderr, "slash fit : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
+	//fprintf(fd, "slash fit : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
 	d = s;
 	if (gm->map.m[d.y][d.x].o == t)
 		return (d);
 	while (yrng_s_ho(&gm->map, d, &d))
 	{
-		//fprintf(stderr, "intermediate hop : %d %d\n", d.x, d.y);
+		//fprintf(fd, "intermediate hop : %d %d\n", d.x, d.y);
 		if (d.x > e.x)
 			return ((t_crd){-1, -1});
 		if (gm->map.m[d.y][d.x].o == t)
@@ -637,12 +641,12 @@ static t_crd			yfind_nearest(t_gm *gm, t_crd o, char t)
 	if (gm->map.m[o.y][o.x].o == t)
 		return (o);
 	size = 1;
-	//fprintf(stderr, "\nsize : %d\n", size);
+	//fprintf(fd, "\nsize : %d\n", size);
 	while (!yis_coord((out = ysonar(gm, o, t, size)), &gm->map) &&
 		size < gm->map.h + gm->map.w && size < 10)
 	{
 		size++;
-		//fprintf(stderr, "\nsize : %d\n", size);
+		//fprintf(fd, "\nsize : %d\n", size);
 	}
 	if (yis_coord(out, &gm->map))
 		return (out);
@@ -903,9 +907,9 @@ unsigned char			yplay(t_gm *gm)
 	while (ynext_map_pos(&(gm->me), &(gm->map), &gm->me.it, &gm->map.a))
 	{
 		//ft_printf("\nmap pos : %d %d\n", gm->map.a.x, gm->map.a.y);
-		//fprintf(stderr, "\nfrom : %d %d\n", gm->map.a.x, gm->map.a.y);
+		//fprintf(fd, "\nfrom : %d %d\n", gm->map.a.x, gm->map.a.y);
 		//t_crd tst = yfind_nearest(gm, gm->map.a, gm->en.o);
-		//fprintf(stderr, "\nto : %d %d\n\n\n", tst.x, tst.y);
+		//fprintf(fd, "\nto : %d %d\n\n\n", tst.x, tst.y);
 		yreset_pc_pos(&(gm->pc), &gm->pc.it);
 		while (ynext_pc_pos(&(gm->me), &(gm->pc), &gm->pc.it, &gm->pc.map.a))
 		{
@@ -964,7 +968,7 @@ unsigned char			yplay(t_gm *gm)
 						}
 					}
 				}
-				//fprintf(stderr, "\n%d\n", score);
+				//fprintf(fd, "\n%d\n", score);
 			}
 		}
 	}
@@ -972,8 +976,8 @@ unsigned char			yplay(t_gm *gm)
 	{
 		gm->pc.map.a = best;
 		gm->map.a = best_map;
-		yput_piece(&gm->map, &gm->pc);
-		return (1);
+		if (yput_piece(&gm->map, &gm->pc))
+			return (1);
 	}
 	return (0);
 }
@@ -1042,8 +1046,10 @@ static unsigned char	ycheck_l_void(t_dot d, t_map *map, char t, t_dir dir, t_dot
 	t_rng		*new;
 	int			count;
 
+	fprintf(fd, "r0\n");
 	if (yis_coord(h.c, map) && map->m[h.c.y][h.c.x].o == t)
 	{
+		fprintf(fd, "r00\n");
 		l.r->d -= 1;
 		h.r->s = d.c;
 		h.r->d += 1;
@@ -1051,31 +1057,46 @@ static unsigned char	ycheck_l_void(t_dot d, t_map *map, char t, t_dir dir, t_dot
 	}
 	else if (yis_coord(h.c, map) && map->m[h.c.y][h.c.x].o == '.')
 	{
+		fprintf(fd, "r10\n");
 		dir.h.yrng_o(map, d.c, &it);
 		if (!ymalloc_range(&new, it.x, it.y))
+		{
+			fprintf(fd, "r1\n");
 			return (0);
+		}
 		prev = it;
 		ref = h.r;
 		count = 2;
+		fprintf(fd, "r101\n");
 		while (dir.h.yrng_n(map, it, &it))
 		{
+			fprintf(fd, "wh1\n");
 			yoverwrite_rng(new, ref, map, prev);
 			prev = it;
 			count++;
 		}
+		fprintf(fd, "r102\n");
 		yoverwrite_rng(new, ref, map, it);
 		l.r->d -= count;
 		if (!ymalloc_range(&new, d.c.x, d.c.y))
+		{
+			fprintf(fd, "r2\n");
 			return (0);
+		}
 		yoverwrite_rng(new, d.r, map, d.c);
 	}
 	else
 	{
+		fprintf(fd, "r20\n");
 		if (!ymalloc_range(&new, d.c.x, d.c.y))
+		{
+			fprintf(fd, "r3\n");
 			return (0);
+		}
 		yoverwrite_rng(new, d.r, map, d.c);
 		l.r->d -= 1;
 	}
+	fprintf(fd, "r4\n");
 	return (1);
 }
 
@@ -1119,11 +1140,20 @@ static unsigned char	ycheck_dir(t_dot d, t_map *map, char t, t_dir dir)
 		h.c = (t_crd){-1, -1}; // wall
 	//color of h is correct if h is a valid coord
 	if (yis_coord(l.c, map) && map->m[l.c.y][l.c.x].o == t)
+	{
+		fprintf(fd, "dir1\n");
 		return ycheck_l_me(d, map, t, dir, l, h);
+	}
 	else if (yis_coord(l.c, map) && map->m[l.c.y][l.c.x].o == '.')
+	{
+		fprintf(fd, "dir2\n");
 		return ycheck_l_void(d, map, t, dir, l, h);
+	}
 	else
+	{
+		fprintf(fd, "dir3\n");
 		return ycheck_l_other(d, map, t, dir, h);
+	}
 }
 
 static unsigned char	yfuse_pc_elem(t_crd p, t_map *map, char t)
@@ -1131,6 +1161,7 @@ static unsigned char	yfuse_pc_elem(t_crd p, t_map *map, char t)
 	t_dir		dir;
 	t_dot		dot;
 
+	fprintf(fd, "coucou\n");
 	dot = (t_dot){p, NULL};
 	if (map->m[p.y][p.x].o == t)
 		return (1);
@@ -1138,21 +1169,25 @@ static unsigned char	yfuse_pc_elem(t_crd p, t_map *map, char t)
 	dir = (t_dir){(t_sen){yrng_h_lo, yrng_h_li, NULL},
 		(t_sen){yrng_h_ho, yrng_h_hi, yrng_h_hn}};
 	dot.r = map->m[p.y][p.x].h;
+	fprintf(fd, "coucou2\n");
 	if (!ycheck_dir(dot, map, t, dir))
 		return (0);
 	dir = (t_dir){(t_sen){yrng_v_lo, yrng_v_li, NULL}, 
-		(t_sen){yrng_v_ho, yrng_v_hi, yrng_h_hn}};
+		(t_sen){yrng_v_ho, yrng_v_hi, yrng_v_hn}};
 	dot.r = map->m[p.y][p.x].v;
+	fprintf(fd, "coucou3\n");
 	if (!ycheck_dir(dot, map, t, dir))
 		return (0);
 	dir = (t_dir){(t_sen){yrng_b_lo, yrng_b_li, NULL},
-		(t_sen){yrng_b_ho, yrng_b_hi, yrng_h_hn}};
+		(t_sen){yrng_b_ho, yrng_b_hi, yrng_b_hn}};
 	dot.r = map->m[p.y][p.x].b;
+	fprintf(fd, "coucou4\n");
 	if (!ycheck_dir(dot, map, t, dir))
 		return (0);
 	dir = (t_dir){(t_sen){yrng_s_lo, yrng_s_li, NULL},
-		(t_sen){yrng_s_ho, yrng_s_hi, yrng_h_hn}};
+		(t_sen){yrng_s_ho, yrng_s_hi, yrng_s_hn}};
 	dot.r = map->m[p.y][p.x].s;
+	fprintf(fd, "coucou5\n");
 	if (!ycheck_dir(dot, map, t, dir))
 		return (0);
 	return (1);
@@ -1167,11 +1202,14 @@ unsigned char			yfuse_pc(t_map *map, t_pc *pc)
 	yreset_pc_pos(pc, &pc->it);
 	cur = pc->it.hp;
 	// il faut free les ares rendus inutiles et malloc ceux qui le deviennent ici.
-	while (!yis_coord(cur, &pc->map))
+	while (yis_coord(cur, &pc->map))
 	{
 		if (!yfuse_pc_elem((t_crd){cur.x + pc->mic.x, cur.y + pc->mic.y},
 			map, pc->map.m[cur.y][cur.x].o))
+		{
+			fprintf(fd, "no fuse\n");
 			return (0);
+		}
 		yrng_h_hi(&pc->map, cur, &verif);
 		if (ycoord_equals(cur, verif))
 			ynext_hp(pc->map.m[cur.y][cur.x].o, &pc->map, &cur);
