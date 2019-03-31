@@ -117,7 +117,7 @@ static void				yappend_range(t_rng **dst, t_rng *src)
 	(*dst)->d += 1;
 }
 
-static unsigned char	ymalloc_range(t_rng **rng, int x, int y)
+unsigned char			ymalloc_range(t_rng **rng, int x, int y)
 {
 	if (!(*rng = (t_rng*)malloc(sizeof(t_rng))))
 		return (0);

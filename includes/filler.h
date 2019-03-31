@@ -175,6 +175,7 @@ void					yfree_pc(t_pc *pc);
 void					yfree_map(t_map *map);
 unsigned char			yread_turn(t_in *in, t_gm *gm);
 unsigned char			yfuse_pc(t_map *map, t_pc *pc);
+unsigned char			ymalloc_range(t_rng **rng, int x, int y);
 
 /*
  * decode_player.c

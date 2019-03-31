@@ -996,6 +996,7 @@ static void				yoverwrite_rng(t_rng *new, t_rng *ref, t_map *map, t_crd crd)
 static unsigned char	ycheck_l_me(t_dot d, t_map *map, char t, t_dir dir, t_dot l, t_dot h)
 {
 	t_crd		it;
+	t_crd		prev;
 	t_rng		*ref;
 
 	if (yis_coord(h.c, map) && map->m[h.c.y][h.c.x].o == t)
@@ -1003,8 +1004,13 @@ static unsigned char	ycheck_l_me(t_dot d, t_map *map, char t, t_dir dir, t_dot l
 		l.r->d += 1 + h.r->d;
 		ref = h.r;
 		dir.h.yrng_o(map, d.c, &it);
+		prev = it;
 		while (dir.h.yrng_n(map, it, &it))
-			yoverwrite_rng(l.r, ref, map, it);
+		{
+			overwrite_rng(l.r, ref, map, prev);
+			prev = it;
+		}
+		overwrite_rng(l.r, ref, map, it);
 		free(ref);
 		ref = d.r;
 		yoverwrite_rng(l.r, d.r, map, d.c);
@@ -1030,34 +1036,73 @@ static unsigned char	ycheck_l_me(t_dot d, t_map *map, char t, t_dir dir, t_dot l
 
 static unsigned char	ycheck_l_void(t_dot d, t_map *map, char t, t_dir dir, t_dot l, t_dot h)
 {
+	t_crd		it;
+	t_crd		prev;
+	t_rng		*ref;
+	t_rng		*new;
+	int			count;
+
 	if (yis_coord(h.c, map) && map->m[h.c.y][h.c.x].o == t)
 	{
-
+		l.r->d -= 1;
+		h.r->s = d.c;
+		h.r->d += 1;
+		yoverwrite_rng(h.r, d.r, map, d.c);
 	}
 	else if (yis_coord(h.c, map) && map->m[h.c.y][h.c.x].o == '.')
 	{
-
+		dir.h.yrng_o(map, d.c, &it);
+		if (!ymalloc_range(&new, it.x, it.y))
+			return (0);
+		prev = it;
+		ref = h.r;
+		count = 2;
+		while (dir.h.yrng_n(map, it, &it))
+		{
+			overwrite_rng(new, ref, map, prev);
+			prev = it;
+			count++;
+		}
+		overwrite_rng(new, ref, map, it);
+		l.r->d -= count;
+		if (!ymalloc_range(&new, d.c.x, d.c.y))
+			return (0);
+		yoverwrite_rng(new, d.r, map, d.c);
 	}
 	else
 	{
-		
+		if (!ymalloc_range(&new, d.c.x, d.c.y))
+			return (0);
+		yoverwrite_rng(new, d.r, map, d.c);
+		l.r->d -= 1;
 	}
+	return (1);
 }
 
 static unsigned char	ycheck_l_other(t_dot d, t_map *map, char t, t_dir dir, t_dot l, t_dot h)
 {
+	t_rng		*ref;
+	t_crd		it;
+	t_rng		*new;
+
 	if (yis_coord(h.c, map) && map->m[h.c.y][h.c.x].o == t)
 	{
-
+		h.r->s = d.c;
+		h.r->d += 1;
+		ref = d.r;
+		yoverwrite(rng(h.r, d.r, map, d.c));
+		free(ref);
 	}
 	else if (yis_coord(h.c, map) && map->m[h.c.y][h.c.x].o == '.')
 	{
-
+		if (!ymalloc_range(&new, d.c.x, d.c.y))
+			return (0);
+		yoverwrite_rng(new, d.r, map, d.c);
+		dir.h.yrng_o(map, d.c, &it);
+		h.r->s = it;
+		h.r->d -= 1;
 	}
-	else
-	{
-		
-	}
+	return (1);
 }
 
 static unsigned char	ycheck_dir(t_dot d, t_map *map, char t, t_dir dir)
