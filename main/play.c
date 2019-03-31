@@ -59,7 +59,7 @@ static t_rng*			yrng_v_li(t_map *map, t_crd in, t_crd *out)
 
 static t_rng*			yrng_v_hn(t_map *map, t_crd in, t_crd *out)
 {
-	rng_v_hi(map, in, out);
+	yrng_v_hi(map, in, out);
 	if (ycoord_equals(in, *out))
 		return (NULL);
 	*out = (t_crd){in.x, in.y + 1};
@@ -100,7 +100,7 @@ static t_rng*			yrng_h_li(t_map *map, t_crd in, t_crd *out)
 
 static t_rng*			yrng_h_hn(t_map *map, t_crd in, t_crd *out)
 {
-	rng_h_hi(map, in, out);
+	yrng_h_hi(map, in, out);
 	if (ycoord_equals(in, *out))
 		return (NULL);
 	*out = (t_crd){in.x + 1, in.y};
@@ -141,7 +141,7 @@ static t_rng*			yrng_b_li(t_map *map, t_crd in, t_crd *out)
 
 static t_rng*			yrng_b_hn(t_map *map, t_crd in, t_crd *out)
 {
-	rng_b_hi(map, in, out);
+	yrng_b_hi(map, in, out);
 	if (ycoord_equals(in, *out))
 		return (NULL);
 	*out = (t_crd){in.x + 1, in.y + 1};
@@ -182,7 +182,7 @@ static t_rng*			yrng_s_li(t_map *map, t_crd in, t_crd *out)
 
 static t_rng*			yrng_s_hn(t_map *map, t_crd in, t_crd *out)
 {
-	rng_s_hi(map, in, out);
+	yrng_s_hi(map, in, out);
 	if (ycoord_equals(in, *out))
 		return (NULL);
 	*out = (t_crd){in.x + 1, in.y - 1};
