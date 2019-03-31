@@ -1007,10 +1007,10 @@ static unsigned char	ycheck_l_me(t_dot d, t_map *map, char t, t_dir dir, t_dot l
 		prev = it;
 		while (dir.h.yrng_n(map, it, &it))
 		{
-			overwrite_rng(l.r, ref, map, prev);
+			yoverwrite_rng(l.r, ref, map, prev);
 			prev = it;
 		}
-		overwrite_rng(l.r, ref, map, it);
+		yoverwrite_rng(l.r, ref, map, it);
 		free(ref);
 		ref = d.r;
 		yoverwrite_rng(l.r, d.r, map, d.c);
@@ -1059,11 +1059,11 @@ static unsigned char	ycheck_l_void(t_dot d, t_map *map, char t, t_dir dir, t_dot
 		count = 2;
 		while (dir.h.yrng_n(map, it, &it))
 		{
-			overwrite_rng(new, ref, map, prev);
+			yoverwrite_rng(new, ref, map, prev);
 			prev = it;
 			count++;
 		}
-		overwrite_rng(new, ref, map, it);
+		yoverwrite_rng(new, ref, map, it);
 		l.r->d -= count;
 		if (!ymalloc_range(&new, d.c.x, d.c.y))
 			return (0);
@@ -1079,7 +1079,7 @@ static unsigned char	ycheck_l_void(t_dot d, t_map *map, char t, t_dir dir, t_dot
 	return (1);
 }
 
-static unsigned char	ycheck_l_other(t_dot d, t_map *map, char t, t_dir dir, t_dot l, t_dot h)
+static unsigned char	ycheck_l_other(t_dot d, t_map *map, char t, t_dir dir, t_dot h)
 {
 	t_rng		*ref;
 	t_crd		it;
@@ -1090,7 +1090,7 @@ static unsigned char	ycheck_l_other(t_dot d, t_map *map, char t, t_dir dir, t_do
 		h.r->s = d.c;
 		h.r->d += 1;
 		ref = d.r;
-		yoverwrite(rng(h.r, d.r, map, d.c));
+		yoverwrite_rng(h.r, d.r, map, d.c);
 		free(ref);
 	}
 	else if (yis_coord(h.c, map) && map->m[h.c.y][h.c.x].o == '.')
@@ -1123,7 +1123,7 @@ static unsigned char	ycheck_dir(t_dot d, t_map *map, char t, t_dir dir)
 	else if (yis_coord(l.c, map) && map->m[l.c.y][l.c.x].o == '.')
 		return ycheck_l_void(d, map, t, dir, l, h);
 	else
-		return ycheck_l_other(d, map, t, dir, l, h);
+		return ycheck_l_other(d, map, t, dir, h);
 }
 
 static unsigned char	yfuse_pc_elem(t_crd p, t_map *map, char t)
