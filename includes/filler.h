@@ -20,7 +20,7 @@
 # include <stdlib.h>
 # include <sys/types.h>
 # include <unistd.h>
-# define BUFF_SIZE 50
+# define BUFR_SIZE 50
 # define INPUT 0
 # define PLATEAU "Plateau "
 # define PIECE "Piece "

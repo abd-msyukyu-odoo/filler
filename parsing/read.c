@@ -43,10 +43,10 @@ static ssize_t			ystr_join(char **des, ssize_t ld, char *src, ssize_t ls)
 
 static char				*yread_input(char *out, ssize_t *len)
 {
-	char			buff[BUFF_SIZE + 1];
+	char			buff[BUFR_SIZE + 1];
 	ssize_t			nread;
 
-	if ((nread = read(INPUT, buff, BUFF_SIZE)))
+	if ((nread = read(INPUT, buff, BUFR_SIZE)))
 	{
 		if (nread < 0 || -1 == (*len = ystr_join(&out, *len, buff, nread)))
 		{
@@ -74,7 +74,7 @@ static unsigned char	yempty_until(char **out, ssize_t *len, char *rmn,
 		return (0);
 	}
 	j = i;
-	while (j < BUFF_SIZE + 1)
+	while (j < BUFR_SIZE + 1)
 	{
 		rmn[j - i] = rmn[j];
 		j++;
@@ -99,7 +99,7 @@ static unsigned char	yempty_n(char **out, ssize_t *len, char *rmn, ssize_t n)
 		return (0);
 	}
 	j = i;
-	while (j < BUFF_SIZE + 1)
+	while (j < BUFR_SIZE + 1)
 	{
 		rmn[j - i] = rmn[j];
 		j++;
@@ -200,7 +200,7 @@ static char				*yread_n(ssize_t n, char *rmn)
 extern FILE *fd;
 char					*yread(ssize_t n, char *end)
 {
-	static char		rmn[BUFF_SIZE + 1];
+	static char		rmn[BUFR_SIZE + 1];
 	
 	//FILE *fd = fopen("output_test.txt", "a");
 	//fprintf(fd, "read : \n");
