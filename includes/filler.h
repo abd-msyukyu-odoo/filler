@@ -19,7 +19,12 @@
 # include <stdlib.h>
 # include <sys/types.h>
 # include <unistd.h>
-# define BUFF_SIZE 50
+# ifndef BUFF_SIZE
+#  define BUFF_SIZE 256
+# endif
+# ifndef MAX_BUFF
+#  define MAX_BUFF 1000000
+# endif
 # define INPUT 0
 # define PLATEAU "Plateau "
 # define PIECE "Piece "
