@@ -28,12 +28,6 @@
 
 # include <stdio.h>
 
-typedef struct			s_string
-{
-	char				*s;
-	ssize_t				l;
-}						t_str;
-
 typedef struct			s_find_end
 {
 	char				*out;

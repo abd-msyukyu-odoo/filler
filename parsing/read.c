@@ -30,7 +30,7 @@ static unsigned char	ystr_realloc(char **in, ssize_t old, ssize_t new,
 	return (1);
 }
 
-static unsigned char	ystr_spc_realloc(t_str *in, ssize_t old, ssize_t new)
+static unsigned char	ystr_spc_realloc(t_string *in, ssize_t old, ssize_t new)
 {
 	if (old < 0 || new < 0 || new < old || (in->s == NULL && old != 0))
 		return (0);
@@ -41,7 +41,7 @@ static unsigned char	ystr_spc_realloc(t_str *in, ssize_t old, ssize_t new)
 	return (ystr_realloc(&(in->s), old, new, in->l));
 }
 
-static ssize_t			ystr_join(t_str *des, ssize_t ld, char *src, ssize_t ls)
+static ssize_t			ystr_join(t_string *des, ssize_t ld, char *src, ssize_t ls)
 {
 	ssize_t		tmp;
 
@@ -53,7 +53,7 @@ static ssize_t			ystr_join(t_str *des, ssize_t ld, char *src, ssize_t ls)
 	return (ld + tmp);
 }
 
-static char				*yread_input(t_str *out, ssize_t *len)
+static char				*yread_input(t_string *out, ssize_t *len)
 {
 	char			buff[BUFF_SIZE + 1];
 	ssize_t			nread;
@@ -69,7 +69,7 @@ static char				*yread_input(t_str *out, ssize_t *len)
 	return (out->s);
 }
 
-static unsigned char	yempty_until(t_str *out, ssize_t *len, char *rmn,
+static unsigned char	yempty_until(t_string *out, ssize_t *len, char *rmn,
 		char end)
 {
 	ssize_t			i;
@@ -94,7 +94,7 @@ static unsigned char	yempty_until(t_str *out, ssize_t *len, char *rmn,
 	return (*len != 0 && ((out->s)[*len - 1] == end) ? 1 : 0);
 }
 
-static unsigned char	yempty_n(char **out, ssize_t *len, char *rmn, ssize_t n)
+static unsigned char	yempty_n(t_string *out, ssize_t *len, char *rmn, ssize_t n)
 {
 	ssize_t			i;
 	ssize_t			j;
@@ -106,8 +106,8 @@ static unsigned char	yempty_n(char **out, ssize_t *len, char *rmn, ssize_t n)
 		i++;
 	if (-1 == (*len = ystr_join(out, *len, rmn, i)))
 	{
-		free(*out);
-		*out = NULL;
+		free(out->s);
+		out->s = NULL;
 		return (0);
 	}
 	j = i;
@@ -167,7 +167,7 @@ static unsigned char	yfind_n(t_fe fe, ssize_t *len, ssize_t n)
 static char				*yread_until(char end, char *rmn)
 {
 	ssize_t			len;
-	t_str			out;
+	t_string			out;
 	ssize_t			plen;
 	t_fe			fe;
 
@@ -192,22 +192,23 @@ static char				*yread_until(char end, char *rmn)
 static char				*yread_n(ssize_t n, char *rmn)
 {
 	ssize_t			len;
-	char			*out;
+	t_string		out;
 	t_fe			fe;
 
-	out = NULL;
+	out.s = NULL;
+	out.l = 0;
 	len = 0;
 	if (yempty_n(&out, &len, rmn, n))
-		return (out);
-	if (!out)
+		return (out.s);
+	if (!out.s)
 		return (NULL);
-	while ((out = yread_input(out, &len)))
+	while ((out.s = yread_input(&out, &len)))
 	{
-		fe = (t_fe){out, rmn};
+		fe = (t_fe){out.s, rmn};
 		if (yfind_n(fe, &len, n))
-			return (out);
+			return (out.s);
 	}
-	return (out);
+	return (out.s);
 }
 
 extern FILE *fd;
