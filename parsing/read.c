@@ -12,13 +12,14 @@
 
 #include "filler.h"
 
-static unsigned char	ystr_realloc(char **in, ssize_t old, ssize_t new)
+static unsigned char	ystr_realloc(char **in, ssize_t old, ssize_t new,
+	ssize_t realloc_s)
 {
 	char		*out;
 
 	if (old < 0 || new < 0 || new < old || (*in == NULL && old != 0))
 		return (0);
-	out = (char*)malloc(new + 1);
+	out = (char*)malloc(realloc_s);
 	if (!out)
 		return (0);
 	while (old-- > 0)
@@ -29,35 +30,46 @@ static unsigned char	ystr_realloc(char **in, ssize_t old, ssize_t new)
 	return (1);
 }
 
-static ssize_t			ystr_join(char **des, ssize_t ld, char *src, ssize_t ls)
+static unsigned char	ystr_spc_realloc(t_str *in, ssize_t old, ssize_t new)
+{
+	if (old < 0 || new < 0 || new < old || (in->s == NULL && old != 0))
+		return (0);
+	if (in->l >= new + 1)
+		return (1);
+	while (new + 1 > in->l)
+		in->l = 2 * in->l;
+	return (ystr_realloc(&(in->s), old, new, in->l));
+}
+
+static ssize_t			ystr_join(t_str *des, ssize_t ld, char *src, ssize_t ls)
 {
 	ssize_t		tmp;
 
 	tmp = ls;
-	if (ld < 0 || ls < 0 || !src || !ystr_realloc(des, ld, ld + ls))
+	if (ld < 0 || ls < 0 || !src || !ystr_spc_realloc(des, ld, ld + ls))
 		return (-1);
 	while (ls-- > 0)
-		(*des)[ld + ls] = src[ls];
+		(des->s)[ld + ls] = src[ls];
 	return (ld + tmp);
 }
 
-static char				*yread_input(char *out, ssize_t *len)
+static char				*yread_input(t_str *out, ssize_t *len)
 {
 	char			buff[BUFF_SIZE + 1];
 	ssize_t			nread;
 
 	if ((nread = read(INPUT, buff, BUFF_SIZE)))
 	{
-		if (nread < 0 || -1 == (*len = ystr_join(&out, *len, buff, nread)))
+		if (nread < 0 || -1 == (*len = ystr_join(out, *len, buff, nread)))
 		{
-			free(out);
+			free(out->s);
 			return (NULL);
 		}
 	}
-	return (out);
+	return (out->s);
 }
 
-static unsigned char	yempty_until(char **out, ssize_t *len, char *rmn,
+static unsigned char	yempty_until(t_str *out, ssize_t *len, char *rmn,
 		char end)
 {
 	ssize_t			i;
@@ -69,8 +81,8 @@ static unsigned char	yempty_until(char **out, ssize_t *len, char *rmn,
 	i = (rmn[i] == end) ? i + 1 : i;
 	if (-1 == (*len = ystr_join(out, *len, rmn, i)))
 	{
-		free(*out);
-		*out = NULL;
+		free(out->s);
+		out->s = NULL;
 		return (0);
 	}
 	j = i;
@@ -79,7 +91,7 @@ static unsigned char	yempty_until(char **out, ssize_t *len, char *rmn,
 		rmn[j - i] = rmn[j];
 		j++;
 	}
-	return (*len != 0 && ((*out)[*len - 1] == end) ? 1 : 0);
+	return (*len != 0 && ((out->s)[*len - 1] == end) ? 1 : 0);
 }
 
 static unsigned char	yempty_n(char **out, ssize_t *len, char *rmn, ssize_t n)
@@ -155,25 +167,26 @@ static unsigned char	yfind_n(t_fe fe, ssize_t *len, ssize_t n)
 static char				*yread_until(char end, char *rmn)
 {
 	ssize_t			len;
-	char			*out;
+	t_str			out;
 	ssize_t			plen;
 	t_fe			fe;
 
-	out = NULL;
+	out.s = NULL;
+	out.l = 0;
 	len = 0;
 	if (yempty_until(&out, &len, rmn, end))
-		return (out);
-	if (!out)
+		return (out.s);
+	if (!out.s)
 		return (NULL);
 	plen = len;
-	while ((out = yread_input(out, &len)))
+	while ((out.s = yread_input(&out, &len)))
 	{
-		fe = (t_fe){out, rmn};
+		fe = (t_fe){out.s, rmn};
 		if (yfind_end(fe, plen, &len, end))
-			return (out);
+			return (out.s);
 		plen = len;
 	}
-	return (out);
+	return (out.s);
 }
 
 static char				*yread_n(ssize_t n, char *rmn)
