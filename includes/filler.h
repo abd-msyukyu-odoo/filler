@@ -23,7 +23,7 @@
 #  define BUFF_SIZE 256
 # endif
 # ifndef MAX_BUFF
-#  define MAX_BUFF 1000000
+#  define MAX_BUFF BUFF_SIZE * 4096
 # endif
 # define INPUT 0
 # define PLATEAU "Plateau "
