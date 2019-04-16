@@ -24,8 +24,6 @@ CHEAD		= ./libft
 
 THISHEAD	= ./includes
 
-MINILIBXH	= ./minilibx_macos
-
 MAIN_F		= main.o \
 			  play.o
 
@@ -55,7 +53,7 @@ all:		$(NAME)
 
 %.o:		%.c
 			@$(CC) $(CFLAGS) -c -o $@ $< -I$(CHEAD) -I$(PRINTFHEAD) \
-			-I$(THISHEAD) -I$(MINILIBXH)
+			-I$(THISHEAD)
 
 clean:
 			@rm -f $(O_FILES)

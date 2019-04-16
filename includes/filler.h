@@ -13,8 +13,6 @@
 #ifndef FILLER_H
 # define FILLER_H
 
-# include "keycode.h"
-# include "mlx.h"
 # include "ft_printf.h"
 # include <stdlib.h>
 # include <sys/types.h>
@@ -28,8 +26,6 @@
 # define INPUT 0
 # define PLATEAU "Plateau "
 # define PIECE "Piece "
-
-# include <stdio.h>
 
 typedef struct			s_string
 {
