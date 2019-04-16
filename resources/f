@@ -1,0 +1,18 @@
+#abanlin.filler      carli.filler        champely.filler     grati.filler        hcao.filler         superjeannot.filler
+#map00 map01 map02
+#./filler_vm -p1 players/abanlin.filler -p2 players/carli.filler -v -f maps/map04
+
+read -r -p "p1 : " first
+read -r -p "p2 : " second
+read -r -p "map : " map
+while :
+do
+	./filler_vm -p1 "players/$first.filler" -p2 "players/$second.filler" -f "maps/map0$map" | python3 ./myvisu/filler_visu.py &
+	read -r -p "continue ? [-1] : " c
+	case $c in
+		1) break;;
+		*) echo "next try : "
+	esac
+done
+pkill dabeloos.filler
+rm filler.trace
