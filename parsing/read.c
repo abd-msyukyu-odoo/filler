@@ -92,12 +92,12 @@ static unsigned char	yempty_until(t_string *out, ssize_t *len, char *rmn,
 		return (0);
 	}
 	j = i;
-	while (rmn[j] != '\0')//j < BUFF_SIZE + 1)
+	while (j < MAX_BUFF + 1)//rmn[j] != '\0')//j < BUFF_SIZE + 1)
 	{
 		rmn[j - i] = rmn[j];
 		j++;
 	}
-	rmn[j - i] = '\0';
+	//rmn[j - i] = '\0';
 	return (*len != 0 && ((out->s)[*len - 1] == end) ? 1 : 0);
 }
 
@@ -119,17 +119,17 @@ static unsigned char	yempty_n(t_string *out, ssize_t *len, char *rmn,
 		return (0);
 	}
 	j = i;
-	while (rmn[j] != '\0')//j < BUFF_SIZE + 1)
+	while (j < MAX_BUFF + 1)//rmn[j] != '\0')//j < BUFF_SIZE + 1)
 	{
 		rmn[j - i] = rmn[j];
 		j++;
 	}
-	rmn[j - i] = '\0';
+	//rmn[j - i] = '\0';
 	return ((*len == n) ? 1 : 0);
 }
 
 static unsigned char	yfind_end(t_fe fe, ssize_t plen, ssize_t *len,
-		char end)
+	char end)
 {
 	ssize_t			i;
 	ssize_t			j;
