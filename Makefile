@@ -47,7 +47,7 @@ UNDERLINE_E	= \033[4m
 
 $(NAME):	$(O_FILES)
 			@make -C libft/
-			@gcc -o $(NAME) $(O_FILES) -L./libft/ -lft -g -fsanitize=address
+			@gcc -o $(NAME) $(O_FILES) -L./libft/ -lft
 			@echo "$(GREEN_E)end compilation$(END_E)"
 
 all:		$(NAME)
