@@ -12,7 +12,7 @@
 
 #include "filler.h"
 
-unsigned int		yatoui_limited(t_in *in)
+unsigned int			yatoui_limited(t_in *in)
 {
 	unsigned int		result;
 	unsigned int		tmp;
@@ -367,36 +367,6 @@ void					yfree_turn(t_map *map, t_pc *pc)
 	yfree_ares(map, map->w, map->h);
 	yfree_map(map);
 }
-
-/*
-unsigned char			ydecode_input(t_in in, t_map *map, t_pc *pc, char o)
-{
-	if (!ydecode_size(&in, &(map->w), &(map->h), PLATEAU))
-		return (0);
-	if (map->w == 0 || map->h == 0 || !ymalloc_map(map))
-		return (0);
-	if (!yignore_line(&in) || !ydecode_map(&in, map))
-	{
-		yfree_map(map);
-		return (0);
-	}
-	if (!ydecode_size(&in, &(pc->map.w), &(pc->map.h), PIECE) ||
-		pc->map.w == 0 || pc->map.h == 0 || !ydecode_crop(&in, pc))
-	{
-		yfree_ares(map, map->w, map->h);
-		yfree_map(map);
-		return (0);
-	}
-	if (!ydecode_pc(&in, pc, o))
-	{
-		yfree_map(&(pc->map));
-		yfree_ares(map, map->w, map->h);
-		yfree_map(map);
-		return (0);
-	}
-	return (1);
-}
-*/
 
 static void				yreset_in(t_in *in)
 {

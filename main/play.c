@@ -371,10 +371,7 @@ static unsigned char	ycan_put_piece(t_pc *pc, t_map *map)
 
 	origin = (t_crd){map->a.x - pc->map.a.x, map->a.y - pc->map.a.y};
 	if (!yenclosed_piece(origin, pc, map))
-	{
-		//ft_printf("fail enclosed\n");
 		return (0);
-	}
 	n = (t_crd){0, 0};
 	while (n.y < pc->map.h)
 	{
@@ -383,10 +380,7 @@ static unsigned char	ycan_put_piece(t_pc *pc, t_map *map)
 			if (ycoord_equals(n, pc->map.a))
 			{
 				if (!ytest_anchor_range(n, origin, pc, map))
-				{
-					//ft_printf("fail anchor\n");
 					return (0);
-				}
 			}
 			else if (n.y == pc->map.a.y &&
 				pc->map.m[n.y][n.x].h->s.x < pc->map.a.x &&
@@ -394,16 +388,10 @@ static unsigned char	ycan_put_piece(t_pc *pc, t_map *map)
 				pc->map.m[n.y][n.x].h->d > pc->map.a.x)
 			{
 				if (!ycut_ranges(n, origin, pc, map))
-				{
-					//ft_printf("fail cut\n");
 					return (0);
-				}
 			}
 			else if (!ytest_range(n, origin, pc, map))
-			{
-				//ft_printf("fail std\n");
 				return (0);
-			}
 			if (!yrng_h_ho(&(pc->map), n, &n))
 				break ;
 		}
@@ -419,10 +407,6 @@ static void				yput_piece(t_map *map, t_pc *pc)
 	origin = (t_crd){map->a.x - pc->map.a.x - pc->mic.x,
 		map->a.y - pc->map.a.y - pc->mic.y};
 	ft_printf("%d %d\n", origin.y, origin.x);
-	/*FILE *fd = fopen("output_test.txt", "a");
-	fprintf(fd, "%d %d\n\n", origin.y, origin.x);
-	fclose(fd);
-	*/
 }
 
 static void				yidentify_quarter(t_crd o, t_crd d, t_crd *s, t_crd *e)
@@ -477,10 +461,8 @@ static t_crd			ysonar_backslash(t_gm *gm, char t, t_crd s, t_crd e)
 {
 	t_crd				d;
 
-	//fprintf(stderr, "backslash it : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
 	if (!yfit_backslash(gm, &s, &e))
 		return ((t_crd){-1, -1});
-	//fprintf(stderr, "backslash fit : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
 	d = s;
 	if (gm->map.m[d.y][d.x].o == t)
 		return (d);
@@ -498,16 +480,13 @@ static t_crd			ysonar_slash(t_gm *gm, char t, t_crd s, t_crd e)
 {
 	t_crd				d;
 
-	//fprintf(stderr, "slash it : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
 	if (!yfit_slash(gm, &s, &e))
 		return ((t_crd){-1, -1});
-	//fprintf(stderr, "slash fit : %d %d to %d %d\n", s.x, s.y, e.x, e.y);
 	d = s;
 	if (gm->map.m[d.y][d.x].o == t)
 		return (d);
 	while (yrng_s_ho(&gm->map, d, &d))
 	{
-		//fprintf(stderr, "intermediate hop : %d %d\n", d.x, d.y);
 		if (d.x > e.x)
 			return ((t_crd){-1, -1});
 		if (gm->map.m[d.y][d.x].o == t)
@@ -557,12 +536,10 @@ static t_crd			yfind_nearest(t_gm *gm, t_crd o, char t)
 	if (gm->map.m[o.y][o.x].o == t)
 		return (o);
 	size = 1;
-	//fprintf(stderr, "\nsize : %d\n", size);
 	while (!yis_coord((out = ysonar(gm, o, t, size)), &gm->map) &&
 		size < gm->map.h + gm->map.w)
 	{
 		size++;
-		//fprintf(stderr, "\nsize : %d\n", size);
 	}
 	return (out);
 }
@@ -609,24 +586,6 @@ static unsigned char	yseek_target_from_on(t_crd o, char t, t_map *map,
 	return (0);
 }
 
-/*
-static unsigned char	yseek_target_from_anchor_on(t_crd o, char t, t_map *map,
-	t_dir f)
-{
-	t_crd	n;
-
-	f.yrng_i(map, o, &n);
-	if (ycoord_equals(o, n) && f.yrng_o(map, o, &n))
-	{
-		if (map->m[n.y][n.x].o == t)
-			return (1);
-		else if (f.yrng_o(map, n, &n) && map->m[n.y][n.x].o == t)
-			return (1);
-	}
-	return (0);
-}
-*/
-
 static unsigned char	yseek_target_from(t_crd o, char t, t_map *map)
 {
 	if (map->m[o.y][o.x].o == t)
@@ -650,31 +609,6 @@ static unsigned char	yseek_target_from(t_crd o, char t, t_map *map)
 	return (0);
 }
 
-/*
-static unsigned char	yseek_target_from_anchor(t_crd o, char t, t_map *map)
-{
-	if (map->m[o.y][o.x].o == t)
-		return (1);
-	if (yseek_target_from_anchor_on(o, t, map, (t_dir){yrng_b_ho, yrng_b_hi}))
-		return (1);
-	if (yseek_target_from_anchor_on(o, t, map, (t_dir){yrng_b_lo, yrng_b_li}))
-		return (1);
-	if (yseek_target_from_anchor_on(o, t, map, (t_dir){yrng_h_ho, yrng_h_hi}))
-		return (1);
-	if (yseek_target_from_anchor_on(o, t, map, (t_dir){yrng_h_lo, yrng_h_li}))
-		return (1);
-	if (yseek_target_from_anchor_on(o, t, map, (t_dir){yrng_s_ho, yrng_s_hi}))
-		return (1);
-	if (yseek_target_from_anchor_on(o, t, map, (t_dir){yrng_s_lo, yrng_s_li}))
-		return (1);
-	if (yseek_target_from_anchor_on(o, t, map, (t_dir){yrng_v_ho, yrng_v_hi}))
-		return (1);
-	if (yseek_target_from_anchor_on(o, t, map, (t_dir){yrng_v_lo, yrng_v_li}))
-		return (1);
-	return (0);
-}
-*/
-
 static unsigned char	yenemy_on_sight(t_gm *gm)
 {
 	t_pc_nav	nav;
@@ -685,13 +619,6 @@ static unsigned char	yenemy_on_sight(t_gm *gm)
 	while (ynext_pc_pos(&gm->me, &gm->pc, &nav.it, &nav.p))
 	{
 		nav.m_p = (t_crd){nav.m_o.x + nav.p.x, nav.m_o.y + nav.p.y};
-		/*
-		if (ycoord_equals(nav.p, gm->pc.map.a))
-		{
-			if (yseek_target_from_anchor(nav.m_p, gm->en.o, &gm->map))
-				return (1);
-		}
-		*/
 		if (!ycoord_equals(nav.p, gm->pc.map.a) &&
 			yseek_target_from(nav.m_p, gm->en.o, &gm->map))
 			return (1);
@@ -765,33 +692,6 @@ static unsigned char	yeaten(t_gm *gm)
 	return (n / 2 <= eaten);
 }
 
-/*
-unsigned char			yenemy_frontier(t_gm *gm)
-{
-	t_crd		o;
-
-	o = (t_crd){0, 0};
-	while (o.x < gm->map.w)
-	{
-		if (!yseek_eater(o, gm->en.o, &gm->map, yrng_v_ho))
-			break ;
-		o.x++;
-	}
-	if (o.x == gm->map.w)
-		return (1);
-	o = (t_crd){0, 0};
-	while (o.y < gm->map.h)
-	{
-		if (!yseek_eater(o, gm->en.o, &gm->map, yrng_h_ho))
-			break ;
-		o.y++;
-	}
-	if (o.y == gm->map.h)
-		return (1);
-	return (0);
-}
-*/
-
 unsigned char			yplay(t_gm *gm)
 {
 	t_crd			best;
@@ -802,29 +702,19 @@ unsigned char			yplay(t_gm *gm)
 	unsigned char	cur_on_sight;
 	unsigned char	not_eaten;
 	unsigned char	cur_not_eaten;
-	//unsigned char	enemy_frontier;
 
 	best = (t_crd){-1, -1};
 	score = -1;
 	on_sight = 0;
 	not_eaten = 0;
-	//enemy_frontier = yenemy_frontier(gm);
 	if (!yfind_start_positions(gm))
 		return (0);
 	while (ynext_map_pos(&(gm->me), &(gm->map), &gm->me.it, &gm->map.a))
 	{
-		//ft_printf("\nmap pos : %d %d\n", gm->map.a.x, gm->map.a.y);
-		//fprintf(stderr, "\nfrom : %d %d\n", gm->map.a.x, gm->map.a.y);
-		//t_crd tst = yfind_nearest(gm, gm->map.a, gm->en.o);
-		//fprintf(stderr, "\nto : %d %d\n\n\n", tst.x, tst.y);
 		yreset_pc_pos(&(gm->pc), &gm->pc.it);
 		while (ynext_pc_pos(&(gm->me), &(gm->pc), &gm->pc.it, &gm->pc.map.a))
 		{
-			//ft_printf("pc pos : %d %d\n", gm->pc.map.a.x, gm->pc.map.a.y);
 			if (ycan_put_piece(&(gm->pc), &(gm->map)))
-			//minimiser la distance qui a vue sur l'ennemi ? 
-			//reconnaitre la configuration en "bouche ouverte" et eviter de jouer
-			//dedans
 			{
 				cur_score = yscore_closest(gm);
 				cur_on_sight = yenemy_on_sight(gm);
@@ -841,18 +731,6 @@ unsigned char			yplay(t_gm *gm)
 				}
 				else if (cur_on_sight)
 				{
-					/*
-					if (enemy_frontier)
-					{
-						if (score == -1 || cur_score < score)
-						{
-							score = cur_score;
-							best = gm->pc.map.a;
-							best_map = gm->map.a;
-						}
-						continue ;
-					}
-					*/
 					cur_not_eaten = !yeaten(gm);
 					if (!not_eaten)
 					{
@@ -875,7 +753,6 @@ unsigned char			yplay(t_gm *gm)
 						}
 					}
 				}
-				//fprintf(stderr, "\n%d\n", score);
 			}
 		}
 	}

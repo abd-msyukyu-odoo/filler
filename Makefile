@@ -10,12 +10,13 @@
 #                                                                              #
 # **************************************************************************** #
 # -g -fsanitize=address
+# -Wno-unused-function
 
 NAME		= dabeloos.filler
 
 CC			= gcc
 
-CFLAGS		= -Wall -Wextra -Werror -Wno-unused-function -O3
+CFLAGS		= -Wall -Wextra -Werror -O3 -Wno-unused-function
 
 PRINTFHEAD	= ./libft/ft_printf/includes
 

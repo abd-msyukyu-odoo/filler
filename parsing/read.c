@@ -95,12 +95,12 @@ static unsigned char	yempty_until(t_string *out, ssize_t *len, char *rmn,
 		return (0);
 	}
 	j = i;
-	while (j < MAX_BUFF + 1)//rmn[j] != '\0')//j < BUFF_SIZE + 1)
+	while (rmn[j] != '\0')
 	{
 		rmn[j - i] = rmn[j];
 		j++;
 	}
-	//rmn[j - i] = '\0';
+	rmn[j - i] = '\0';
 	return (*len != 0 && ((out->s)[*len - 1] == end) ? 1 : 0);
 }
 
@@ -122,12 +122,12 @@ static unsigned char	yempty_n(t_string *out, ssize_t *len, char *rmn,
 		return (0);
 	}
 	j = i;
-	while (j < MAX_BUFF + 1)//rmn[j] != '\0')//j < BUFF_SIZE + 1)
+	while (rmn[j] != '\0')
 	{
 		rmn[j - i] = rmn[j];
 		j++;
 	}
-	//rmn[j - i] = '\0';
+	rmn[j - i] = '\0';
 	return ((*len == n) ? 1 : 0);
 }
 
@@ -229,27 +229,13 @@ static char				*yread_n(ssize_t n, char *rmn)
 	return (out.s);
 }
 
-extern FILE *fd;
 char					*yread(ssize_t n, char *end)
 {
 	static char		rmn[MAX_BUFF + 1];
-	
-	//FILE *fd = fopen("output_test.txt", "a");
-	//fprintf(fd, "read : \n");
+
 	if (end != NULL)
-	{
-		char *o1 = yread_until(*end, rmn);
-	//	fprintf(fd, "%s\n", o1);
-	//	fclose(fd);
-		return (o1);
-	}
+		return (yread_until(*end, rmn));
 	if (n > 0)
-	{
-		char *o2 = yread_n(n, rmn);
-	//	fprintf(fd, "%s\n", o2);
-	//	fclose(fd);
-		return (o2);
-	}
-	//fclose(fd);
+		return (yread_n(n, rmn));
 	return (NULL);
 }
