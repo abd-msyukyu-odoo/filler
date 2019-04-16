@@ -22,11 +22,20 @@
 # ifndef BUFF_SIZE
 #  define BUFF_SIZE 256
 # endif
+# ifndef MAX_BUFF
+#  define MAX_BUFF 1000000
+# endif
 # define INPUT 0
 # define PLATEAU "Plateau "
 # define PIECE "Piece "
 
 # include <stdio.h>
+
+typedef struct			s_string
+{
+	char				*s;
+	ssize_t				l;
+}						t_string;
 
 typedef struct			s_find_end
 {
