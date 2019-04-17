@@ -14,30 +14,12 @@
 # define FILLER_H
 
 # include "ft_printf.h"
+# include "yreader.h"
 # include <stdlib.h>
 # include <sys/types.h>
 # include <unistd.h>
-# ifndef BUFF_SIZE
-#  define BUFF_SIZE 256
-# endif
-# ifndef MAX_BUFF
-#  define MAX_BUFF BUFF_SIZE * 4096
-# endif
-# define INPUT 0
 # define PLATEAU "Plateau "
 # define PIECE "Piece "
-
-typedef struct			s_string
-{
-	char				*s;
-	ssize_t				l;
-}						t_string;
-
-typedef struct			s_find_end
-{
-	char				*out;
-	char				*rmn;
-}						t_fe;
 
 typedef struct			s_coord
 {
@@ -151,11 +133,6 @@ typedef struct			s_game_master
 	t_ply				me;
 	t_ply				en;
 }						t_gm;
-
-/*
-** read.c
-*/
-char					*yread(ssize_t n, char *end);
 
 /*
  * decode_input.c

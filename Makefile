@@ -29,7 +29,10 @@ MAIN_F		= main.o \
 
 PARSING_F	= decode_input.o \
 			  decode_player.o \
-			  read.o
+			  str_realloc_join.o \
+			  remain_editor.o \
+			  reader.o
+			  
 
 O_FILES		= $(addprefix ./main/, $(MAIN_F)) \
 			  $(addprefix ./parsing/, $(PARSING_F))
