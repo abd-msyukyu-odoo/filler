@@ -12,7 +12,7 @@
 
 #include "yreader.h"
 
-unsigned char	        yempty_until(t_string *out, ssize_t *len, char *rmn,
+unsigned char			yempty_until(t_string *out, ssize_t *len, char *rmn,
 		char end)
 {
 	ssize_t			i;
@@ -38,7 +38,7 @@ unsigned char	        yempty_until(t_string *out, ssize_t *len, char *rmn,
 	return (*len != 0 && ((out->s)[*len - 1] == end) ? 1 : 0);
 }
 
-unsigned char	        yempty_n(t_string *out, ssize_t *len, char *rmn,
+unsigned char			yempty_n(t_string *out, ssize_t *len, char *rmn,
 	ssize_t n)
 {
 	ssize_t			i;
@@ -65,7 +65,7 @@ unsigned char	        yempty_n(t_string *out, ssize_t *len, char *rmn,
 	return ((*len == n) ? 1 : 0);
 }
 
-unsigned char	        yfind_end(t_fe fe, ssize_t plen, ssize_t *len,
+unsigned char			yfind_end(t_fe fe, ssize_t plen, ssize_t *len,
 	char end)
 {
 	ssize_t			i;
@@ -90,7 +90,7 @@ unsigned char	        yfind_end(t_fe fe, ssize_t plen, ssize_t *len,
 	return (0);
 }
 
-unsigned char	        yfind_n(t_fe fe, ssize_t *len, ssize_t n)
+unsigned char			yfind_n(t_fe fe, ssize_t *len, ssize_t n)
 {
 	ssize_t			i;
 

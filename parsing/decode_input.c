@@ -12,6 +12,13 @@
 
 #include "filler.h"
 
+///utils.c
+
+static char				yc_to_upper(char c)
+{
+	return (((c >= 'a' && c <= 'z') ? 'A' - 'a' : 0) + c);
+}
+
 unsigned int			yatoui_limited(t_in *in)
 {
 	unsigned int		result;
@@ -28,27 +35,6 @@ unsigned int			yatoui_limited(t_in *in)
 	return (result);
 }
 
-static unsigned char	ydecode_size(t_in *in, int *w, int *h, char *ref)
-{
-	size_t				p;
-
-	p = 0;
-	while (in->s[p + in->p] == ref[p])
-		p++;
-	if (ref[p] != '\0')
-		return (0);
-	in->p += p;
-	*h = yatoui_limited(in);
-	if (in->s[in->p++] != ' ')
-		return (0);
-	*w = yatoui_limited(in);
-	if (in->s[in->p++] != ':')
-		return (0);
-	if (in->s[in->p++] != '\n')
-		return (0);
-	return (1);
-}
-
 static unsigned char	yvalid_for_map(char c)
 {
 	return (c == '.' || c == 'O' || c == 'X' || c == 'o' || c == 'x');
@@ -59,20 +45,7 @@ static unsigned char	yvalid_for_piece(char c)
 	return (c == '.' || c == '*');
 }
 
-static unsigned char	yignore_line(t_in *in)
-{
-	while (in->s[in->p] != '\0' && in->s[in->p] != '\n')
-		in->p++;
-	if (in->s[in->p] == '\0')
-		return (0);
-	in->p++;
-	return (1);
-}
-
-static char				yc_to_upper(char c)
-{
-	return (((c >= 'a' && c <= 'z') ? 'A' - 'a' : 0) + c);
-}
+///free_normal.c
 
 static void				ydereference_rng(t_map *map, int x, int y, t_rng *rng)
 {
@@ -111,6 +84,32 @@ static void				yfree_ares(t_map *map, int x, int y)
 	}
 }
 
+static void				yfree_map(t_map *map)
+{
+	int			y;
+
+	y = 0;
+	while (y < map->h)
+		free(map->m[y++]);
+	free(map->m);
+}
+
+void					yfree_turn(t_map *map, t_pc *pc)
+{
+	yfree_ares(&(pc->map), pc->map.w, pc->map.h);
+	yfree_map(&(pc->map));
+	yfree_ares(map, map->w, map->h);
+	yfree_map(map);
+}
+
+static void				yreset_in(t_in *in)
+{
+	free(in->s);
+	in->p = 0;
+}
+
+///are_support.c
+
 static void				yappend_range(t_rng **dst, t_rng *src)
 {
 	*dst = src;
@@ -125,6 +124,19 @@ static unsigned char	ymalloc_range(t_rng **rng, int x, int y)
 	(*rng)->d = 1;
 	return (1);
 }
+
+static unsigned char	yabort_are_bs(int x, int y, t_map *map)
+{
+	if (x == 0)
+		free(map->m[y][x].h);
+	if (y == 0)
+		free(map->m[y][x].v);
+	if (x == map->w - 1 && y == 0)
+		free(map->m[y][x].b);
+	return (0);
+}
+
+///are_creator.c
 
 static unsigned char	yadd_are_vh(int x, int y, t_map *map)
 {
@@ -147,17 +159,6 @@ static unsigned char	yadd_are_vh(int x, int y, t_map *map)
 	else
 		yappend_range(&(map->m[y][x].v), map->m[y - 1][x].v);
 	return (1);
-}
-
-static unsigned char	yabort_are_bs(int x, int y, t_map *map)
-{
-	if (x == 0)
-		free(map->m[y][x].h);
-	if (y == 0)
-		free(map->m[y][x].v);
-	if (x == map->w - 1 && y == 0)
-		free(map->m[y][x].b);
-	return (0);
 }
 
 static unsigned char	yadd_are_bs(int x, int y, t_map *map)
@@ -192,6 +193,8 @@ static unsigned char	yadd_are(char o, int x, int y, t_map *map)
 	return (1);
 }
 
+/// map_decoder.c
+
 static unsigned char	ydecode_line_map(t_in *in, t_map *map, int y)
 {
 	int				x;
@@ -213,26 +216,6 @@ static unsigned char	ydecode_line_map(t_in *in, t_map *map, int y)
 		if (x > 0)
 			yfree_ares(map, x, y + 1);
 		return (0);
-	}
-	return (1);
-}
-
-static unsigned char	ydecode_line_pc(t_in *in, t_map *map, int y, char o)
-{
-	int				x;
-
-	x = 0;
-	while (x < map->w && yvalid_for_piece(in->s[in->p]))
-	{
-		in->s[in->p] = (in->s[in->p] == '*') ? o : in->s[in->p];
-		if (!yadd_are(in->s[in->p], x, y, map))
-		{
-			if (x > 0)
-				yfree_ares(map, x, x + 1);
-			return (0);
-		}
-		x++;
-		in->p++;
 	}
 	return (1);
 }
@@ -266,6 +249,8 @@ static unsigned char	ydecode_map(t_in *in, t_map *map)
 	return (1);
 }
 
+/// map_creator.c
+
 static unsigned char	ymalloc_map(t_map *map)
 {
 	int			y;
@@ -289,14 +274,26 @@ static unsigned char	ymalloc_map(t_map *map)
 	return (1);
 }
 
-static void				yfree_map(t_map *map)
-{
-	int			y;
+/// piece_decoder.c
 
-	y = 0;
-	while (y < map->h)
-		free(map->m[y++]);
-	free(map->m);
+static unsigned char	ydecode_line_pc(t_in *in, t_map *map, int y, char o)
+{
+	int				x;
+
+	x = 0;
+	while (x < map->w && yvalid_for_piece(in->s[in->p]))
+	{
+		in->s[in->p] = (in->s[in->p] == '*') ? o : in->s[in->p];
+		if (!yadd_are(in->s[in->p], x, y, map))
+		{
+			if (x > 0)
+				yfree_ares(map, x, x + 1);
+			return (0);
+		}
+		x++;
+		in->p++;
+	}
+	return (1);
 }
 
 static unsigned char	ydecode_pc(t_in *in, t_pc *pc, char o)
@@ -324,6 +321,8 @@ static unsigned char	ydecode_pc(t_in *in, t_pc *pc, char o)
 	}
 	return (1);
 }
+
+/// piece_cropper.c
 
 static void				yinit_mic_mac(t_pc *pc)
 {
@@ -360,18 +359,27 @@ static unsigned char	ydecode_crop(t_in *in, t_pc *pc)
 	return (1);
 }
 
-void					yfree_turn(t_map *map, t_pc *pc)
-{
-	yfree_ares(&(pc->map), pc->map.w, pc->map.h);
-	yfree_map(&(pc->map));
-	yfree_ares(map, map->w, map->h);
-	yfree_map(map);
-}
+/// dimensions_decoder.c
 
-static void				yreset_in(t_in *in)
+static unsigned char	ydecode_size(t_in *in, int *w, int *h, char *ref)
 {
-	free(in->s);
-	in->p = 0;
+	size_t				p;
+
+	p = 0;
+	while (in->s[p + in->p] == ref[p])
+		p++;
+	if (ref[p] != '\0')
+		return (0);
+	in->p += p;
+	*h = yatoui_limited(in);
+	if (in->s[in->p++] != ' ')
+		return (0);
+	*w = yatoui_limited(in);
+	if (in->s[in->p++] != ':')
+		return (0);
+	if (in->s[in->p++] != '\n')
+		return (0);
+	return (1);
 }
 
 static ssize_t			ymap_read_size(t_map *map)
@@ -397,6 +405,8 @@ static ssize_t			ymap_read_size(t_map *map)
 	}
 	return ((ssize_t)map->h * (2 + (ssize_t)map->w) + res);
 }
+
+/// turn_decoder.c
 
 static unsigned char	yread_turn3(t_in *in, t_gm *gm)
 {

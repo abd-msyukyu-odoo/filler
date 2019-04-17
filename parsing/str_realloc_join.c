@@ -28,7 +28,7 @@ static unsigned char	ystr_realloc(char **in, ssize_t old, ssize_t new,
 	return (1);
 }
 
-unsigned char       	ystr_over_realloc(t_string *in, ssize_t old,
+unsigned char			ystr_over_realloc(t_string *in, ssize_t old,
 	ssize_t new)
 {
 	if (old < 0 || new < 0 || new < old || (in->s == NULL && old != 0))
@@ -45,7 +45,7 @@ unsigned char       	ystr_over_realloc(t_string *in, ssize_t old,
 	return (ystr_realloc(&(in->s), old, new, in->l));
 }
 
-ssize_t	        		ystr_join(t_string *des, ssize_t ld, char *src,
+ssize_t					ystr_join(t_string *des, ssize_t ld, char *src,
 	ssize_t ls)
 {
 	ssize_t		tmp;
