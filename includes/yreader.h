@@ -41,25 +41,25 @@ typedef struct			s_find_end
 /*
 ** str_realloc_join.c
 */
-unsigned char       	ystr_over_realloc(t_string *in, ssize_t old,
-                        	ssize_t new);
-ssize_t	        		ystr_join(t_string *des, ssize_t ld, char *src,
-	                        ssize_t ls);
+unsigned char			ystr_over_realloc(t_string *in, ssize_t old,
+							ssize_t new);
+ssize_t					ystr_join(t_string *des, ssize_t ld, char *src,
+							ssize_t ls);
 
 /*
 ** remain_editor.c
 */
-unsigned char	        yempty_until(t_string *out, ssize_t *len, char *rmn,
-		                    char end);
-unsigned char	        yempty_n(t_string *out, ssize_t *len, char *rmn,
-                        	ssize_t n);
-unsigned char	        yfind_end(t_fe fe, ssize_t plen, ssize_t *len,
-	                        char end);
-unsigned char	        yfind_n(t_fe fe, ssize_t *len, ssize_t n);
+unsigned char			yempty_until(t_string *out, ssize_t *len, char *rmn,
+							char end);
+unsigned char			yempty_n(t_string *out, ssize_t *len, char *rmn,
+							ssize_t n);
+unsigned char			yfind_end(t_fe fe, ssize_t plen, ssize_t *len,
+							char end);
+unsigned char			yfind_n(t_fe fe, ssize_t *len, ssize_t n);
 
 /*
 ** reader.c
 */
-char                    *yread(ssize_t n, char *end);
+char					*yread(ssize_t n, char *end);
 
 #endif

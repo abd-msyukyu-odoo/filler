@@ -37,7 +37,7 @@ typedef struct			s_range
 	int					d;
 }						t_rng;
 
-typedef struct 			s_map_iterator
+typedef struct			s_map_iterator
 {
 	t_crd				hp;
 	t_crd				vp;
@@ -81,16 +81,16 @@ typedef struct			s_map
 	t_crd				a;
 }						t_map;
 
-typedef struct 			s_direction
+typedef struct			s_direction
 {
 	unsigned char		(*yrng_o)(t_map*, t_crd, t_crd*);
 	void				(*yrng_i)(t_map*, t_crd, t_crd*);
 }						t_dir;
 
 /*
- * s : string
- * p : position
- */
+** s : string
+** p : position
+*/
 typedef struct			s_input
 {
 	char				*s;
@@ -98,10 +98,10 @@ typedef struct			s_input
 }						t_in;
 
 /*
- * o : owner
- * hp : horizontal position
- * vp : vertical position
- */
+** o : owner
+** hp : horizontal position
+** vp : vertical position
+*/
 typedef struct			s_player
 {
 	char				o;
@@ -109,13 +109,13 @@ typedef struct			s_player
 }						t_ply;
 
 /*
- * map : piece's map
- * mic : minimum coordinate
- * mac : maximum coordinate
- * hp : horizeontal position
- * vp : vertical position
- * a : anchor
- */
+** map : piece's map
+** mic : minimum coordinate
+** mac : maximum coordinate
+** hp : horizeontal position
+** vp : vertical position
+** a : anchor
+*/
 typedef struct			s_piece
 {
 	t_map				map;
@@ -124,8 +124,6 @@ typedef struct			s_piece
 	t_m_it				it;
 }						t_pc;
 
-/*
- */
 typedef struct			s_game_master
 {
 	t_map				map;
@@ -141,7 +139,7 @@ typedef struct			s_yseek_eater
 	int					dist;
 }						t_yseek_eater;
 
-typedef struct 			s_yplay
+typedef struct			s_yplay
 {
 	t_crd				on_map;
 	t_crd				on_pc;
@@ -152,7 +150,6 @@ typedef struct 			s_yplay
 	unsigned char		not_eaten;
 	unsigned char		cur_not_eaten;
 }						t_yplay;
-
 
 /*
 ** ---- parsing ----
