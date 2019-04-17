@@ -17,7 +17,7 @@ static t_crd			yfind_nearest(t_gm *gm, t_crd o, char t)
 	int					size;
 	t_crd				out;
 
-    if (!yis_coord(o, &gm->map) || (gm->me.o != t && gm->en.o == '\0'))
+	if (!yis_coord(o, &gm->map) || (gm->me.o != t && gm->en.o == '\0'))
 		return ((t_crd){-1, -1});
 	if (gm->map.m[o.y][o.x].o == t)
 		return (o);

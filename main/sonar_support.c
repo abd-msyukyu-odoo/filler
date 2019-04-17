@@ -50,7 +50,7 @@ unsigned char			yfit_slash(t_gm *gm, t_crd *s, t_crd *e)
 	if (s->y >= gm->map.h)
 		*s = (t_crd){s->x + (s->y - gm->map.h + 1), gm->map.h - 1};
 	if (!yis_coord(*s, &gm->map))
-		return(0);
+		return (0);
 	if (e->x >= gm->map.w)
 		*e = (t_crd){gm->map.w - 1, e->y + (e->x - gm->map.w + 1)};
 	if (e->y < 0)

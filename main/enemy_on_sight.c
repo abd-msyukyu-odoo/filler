@@ -15,7 +15,7 @@
 static unsigned char	yseek_target_from_on(t_crd o, char t, t_map *map,
 	unsigned char (*yrng_o)(t_map*, t_crd, t_crd*))
 {
-	t_crd 	n;
+	t_crd		n;
 
 	if (yrng_o(map, o, &n) && map->m[n.y][n.x].o == t &&
 		ydistance(o, n) < ((double)(map->w + map->h)) / 8)

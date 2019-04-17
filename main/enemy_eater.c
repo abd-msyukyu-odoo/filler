@@ -52,12 +52,13 @@ static unsigned char	yeaten_partial(t_crd o, char t, t_map *map)
 		eaten++;
 	if (yseek_eater(o, t, map, yrng_v_lo, &dist))
 		eaten++;
-	return (eaten >= 5 && (double)dist / eaten < ((double)(map->w + map->h)) / 8);
+	return (eaten >= 5 && (double)dist / eaten <
+		((double)(map->w + map->h)) / 8);
 }
 
 unsigned char			yeaten(t_gm *gm)
 {
-	t_pc_nav	nav;
+	t_pc_nav		nav;
 	int				n;
 	int				eaten;
 
