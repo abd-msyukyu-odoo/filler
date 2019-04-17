@@ -37,7 +37,7 @@ static void				yscore_play(t_gm *gm, t_yplay *d)
 		if (d->cur_on_sight)
 			d->on_sight = 1;
 		if (d->on_sight || d->score == -1 || d->cur_score < d->score)
-			yupdate_best(gm, &d);
+			yupdate_best(gm, d);
 	}
 	else if (d->cur_on_sight)
 	{
@@ -47,12 +47,12 @@ static void				yscore_play(t_gm *gm, t_yplay *d)
 			if (d->cur_not_eaten)
 				d->not_eaten = 1;
 			if (d->not_eaten || d->score == -1 || d->cur_score < d->score)
-				yupdate_best(gm, &d);
+				yupdate_best(gm, d);
 		}
 		else if (d->cur_not_eaten)
 		{
 			if (d->score == -1 || d->cur_score < d->score)
-				yupdate_best(gm, &d);
+				yupdate_best(gm, d);
 		}
 	}
 }
