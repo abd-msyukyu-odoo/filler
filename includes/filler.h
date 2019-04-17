@@ -53,9 +53,9 @@ typedef struct			s_map_iterator
 
 /*
 ** it : iterator
-** p : ?
-** m_o : ?
-** m_p : ?
+** p : position on piece
+** m_o : origin on map
+** m_p : position on map
 */
 typedef struct			s_pc_navigation
 {
