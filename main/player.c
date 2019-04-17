@@ -21,21 +21,50 @@ static void				yput_piece(t_map *map, t_pc *pc)
 	ft_printf("%d %d\n", origin.y, origin.x);
 }
 
+static void				yupdate_best(t_gm *gm, t_yplay *d)
+{
+	d->score = d->cur_score;
+	d->on_pc = gm->pc.map.a;
+	d->on_map = gm->map.a;
+}
+
+static void				yscore_play(t_gm *gm, t_yplay *d)
+{
+	d->cur_score = yscore_closest(gm);
+	d->cur_on_sight = yenemy_on_sight(gm);
+	if (!d->on_sight)
+	{
+		if (d->cur_on_sight)
+			d->on_sight = 1;
+		if (d->on_sight || d->score == -1 || d->cur_score < d->score)
+			yupdate_best(gm, &d);
+	}
+	else if (d->cur_on_sight)
+	{
+		d->cur_not_eaten = !yeaten(gm);
+		if (!d->not_eaten)
+		{
+			if (d->cur_not_eaten)
+				d->not_eaten = 1;
+			if (d->not_eaten || d->score == -1 || d->cur_score < d->score)
+				yupdate_best(gm, &d);
+		}
+		else if (d->cur_not_eaten)
+		{
+			if (d->score == -1 || d->cur_score < d->score)
+				yupdate_best(gm, &d);
+		}
+	}
+}
+
 unsigned char			yplay(t_gm *gm)
 {
-	t_crd			best;
-	t_crd			best_map;
-	int				score;
-	int				cur_score;
-	unsigned char	on_sight;
-	unsigned char	cur_on_sight;
-	unsigned char	not_eaten;
-	unsigned char	cur_not_eaten;
+	t_yplay		d;
 
-	best = (t_crd){-1, -1};
-	score = -1;
-	on_sight = 0;
-	not_eaten = 0;
+	d.on_pc = (t_crd){-1, -1};
+	d.score = -1;
+	d.on_sight = 0;
+	d.not_eaten = 0;
 	if (!yfind_start_positions(gm))
 		return (0);
 	while (ynext_map_pos(&(gm->me), &(gm->map), &gm->me.it, &gm->map.a))
@@ -44,51 +73,13 @@ unsigned char			yplay(t_gm *gm)
 		while (ynext_pc_pos(&(gm->me), &(gm->pc), &gm->pc.it, &gm->pc.map.a))
 		{
 			if (ycan_put_piece(&(gm->pc), &(gm->map)))
-			{
-				cur_score = yscore_closest(gm);
-				cur_on_sight = yenemy_on_sight(gm);
-				if (!on_sight)
-				{
-					if (cur_on_sight)
-						on_sight = 1;
-					if (on_sight || score == -1 || cur_score < score)
-					{
-						score = cur_score;
-						best = gm->pc.map.a;
-						best_map = gm->map.a;
-					}
-				}
-				else if (cur_on_sight)
-				{
-					cur_not_eaten = !yeaten(gm);
-					if (!not_eaten)
-					{
-						if (cur_not_eaten)
-							not_eaten = 1;
-						if (not_eaten || score == -1 || cur_score < score)
-						{
-							score = cur_score;
-							best = gm->pc.map.a;
-							best_map = gm->map.a;
-						}
-					}
-					else if (cur_not_eaten)
-					{
-						if (score == -1 || cur_score < score)
-						{
-							score = cur_score;
-							best = gm->pc.map.a;
-							best_map = gm->map.a;
-						}
-					}
-				}
-			}
+				yscore_play(gm, &d);
 		}
 	}
-	if (yis_coord(best, &gm->map))
+	if (yis_coord(d.on_pc, &gm->pc.map))
 	{
-		gm->pc.map.a = best;
-		gm->map.a = best_map;
+		gm->pc.map.a = d.on_pc;
+		gm->map.a = d.on_map;
 		yput_piece(&gm->map, &gm->pc);
 		return (1);
 	}

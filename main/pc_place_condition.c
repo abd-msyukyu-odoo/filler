@@ -12,6 +12,27 @@
 
 #include "filler.h"
 
+static unsigned char	yinvalid_placement(t_pc *pc, t_map *map, t_crd n,
+	t_crd origin)
+{
+	if (ycoord_equals(n, pc->map.a))
+	{
+		if (!ytest_anchor_range(n, origin, pc, map))
+			return (1);
+	}
+	else if (n.y == pc->map.a.y &&
+		pc->map.m[n.y][n.x].h->s.x < pc->map.a.x &&
+		pc->map.m[n.y][n.x].h->s.x +
+		pc->map.m[n.y][n.x].h->d > pc->map.a.x)
+	{
+		if (!ycut_ranges(n, origin, pc, map))
+			return (1);
+	}
+	else if (!ytest_range(n, origin, pc, map))
+		return (1);
+	return (0);
+}
+
 unsigned char			ycan_put_piece(t_pc *pc, t_map *map)
 {
 	t_crd		n;
@@ -25,20 +46,7 @@ unsigned char			ycan_put_piece(t_pc *pc, t_map *map)
 	{
 		while (pc->map.m[n.y][n.x].o != '.' || yrng_h_ho(&(pc->map), n, &n))
 		{
-			if (ycoord_equals(n, pc->map.a))
-			{
-				if (!ytest_anchor_range(n, origin, pc, map))
-					return (0);
-			}
-			else if (n.y == pc->map.a.y &&
-				pc->map.m[n.y][n.x].h->s.x < pc->map.a.x &&
-				pc->map.m[n.y][n.x].h->s.x +
-				pc->map.m[n.y][n.x].h->d > pc->map.a.x)
-			{
-				if (!ycut_ranges(n, origin, pc, map))
-					return (0);
-			}
-			else if (!ytest_range(n, origin, pc, map))
+			if (yinvalid_placement(pc, map, n, origin))
 				return (0);
 			if (!yrng_h_ho(&(pc->map), n, &n))
 				break ;

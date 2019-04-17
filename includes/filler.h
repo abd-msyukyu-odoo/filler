@@ -134,6 +134,26 @@ typedef struct			s_game_master
 	t_ply				en;
 }						t_gm;
 
+typedef struct			s_yseek_eater
+{
+	t_crd				o;
+	char				t;
+	int					dist;
+}						t_yseek_eater;
+
+typedef struct 			s_yplay
+{
+	t_crd				on_map;
+	t_crd				on_pc;
+	int					score;
+	int					cur_score;
+	unsigned char		on_sight;
+	unsigned char		cur_on_sight;
+	unsigned char		not_eaten;
+	unsigned char		cur_not_eaten;
+}						t_yplay;
+
+
 /*
 ** ---- parsing ----
 ** utils.c

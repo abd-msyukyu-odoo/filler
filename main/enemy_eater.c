@@ -12,16 +12,16 @@
 
 #include "filler.h"
 
-static unsigned char	yseek_eater(t_crd o, char t, t_map *map,
-	unsigned char (*yrng_o)(t_map*, t_crd, t_crd*), int *dist)
+static unsigned char	yseek_eater(t_yseek_eater *params, t_map *map,
+	unsigned char (*yrng_o)(t_map*, t_crd, t_crd*))
 {
 	t_crd	c;
 
-	c = o;
+	c = params->o;
 	while (yrng_o(map, c, &c))
-		if (map->m[c.y][c.x].o == t)
+		if (map->m[c.y][c.x].o == params->t)
 		{
-			*dist += ydistance(c, o);
+			params->dist += ydistance(c, params->o);
 			return (1);
 		}
 	return (0);
@@ -29,30 +29,30 @@ static unsigned char	yseek_eater(t_crd o, char t, t_map *map,
 
 static unsigned char	yeaten_partial(t_crd o, char t, t_map *map)
 {
-	int		eaten;
-	int		dist;
+	int				eaten;
+	t_yseek_eater	params;
 
 	eaten = 0;
-	dist = 0;
 	if (map->m[o.y][o.x].o == t)
 		return (1);
-	if (yseek_eater(o, t, map, yrng_b_ho, &dist))
+	params = (t_yseek_eater){o, t, 0};
+	if (yseek_eater(&params, map, yrng_b_ho))
 		eaten++;
-	if (yseek_eater(o, t, map, yrng_b_lo, &dist))
+	if (yseek_eater(&params, map, yrng_b_lo))
 		eaten++;
-	if (yseek_eater(o, t, map, yrng_h_ho, &dist))
+	if (yseek_eater(&params, map, yrng_h_ho))
 		eaten++;
-	if (yseek_eater(o, t, map, yrng_h_lo, &dist))
+	if (yseek_eater(&params, map, yrng_h_lo))
 		eaten++;
-	if (yseek_eater(o, t, map, yrng_s_ho, &dist))
+	if (yseek_eater(&params, map, yrng_s_ho))
 		eaten++;
-	if (yseek_eater(o, t, map, yrng_s_lo, &dist))
+	if (yseek_eater(&params, map, yrng_s_lo))
 		eaten++;
-	if (yseek_eater(o, t, map, yrng_v_ho, &dist))
+	if (yseek_eater(&params, map, yrng_v_ho))
 		eaten++;
-	if (yseek_eater(o, t, map, yrng_v_lo, &dist))
+	if (yseek_eater(&params, map, yrng_v_lo))
 		eaten++;
-	return (eaten >= 5 && (double)dist / eaten <
+	return (eaten >= 5 && (double)(params.dist) / eaten <
 		((double)(map->w + map->h)) / 8);
 }
 
