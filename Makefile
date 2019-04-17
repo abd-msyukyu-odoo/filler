@@ -25,7 +25,21 @@ CHEAD		= ./libft
 THISHEAD	= ./includes
 
 MAIN_F		= main.o \
-			  play.o
+			  utils.o \
+			  rng_v.o \
+			  rng_h.o \
+			  rng_b.o \
+			  rng_s.o \
+			  position_finder.o \
+			  position_iterator.o \
+			  pc_place_cond_support.o \
+			  pc_place_condition.o \
+			  sonar_support.o \
+			  sonar.o \
+			  distance_scorer.o \
+			  enemy_on_sight.o \
+			  enemy_eater.o \
+			  player.o
 
 PARSING_F	= utils.o \
 			  freer.o \

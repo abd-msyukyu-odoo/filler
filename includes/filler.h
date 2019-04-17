@@ -135,6 +135,7 @@ typedef struct			s_game_master
 }						t_gm;
 
 /*
+** ---- parsing ----
 ** utils.c
 */
 char					yc_to_upper(char c);
@@ -199,8 +200,100 @@ unsigned char			yread_turn(t_in *in, t_gm *gm);
 unsigned char			ydecode_player(t_in in, t_ply *me, t_ply *en);
 
 /*
- * play.c
- */
+** ---- main ----
+** utils.c
+*/
+unsigned char			yis_coord(t_crd crd, t_map *map);
+unsigned char			ycoord_equals(t_crd c1, t_crd c2);
+
+/*
+** rng_v.c
+*/
+unsigned char			yrng_v_ho(t_map *map, t_crd in, t_crd *out);
+unsigned char			yrng_v_lo(t_map *map, t_crd in, t_crd *out);
+void					yrng_v_hi(t_map *map, t_crd in, t_crd *out);
+
+/*
+** rng_h.c
+*/
+unsigned char			yrng_h_ho(t_map *map, t_crd in, t_crd *out);
+unsigned char			yrng_h_lo(t_map *map, t_crd in, t_crd *out);
+void					yrng_h_hi(t_map *map, t_crd in, t_crd *out);
+void					yrng_h_li(t_map *map, t_crd in, t_crd *out);
+
+/*
+** rng_b.c
+*/
+unsigned char			yrng_b_ho(t_map *map, t_crd in, t_crd *out);
+unsigned char			yrng_b_lo(t_map *map, t_crd in, t_crd *out);
+
+/*
+** rng_s.c
+*/
+unsigned char			yrng_s_ho(t_map *map, t_crd in, t_crd *out);
+unsigned char			yrng_s_lo(t_map *map, t_crd in, t_crd *out);
+
+/*
+** position_finder.c
+*/
+unsigned char			yfind_start_positions(t_gm *gm);
+
+/*
+** position_iterator.c
+*/
+unsigned char			ynext_map_pos(t_ply *ply, t_map *map, t_m_it *it,
+							t_crd *anchor);
+unsigned char			ynext_pc_pos(t_ply *ply, t_pc *pc, t_m_it *it,
+							t_crd *anchor);
+void					yreset_pc_pos(t_pc *pc, t_m_it *it);
+
+/*
+** pc_place_cond_support.c
+*/
+unsigned char			yenclosed_piece(t_crd origin, t_pc *pc, t_map *map);
+unsigned char			ytest_range(t_crd n, t_crd origin, t_pc *pc,
+							t_map *map);
+unsigned char			ytest_anchor_range(t_crd n, t_crd origin, t_pc *pc,
+							t_map *map);
+unsigned char			ycut_ranges(t_crd n, t_crd origin, t_pc *pc,
+							t_map *map);
+
+/*
+** pc_place_condition.c
+*/
+unsigned char			ycan_put_piece(t_pc *pc, t_map *map);
+
+/*
+** sonar_support.c
+*/
+void					yidentify_quarter(t_crd o, t_crd d, t_crd *s, t_crd *e);
+unsigned char			yfit_backslash(t_gm *gm, t_crd *s, t_crd *e);
+unsigned char			yfit_slash(t_gm *gm, t_crd *s, t_crd *e);
+
+/*
+** sonar.c
+*/
+t_crd					ysonar(t_gm *gm, t_crd o, char t, int size);
+
+/*
+** distance_scorer.c
+*/
+int						ydistance(t_crd c1, t_crd c2);
+int						yscore_closest(t_gm *gm);
+
+/*
+** enemy_on_sight.c
+*/
+unsigned char			yenemy_on_sight(t_gm *gm);
+
+/*
+** enemy_eater.c
+*/
+unsigned char			yeaten(t_gm *gm);
+
+/*
+** player.c
+*/
 unsigned char			yplay(t_gm *gm);
 
 #endif
