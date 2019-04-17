@@ -135,16 +135,67 @@ typedef struct			s_game_master
 }						t_gm;
 
 /*
- * decode_input.c
- */
+** utils.c
+*/
+char					yc_to_upper(char c);
 unsigned int			yatoui_limited(t_in *in);
-//unsigned char			ydecode_input(t_in in, t_map *map, t_pc *pc, char o);
+unsigned char			yvalid_for_map(char c);
+unsigned char			yvalid_for_piece(char c);
+
+/*
+** freer.c
+*/
+void					ydereference_rng(t_map *map, int x, int y, t_rng *rng);
+void					yfree_ares(t_map *map, int x, int y);
+void					yfree_map(t_map *map);
 void					yfree_turn(t_map *map, t_pc *pc);
+void					yreset_in(t_in *in);
+
+/*
+** are_support.c
+*/
+void					yappend_range(t_rng **dst, t_rng *src);
+unsigned char			ymalloc_range(t_rng **rng, int x, int y);
+
+/*
+** are_creator.c
+*/
+unsigned char			yadd_are(char o, int x, int y, t_map *map);
+
+/*
+** map_decoder.c
+*/
+unsigned char			ydecode_map(t_in *in, t_map *map);
+
+/*
+** map_creator.c
+*/
+unsigned char			ymalloc_map(t_map *map);
+
+/*
+** piece_decoder.c
+*/
+unsigned char			ydecode_pc(t_in *in, t_pc *pc, char o);
+
+/*
+** piece_cropper.c
+*/
+unsigned char			ydecode_crop(t_in *in, t_pc *pc);
+
+/*
+** dimensions_decoder.c
+*/
+unsigned char			ydecode_size(t_in *in, int *w, int *h, char *ref);
+ssize_t					ymap_read_size(t_map *map);
+
+/*
+** turn_decoder.c
+*/
 unsigned char			yread_turn(t_in *in, t_gm *gm);
 
 /*
- * decode_player.c
- */
+** player_decoder.c
+*/
 unsigned char			ydecode_player(t_in in, t_ply *me, t_ply *en);
 
 /*

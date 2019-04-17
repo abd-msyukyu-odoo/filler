@@ -27,8 +27,17 @@ THISHEAD	= ./includes
 MAIN_F		= main.o \
 			  play.o
 
-PARSING_F	= decode_input.o \
-			  decode_player.o \
+PARSING_F	= utils.o \
+			  freer.o \
+			  are_support.o \
+			  are_creator.o \
+			  map_decoder.o \
+			  map_creator.o \
+			  piece_decoder.o \
+			  piece_cropper.o \
+			  dimensions_decoder.o \
+			  turn_decoder.o \
+			  player_decoder.o
 			  
 READ_F		= str_realloc_join.o \
 			  remain_editor.o \
