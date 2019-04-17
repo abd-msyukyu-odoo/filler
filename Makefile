@@ -29,12 +29,13 @@ MAIN_F		= main.o \
 
 PARSING_F	= decode_input.o \
 			  decode_player.o \
-			  str_realloc_join.o \
+			  
+READ_F		= str_realloc_join.o \
 			  remain_editor.o \
 			  reader.o
-			  
 
 O_FILES		= $(addprefix ./main/, $(MAIN_F)) \
+			  $(addprefix ./read/, $(READ_F)) \
 			  $(addprefix ./parsing/, $(PARSING_F))
 
 END_E		= \033[00m
