@@ -26,12 +26,20 @@
 #  define YINPUT 0
 # endif
 
+/*
+** s : string
+** l : sizeof s
+*/
 typedef struct			s_string
 {
 	char				*s;
 	ssize_t				l;
 }						t_string;
 
+/*
+** out : output string
+** rmn : remain string
+*/
 typedef struct			s_find_end
 {
 	char				*out;

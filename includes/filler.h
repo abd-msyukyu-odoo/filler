@@ -21,6 +21,10 @@
 # define PLATEAU "Plateau "
 # define PIECE "Piece "
 
+/*
+** x : coordinate on horizontal axis
+** y : coordinate on vertical axis
+*/
 typedef struct			s_coord
 {
 	int					x;
@@ -37,12 +41,22 @@ typedef struct			s_range
 	int					d;
 }						t_rng;
 
+/*
+** hp : horizontal position
+** vp : vertical position
+*/
 typedef struct			s_map_iterator
 {
 	t_crd				hp;
 	t_crd				vp;
 }						t_m_it;
 
+/*
+** it : iterator
+** p : ?
+** m_o : ?
+** m_p : ?
+*/
 typedef struct			s_pc_navigation
 {
 	t_m_it				it;
@@ -81,6 +95,10 @@ typedef struct			s_map
 	t_crd				a;
 }						t_map;
 
+/*
+** yrng_o : function to navigate outside the boundary of a range
+** yrng_i : function to navigate to the boundary inside a range
+*/
 typedef struct			s_direction
 {
 	unsigned char		(*yrng_o)(t_map*, t_crd, t_crd*);
@@ -99,8 +117,7 @@ typedef struct			s_input
 
 /*
 ** o : owner
-** hp : horizontal position
-** vp : vertical position
+** it : iterator
 */
 typedef struct			s_player
 {
@@ -112,9 +129,7 @@ typedef struct			s_player
 ** map : piece's map
 ** mic : minimum coordinate
 ** mac : maximum coordinate
-** hp : horizeontal position
-** vp : vertical position
-** a : anchor
+** it : iterator
 */
 typedef struct			s_piece
 {
@@ -124,6 +139,12 @@ typedef struct			s_piece
 	t_m_it				it;
 }						t_pc;
 
+/*
+** map : map
+** pc : piece
+** me : the player who must play now
+** en : the other player
+*/
 typedef struct			s_game_master
 {
 	t_map				map;
@@ -132,6 +153,11 @@ typedef struct			s_game_master
 	t_ply				en;
 }						t_gm;
 
+/*
+** o : origin
+** t : target
+** dist : distance
+*/
 typedef struct			s_yseek_eater
 {
 	t_crd				o;
@@ -139,6 +165,16 @@ typedef struct			s_yseek_eater
 	int					dist;
 }						t_yseek_eater;
 
+/*
+** on_map : coordinate with the board as referential
+** on_pc : coordinate with the piece as referential
+** score : score (best)
+** cur_score : current score
+** on_sight : true if at least one piece had a true cur_on_sight
+** cur_on_sight : true if the enemy can be seen directly from the current piece
+** not_eaten : true if at least one piece can be placed without being "eaten"
+** cur_not_eaten : true if the current piece can be placed without being "eaten"
+*/
 typedef struct			s_yplay
 {
 	t_crd				on_map;
