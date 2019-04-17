@@ -16,7 +16,7 @@ NAME		= dabeloos.filler
 
 CC			= gcc
 
-CFLAGS		= -Wall -Wextra -Werror -O3 -Wno-unused-function
+CFLAGS		= -Wall -Wextra -Werror -O3
 
 PRINTFHEAD	= ./libft/ft_printf/includes
 

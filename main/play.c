@@ -12,6 +12,8 @@
 
 #include "filler.h"
 
+/// utils.c
+
 static unsigned char	yis_coord(t_crd crd, t_map *map)
 {
 	if (!map)
@@ -24,6 +26,8 @@ static unsigned char	ycoord_equals(t_crd c1, t_crd c2)
 {
 	return (c1.x == c2.x && c1.y == c2.y);
 }
+
+/// yrng_v.c
 
 static unsigned char	yrng_v_ho(t_map *map, t_crd in, t_crd *out)
 {
@@ -45,11 +49,7 @@ static void				yrng_v_hi(t_map *map, t_crd in, t_crd *out)
 		map->m[in.y][in.x].v->s.y + map->m[in.y][in.x].v->d - 1};
 }
 
-static void				yrng_v_li(t_map *map, t_crd in, t_crd *out)
-{
-	*out = (t_crd){map->m[in.y][in.x].v->s.x,
-		map->m[in.y][in.x].v->s.y};
-}
+/// yrng_h.c
 
 static unsigned char	yrng_h_ho(t_map *map, t_crd in, t_crd *out)
 {
@@ -77,6 +77,8 @@ static void				yrng_h_li(t_map *map, t_crd in, t_crd *out)
 		map->m[in.y][in.x].h->s.y};
 }
 
+/// yrng_b.c
+
 static unsigned char	yrng_b_ho(t_map *map, t_crd in, t_crd *out)
 {
 	*out = (t_crd){map->m[in.y][in.x].b->s.x + map->m[in.y][in.x].b->d,
@@ -91,17 +93,7 @@ static unsigned char	yrng_b_lo(t_map *map, t_crd in, t_crd *out)
 	return (out->x > 0 && out->y > 0);
 }
 
-static void				yrng_b_hi(t_map *map, t_crd in, t_crd *out)
-{
-	*out = (t_crd){map->m[in.y][in.x].b->s.x + map->m[in.y][in.x].b->d - 1,
-		map->m[in.y][in.x].b->s.y + map->m[in.y][in.x].b->d - 1};
-}
-
-static void				yrng_b_li(t_map *map, t_crd in, t_crd *out)
-{
-	*out = (t_crd){map->m[in.y][in.x].b->s.x,
-		map->m[in.y][in.x].b->s.y};
-}
+/// yrng_s.c
 
 static unsigned char	yrng_s_ho(t_map *map, t_crd in, t_crd *out)
 {
@@ -117,17 +109,7 @@ static unsigned char	yrng_s_lo(t_map *map, t_crd in, t_crd *out)
 	return (out->x > 0 && out->y < map->h);
 }
 
-static void				yrng_s_hi(t_map *map, t_crd in, t_crd *out)
-{
-	*out = (t_crd){map->m[in.y][in.x].s->s.x + map->m[in.y][in.x].s->d - 1,
-		map->m[in.y][in.x].s->s.y - map->m[in.y][in.x].s->d + 1};
-}
-
-static void				yrng_s_li(t_map *map, t_crd in, t_crd *out)
-{
-	*out = (t_crd){map->m[in.y][in.x].s->s.x,
-		map->m[in.y][in.x].s->s.y};
-}
+/// position_finder.c
 
 static unsigned char	yidentify_pos_vp(t_gm *gm, t_crd in, t_crd *mevp,
 	t_crd *envp)
@@ -206,6 +188,8 @@ static unsigned char	yfind_start_positions(t_gm *gm)
 	return (yfind_start_hp(gm, &gm->me.it.hp, &gm->en.it.hp) &&
 		yfind_start_vp(gm, &gm->me.it.vp, &gm->en.it.vp));
 }
+
+/// position_iterator.c
 
 static void				yreset_pc_pos(t_pc *pc, t_m_it *it)
 {
@@ -321,6 +305,8 @@ static unsigned char	ynext_pc_pos(t_ply *ply, t_pc *pc, t_m_it *it,
 	}
 }
 
+/// pc_place_cond_support.c
+
 static unsigned char	yenclosed_piece(t_crd origin, t_pc *pc, t_map *map)
 {
 	return (yis_coord(origin, map) && origin.x + pc->map.w <= map->w &&
@@ -364,6 +350,8 @@ static unsigned char	ycut_ranges(t_crd n, t_crd origin, t_pc *pc, t_map *map)
 	return (ytest_anchor_range(pc->map.a, origin, pc, map));
 }
 
+/// pc_place_condition.c
+
 static unsigned char	ycan_put_piece(t_pc *pc, t_map *map)
 {
 	t_crd		n;
@@ -400,14 +388,7 @@ static unsigned char	ycan_put_piece(t_pc *pc, t_map *map)
 	return (1);
 }
 
-static void				yput_piece(t_map *map, t_pc *pc)
-{
-	t_crd		origin;
-
-	origin = (t_crd){map->a.x - pc->map.a.x - pc->mic.x,
-		map->a.y - pc->map.a.y - pc->mic.y};
-	ft_printf("%d %d\n", origin.y, origin.x);
-}
+/// sonar_support.c
 
 static void				yidentify_quarter(t_crd o, t_crd d, t_crd *s, t_crd *e)
 {
@@ -456,6 +437,8 @@ static unsigned char	yfit_slash(t_gm *gm, t_crd *s, t_crd *e)
 		return (0);
 	return (1);
 }
+
+/// sonar.c
 
 static t_crd			ysonar_backslash(t_gm *gm, char t, t_crd s, t_crd e)
 {
@@ -526,6 +509,8 @@ static t_crd			ysonar(t_gm *gm, t_crd o, char t, int size)
 	return ((t_crd){-1, -1});
 }
 
+/// distance_scorer.c
+
 static t_crd			yfind_nearest(t_gm *gm, t_crd o, char t)
 {
 	int					size;
@@ -574,6 +559,8 @@ static int				yscore_closest(t_gm *gm)
 	}
 	return (score);
 }
+
+/// enemy_on_sight.c
 
 static unsigned char	yseek_target_from_on(t_crd o, char t, t_map *map,
 	unsigned char (*yrng_o)(t_map*, t_crd, t_crd*))
@@ -625,6 +612,8 @@ static unsigned char	yenemy_on_sight(t_gm *gm)
 	}
 	return (0);
 }
+
+/// enemy_eater.c
 
 static unsigned char	yseek_eater(t_crd o, char t, t_map *map,
 	unsigned char (*yrng_o)(t_map*, t_crd, t_crd*), int *dist)
@@ -690,6 +679,17 @@ static unsigned char	yeaten(t_gm *gm)
 			eaten++;
 	}
 	return (n / 2 <= eaten);
+}
+
+/// player.c
+
+static void				yput_piece(t_map *map, t_pc *pc)
+{
+	t_crd		origin;
+
+	origin = (t_crd){map->a.x - pc->map.a.x - pc->mic.x,
+		map->a.y - pc->map.a.y - pc->mic.y};
+	ft_printf("%d %d\n", origin.y, origin.x);
 }
 
 unsigned char			yplay(t_gm *gm)
